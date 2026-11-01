@@ -1,12 +1,16 @@
 // PotugApp · función "calendario" (Supabase Edge Function, Deno)
 //
-// Lee los 5 calendarios de Google (direcciones privadas iCal guardadas como secretos),
-// expande los eventos que se repiten, marca de quién es cada uno y devuelve los de los
+// Lee los 5 calendarios de Google, marca de quién es cada evento y devuelve los de los
 // próximos días ya ordenados. La app solo los pinta.
 //
-// Secretos necesarios (Supabase → Edge Functions → Secrets):
-//   FAMILY_KEY      clave familiar
-//   CAL_LIDIA, CAL_MIGUEL, CAL_BRUNO, CAL_FAMILIA, CAL_FESTIVOS   direcciones .ics
+// Dos formas de leer cada calendario (según lo que haya en su secreto CAL_*):
+//   · ID de calendario (p. ej. nombre@gmail.com)  → API oficial de Google Calendar con una
+//     cuenta de servicio (secreto GOOGLE_SA = el JSON de la clave). Recomendado: Google
+//     limita (HTTP 429) las descargas .ics desde servidores en la nube.
+//   · Dirección .ics (https://… o webcal://…)      → descarga y lectura del iCal.
+//
+// Secretos (Supabase → Edge Functions → Secrets):
+//   FAMILY_KEY, GOOGLE_SA, CAL_LIDIA, CAL_MIGUEL, CAL_BRUNO, CAL_FAMILIA, CAL_FESTIVOS
 //
 // Petición:  GET /functions/v1/calendario?dias=7    cabecera  x-familia: <clave>
 // Respuesta: { generado, desde, dias, eventos: [{dia, hora, fin, todoElDia, titulo, quien, festivo}], errores: [] }
@@ -108,6 +112,66 @@ export function ordenar(eventos) {
     a.titulo.localeCompare(b.titulo));
 }
 
+// ---------- lectura por la API oficial de Google Calendar ----------
+const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const b64urlTxt = (txt) => b64url(new TextEncoder().encode(txt));
+let tokenGoogle = { valor: "", caduca: 0 };
+
+export async function tokenCuentaServicio(sa, pedir = fetch) {
+  if (tokenGoogle.valor && Date.now() < tokenGoogle.caduca) return tokenGoogle.valor;
+  const ahora = Math.floor(Date.now() / 1000);
+  const cab = b64urlTxt(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+  const cuerpo = b64urlTxt(JSON.stringify({
+    iss: sa.client_email, scope: "https://www.googleapis.com/auth/calendar.readonly",
+    aud: "https://oauth2.googleapis.com/token", iat: ahora, exp: ahora + 3600,
+  }));
+  const pem = sa.private_key.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
+  const der = Uint8Array.from(atob(pem), (c) => c.charCodeAt(0));
+  const clave = await crypto.subtle.importKey("pkcs8", der, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["sign"]);
+  const firma = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", clave, new TextEncoder().encode(`${cab}.${cuerpo}`));
+  const r = await pedir("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `grant_type=${encodeURIComponent("urn:ietf:params:oauth:grant-type:jwt-bearer")}&assertion=${cab}.${cuerpo}.${b64url(firma)}`,
+  });
+  const j = await r.json();
+  if (!r.ok) throw new Error(`token ${r.status} ${j.error || ""}`);
+  tokenGoogle = { valor: j.access_token, caduca: Date.now() + (j.expires_in - 120) * 1000 };
+  return tokenGoogle.valor;
+}
+
+export async function eventosDeAPI(idCal, fuente, desde, hasta, token, pedir = fetch) {
+  const salida = [];
+  let pagina = "";
+  for (let vueltas = 0; vueltas < 10; vueltas++) {
+    const q = new URLSearchParams({
+      singleEvents: "true", orderBy: "startTime", maxResults: "2500", timeZone: ZONA,
+      timeMin: new Date(`${sumarDias(desde, -1)}T00:00:00Z`).toISOString(),
+      timeMax: new Date(`${sumarDias(hasta, 1)}T00:00:00Z`).toISOString(),
+    });
+    if (pagina) q.set("pageToken", pagina);
+    const r = await pedir(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(idCal)}/events?${q}`, { headers: { Authorization: `Bearer ${token}` } });
+    if (!r.ok) throw new Error(`API ${r.status}${r.status === 404 ? " (¿calendario compartido con la cuenta de servicio?)" : ""}`);
+    const j = await r.json();
+    for (const it of j.items || []) {
+      if (it.status === "cancelled") continue;
+      const titulo = it.summary || "(sin título)";
+      if (it.start && it.start.date) {
+        const fin = it.end && it.end.date ? it.end.date : sumarDias(it.start.date, 1);
+        for (let d = it.start.date, i = 0; d < fin && i < 60; i++, d = sumarDias(d, 1)) {
+          if (d >= desde && d < hasta) salida.push({ dia: d, hora: null, fin: null, todoElDia: true, titulo, quien: fuente.quien, festivo: !!fuente.festivo });
+        }
+      } else if (it.start && it.start.dateTime) {
+        const ini = new Date(it.start.dateTime), d = diaMadrid(ini);
+        if (d >= desde && d < hasta) salida.push({ dia: d, hora: horaMadrid(ini), fin: it.end && it.end.dateTime ? horaMadrid(new Date(it.end.dateTime)) : null, todoElDia: false, titulo, quien: fuente.quien, festivo: !!fuente.festivo });
+      }
+    }
+    if (!j.nextPageToken) break;
+    pagina = j.nextPageToken;
+  }
+  return salida;
+}
+
 // ---------- servidor ----------
 // Google limita (HTTP 429) las descargas desde servidores en la nube. Para no depender de cada
 // descarga, guardamos lo último que funcionó de cada calendario en la tabla `calendario_cache`
@@ -162,7 +226,14 @@ async function construir(dias) {
     const url = Deno.env.get(f.secreto);
     if (!url) { errores.push(`${f.secreto}: falta el secreto`); return previo ? previo.eventos : []; }
     try {
-      const evs = eventosDeICS(await descargar(url), f, desdeVentana, hastaVentana);
+      let evs;
+      if (/^(https?|webcal):/i.test(url.trim())) {
+        evs = eventosDeICS(await descargar(url.trim()), f, desdeVentana, hastaVentana);
+      } else {
+        const sa = Deno.env.get("GOOGLE_SA");
+        if (!sa) throw new Error("falta GOOGLE_SA");
+        evs = await eventosDeAPI(url.trim(), f, desdeVentana, hastaVentana, await tokenCuentaServicio(JSON.parse(sa)));
+      }
       await guardarCache(f.secreto, evs);
       return evs;
     } catch (e) {
