@@ -2,7 +2,7 @@
 
 Dashboard familiar para el iPad de la cocina y los móviles de casa.
 
-- **App:** `app/` → la publica Netlify tal cual (sin compilación). `app/index.html` es la pantalla principal.
+- **App:** `app/` → la publica GitHub Pages (`.github/workflows/pages.yml`) en https://miguel-moya.github.io/potugapp/. `app/index.html` es la pantalla principal.
 - **Diseño:** `app/diseno/marca.html` (manual de marca, fuente de verdad) y las maquetas.
 - **Datos:** Supabase. La función `supabase/functions/calendario` lee los calendarios de Google.
 
