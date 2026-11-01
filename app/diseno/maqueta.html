@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Maqueta · página 1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Geist:wght@300;400;500;600&amp;family=Geist+Mono:wght@400;500&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=JetBrains+Mono:wght@400;500&amp;family=DM+Mono:wght@400;500&amp;family=Space+Mono&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{color:inherit}
+</style>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#e4e1d9}#stage{position:absolute;left:0;top:0;width:1024px;height:768px;-webkit-transform-origin:0 0;transform-origin:0 0}</style>
+</head>
+<body data-otra="maqueta2.html">
+<div id="stage">
+<!--
+  Regla tipográfica:
+  · Space Mono = rótulos y horas (hoy, palma, viento, mañana, mar, festivo, 17:30, sync).
+  · Manrope    = todo lo demás: títulos, contenido, valores y cifras.
+  Cifra grande de widget: 44px light (21°, 14). Excepción: el día de hoy del calendario (60px).
+  "+X más": Manrope 11–12px, gris claro #8a877f.
+-->
+<div style="width: 100%; height: 100%; box-sizing: border-box; background: #e4e1d9; color: #1d1d1b; font-family: 'Manrope', -apple-system, sans-serif; display: flex">
+<!-- Menú lateral -->
+<nav aria-label="Menú" style="width: 72px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 0 0 14px; box-sizing: border-box">
+<div style="font-size: 28px; font-weight: 600; letter-spacing: -1px; height: 40px; margin-top: 3px; display: flex; align-items: center">P<span style="color: #ef6c50">.</span></div>
+<div style="flex-grow: 1; margin-top: 4px"></div>
+<a aria-label="Inicio" href="#" style="width: 46px; height: 46px; border-radius: 23px; background: #1d1d1b; color: #f4f3ef; display: flex; align-items: center; justify-content: center; margin-top: 4px"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-width="1.3" viewbox="0 0 24 24" width="22"><rect height="6.5" rx="1.5" width="6.5" x="4" y="4"></rect><rect height="6.5" rx="1.5" width="6.5" x="13.5" y="4"></rect><rect height="6.5" rx="1.5" width="6.5" x="4" y="13.5"></rect><rect height="6.5" rx="1.5" width="6.5" x="13.5" y="13.5"></rect></svg></a>
+<a aria-label="Calendario" href="#" style="width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; margin-top: 4px"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-width="1.3" viewbox="0 0 24 24" width="22"><rect height="15" rx="2" width="16" x="4" y="5"></rect><path d="M4 10h16"></path></svg></a>
+<a aria-label="Compra" href="#" style="width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; margin-top: 4px"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linejoin="round" stroke-width="1.3" viewbox="0 0 24 24" width="22"><path d="M5 8.5h14l-1 11.5H6z"></path><path d="M9 8.5a3 3 0 0 1 6 0"></path></svg></a>
+<a aria-label="Tareas" href="#" style="width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; margin-top: 4px"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" viewbox="0 0 24 24" width="22"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></a>
+<a aria-label="Comer fuera" href="#" style="width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; margin-top: 4px"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" viewbox="0 0 24 24" width="22"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"></path><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"></path></svg></a>
+<a aria-label="Fotos" href="#" style="width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; margin-top: 4px"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-width="1.3" viewbox="0 0 24 24" width="22"><rect height="14" rx="2" width="16" x="4" y="5"></rect><circle cx="12" cy="12" r="3"></circle></svg></a>
+<div style="flex-grow: 1; margin-top: 4px"></div>
+<a aria-label="Ajustes" href="#" style="width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; margin-top: 4px"><svg aria-hidden="true" fill="none" height="22" stroke="currentColor" stroke-linecap="round" stroke-width="1.3" viewbox="0 0 24 24" width="22"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"></path><circle cx="16" cy="8" r="2"></circle><circle cx="8" cy="16" r="2"></circle></svg></a>
+</nav>
+<!-- Contenido -->
+<div style="flex-grow: 1; min-width: 0; padding: 0 14px 14px 0; box-sizing: border-box; display: flex; flex-direction: column">
+<!-- Barra superior -->
+<div style="height: 40px; display: flex; align-items: center; justify-content: space-between; padding-top: 4px; box-sizing: border-box">
+<div style="display: flex; align-items: baseline">
+<span style="font-size: 26px; font-weight: 300; letter-spacing: -1px">08:12</span>
+<span style="font-size: 14px; color: #5c5a54; margin-left: 12px">Lunes, 2 de noviembre</span>
+</div>
+<div aria-label="Página 1 de 2" onclick="location.href='maqueta2.html'" role="img" style="display: flex; align-items: center"><span style="width: 18px; height: 3px; border-radius: 2px; background: #1d1d1b"></span><span style="width: 18px; height: 3px; border-radius: 2px; background: #c3c0b8; margin-left: 5px"></span></div>
+</div>
+<!-- Dos filas de igual altura (flex: funciona en iOS 10) -->
+<div style="display: flex; flex-direction: column; flex-grow: 1; min-height: 0; margin-top: 8px">
+<!-- Calendario horizontal -->
+<a href="#" style="flex: 1 1 0; min-height: 0; text-decoration: none; background: #f4f3ef; border-radius: 20px; padding: 10px; display: flex">
+<!-- Hoy -->
+<div style="flex: 2.2 1 0; min-width: 0; background: #c9b29b; border-radius: 14px; padding: 14px 14px 20px; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px">hoy</span>
+</div>
+<div style="display: flex; align-items: baseline; margin-top: 8px"><span style="font-size: 60px; font-weight: 300; line-height: 0.9; letter-spacing: -2px">2</span><span style="font-size: 15px; margin-left: 8px">lunes</span></div>
+<div style="flex-grow: 1; margin-top: 8px"></div>
+<div style="display: flex; flex-direction: column; margin-top: 8px">
+<div style="display: flex; align-items: center"><div style="display: flex; flex-direction: column; flex-grow: 1"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px">todo el día</span><span style="font-size: 13px; margin-top: 1px">Excursión del cole</span></div><span style="width: 18px; height: 18px; border-radius: 9px; background: #ef6c50; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-left: 8px">B</span></div>
+<div style="display: flex; align-items: center; margin-top: 7px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; width: 38px">10:00</span><span style="font-size: 13px; flex-grow: 1; margin-left: 8px">Dentista</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #c98b8f; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-left: 8px">L</span></div>
+<div style="display: flex; align-items: center; margin-top: 7px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; width: 38px">13:30</span><span style="font-size: 13px; flex-grow: 1; margin-left: 8px">Comida con Ana</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #c98b8f; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-left: 8px">L</span></div>
+<div style="display: flex; align-items: center; margin-top: 7px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; width: 38px">17:30</span><span style="font-size: 13px; flex-grow: 1; margin-left: 8px">Natación</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #ef6c50; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-left: 8px">B</span></div>
+<div style="display: flex; align-items: center; margin-top: 7px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; width: 38px">19:00</span><span style="font-size: 13px; flex-grow: 1; margin-left: 8px">Pádel</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #f0b95f; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-left: 8px">M</span></div>
+<div style="display: flex; align-items: center; margin-top: 7px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; width: 38px">21:00</span><span style="font-size: 13px; flex-grow: 1; margin-left: 8px">Cena con los abuelos</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #9a826b; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-left: 8px">F</span></div>
+</div>
+</div>
+<!-- Próximos días -->
+<div style="margin-left: 8px; flex: 1 1 0; min-width: 0; padding: 12px 9px; display: flex; flex-direction: column">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #5c5a54">mar</span>
+<span style="font-size: 26px; font-weight: 300; line-height: 1; margin-top: 8px">3</span>
+<div style="display: flex; flex-direction: column; margin-top: 8px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54">todo el día</span><span style="font-size: 12px; line-height: 1.3; margin-top: 1px">Viaje a Madrid</span></div>
+<div style="display: flex; flex-direction: column; margin-top: 8px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54">16:30</span><span style="font-size: 12px; line-height: 1.3; margin-top: 1px">Reunión del cole</span></div>
+<span style="font-size: 11px; color: #8a877f; margin-top: 8px">+1 más</span>
+</div>
+<div style="border-left: 1px solid #e3e0d9; flex: 1 1 0; min-width: 0; padding: 12px 9px; display: flex; flex-direction: column">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #5c5a54">mié</span>
+<span style="font-size: 26px; font-weight: 300; line-height: 1; margin-top: 8px">4</span>
+<div style="display: flex; flex-direction: column; margin-top: 8px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54">17:30</span><span style="font-size: 12px; line-height: 1.3; margin-top: 1px">Natación</span></div>
+</div>
+<!-- Festivo entre semana: solo [F] + nombre, sin fondo (el fondo es solo para sábado y domingo) -->
+<div style="border-left: 1px solid #e3e0d9; flex: 1 1 0; min-width: 0; padding: 12px 9px; display: flex; flex-direction: column">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #5c5a54">jue [F]</span>
+<span style="font-size: 26px; font-weight: 300; line-height: 1; margin-top: 8px">5</span>
+<span style="font-size: 12px; line-height: 1.3; color: #5c5a54; margin-top: 8px">[Nombre del festivo]</span>
+</div>
+<div style="border-left: 1px solid #e3e0d9; flex: 1 1 0; min-width: 0; padding: 12px 9px; display: flex; flex-direction: column">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #5c5a54">vie</span>
+<span style="font-size: 26px; font-weight: 300; line-height: 1; margin-top: 8px">6</span>
+<div style="display: flex; flex-direction: column; margin-top: 8px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54">19:00</span><span style="font-size: 12px; line-height: 1.3; margin-top: 1px">Yoga</span></div>
+</div>
+<div style="border-left: 1px solid #e3e0d9; background: #ecebe6; flex: 1 1 0; min-width: 0; padding: 12px 9px; display: flex; flex-direction: column">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #5c5a54">sáb</span>
+<span style="font-size: 26px; font-weight: 300; line-height: 1; margin-top: 8px">7</span>
+<div style="display: flex; flex-direction: column; margin-top: 8px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54">11:00</span><span style="font-size: 12px; line-height: 1.3; margin-top: 1px">Cumple de Hugo</span></div>
+</div>
+<div style="border-left: 1px solid #d3cfc6; background: #ecebe6; flex: 1 1 0; min-width: 0; padding: 12px 9px; display: flex; flex-direction: column; border-radius: 0 12px 12px 0">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #5c5a54">dom</span>
+<span style="font-size: 26px; font-weight: 300; line-height: 1; margin-top: 8px">8</span>
+<span style="font-size: 12px; color: #8a877f; margin-top: 8px">—</span>
+</div>
+</a>
+<div style="display: flex; flex: 1 1 0; min-height: 0; margin-top: 14px">
+<!-- Tiempo -->
+<a href="#" style="flex: 1 1 0; min-width: 0; text-decoration: none; background: #f4f3ef; border-radius: 20px; padding: 16px; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 11px; color: #5c5a54">hoy · marratxí</span>
+<svg aria-label="Soleado" fill="none" height="22" role="img" stroke="#1d1d1b" stroke-linecap="round" stroke-width="1.3" viewbox="0 0 24 24" width="22"><circle cx="12" cy="12" r="4"></circle><path d="M12 3v2M12 19v2M3 12h2M19 12h2"></path></svg>
+</div>
+<div style="display: flex; align-items: center; margin-top: 12px">
+<span style="font-size: 44px; font-weight: 300; line-height: 0.9; letter-spacing: -1.5px">21°</span>
+<div style="display: flex; flex-direction: column; margin-left: 12px">
+<span style="font-size: 13px">Soleado</span>
+<span style="font-size: 12px; color: #5c5a54; margin-top: 3px">11° / 21°</span>
+</div>
+</div>
+<div style="display: flex; margin-top: 20px; flex-wrap: wrap; align-items: flex-start">
+<div style="display: flex; flex-direction: column; width: calc((100% - 8px) / 2); box-sizing: border-box"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54">viento</span><span style="font-size: 13px; margin-top: 2px">12 km/h</span></div>
+<div style="display: flex; flex-direction: column; width: calc((100% - 8px) / 2); box-sizing: border-box; margin-left: 8px"><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54">lluvia</span><span style="font-size: 13px; margin-top: 2px">0%</span></div>
+</div>
+<div style="flex-grow: 1; margin-top: 12px"></div>
+<div style="display: flex; flex-direction: column; margin-top: 12px">
+<div style="display: flex; align-items: center; height: 38px; border-top: 1px solid #e3e0d9">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54; width: 58px">mar</span>
+<svg aria-hidden="true" fill="none" height="20" stroke="#1d1d1b" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" style="display: block" viewbox="0 0 24 24" width="20"><path d="M7 17h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 11 3 3 0 0 0 7 17z"></path></svg>
+<span style="font-size: 14px; font-weight: 300; margin-left: 8px; flex-grow: 1">17°</span>
+<span style="display: flex; align-items: center; font-size: 12px; line-height: 1"><svg aria-hidden="true" fill="none" height="13" stroke="#1d1d1b" stroke-linejoin="round" stroke-width="1.7" style="display: block" viewbox="0 0 24 24" width="13"><path d="M12 2.5c3.4 4.4 5.5 7.4 5.5 10.6a5.5 5.5 0 0 1-11 0c0-3.2 2.1-6.2 5.5-10.6z"></path></svg>80%</span>
+</div>
+<div style="display: flex; align-items: center; height: 38px; border-top: 1px solid #e3e0d9">
+<span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #5c5a54; width: 58px">mié</span>
+<svg aria-hidden="true" fill="none" height="20" stroke="#1d1d1b" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" style="display: block" viewbox="0 0 24 24" width="20"><circle cx="9" cy="9" r="3.2"></circle><path d="M9 3v1.2M3 9h1.2M4.8 4.8l.9.9M13.2 4.8l-.9.9"></path><path d="M9.5 19h8a3 3 0 0 0 .3-6 4.5 4.5 0 0 0-8.6 1A2.5 2.5 0 0 0 9.5 19z" fill="#f4f3ef"></path></svg>
+<span style="font-size: 14px; font-weight: 300; margin-left: 8px; flex-grow: 1">19°</span>
+<span style="display: flex; align-items: center; font-size: 12px; line-height: 1"><svg aria-hidden="true" fill="none" height="13" stroke="#1d1d1b" stroke-linejoin="round" stroke-width="1.7" style="display: block" viewbox="0 0 24 24" width="13"><path d="M12 2.5c3.4 4.4 5.5 7.4 5.5 10.6a5.5 5.5 0 0 1-11 0c0-3.2 2.1-6.2 5.5-10.6z"></path></svg>20%</span>
+</div>
+</div>
+</a>
+<!-- Compra (4 columnas) -->
+<div style="flex: 1 1 0; min-width: 0; background: #f4f3ef; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; margin-left: 14px">
+<a href="#" style="text-decoration: none; display: flex; justify-content: space-between; align-items: baseline">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600">Compra</h2>
+<span style="font-size: 12px; color: #5c5a54">ver todo</span>
+</a>
+<div style="display: flex; align-items: baseline; margin-top: 12px"><span style="font-size: 44px; font-weight: 300; line-height: 0.9; letter-spacing: -1.5px">14</span><span style="font-size: 13px; color: #5c5a54; margin-left: 8px">productos</span></div>
+<div style="flex-grow: 1; margin-top: 12px"></div>
+<div style="display: flex; font-size: 13px; margin-top: 12px; flex-wrap: wrap; align-items: flex-start">
+<span style="width: calc((100% - 12px) / 2); box-sizing: border-box">Leche</span><span style="width: calc((100% - 12px) / 2); box-sizing: border-box; margin-left: 12px">Pan</span>
+<span style="width: calc((100% - 12px) / 2); box-sizing: border-box; margin-top: 9px">Huevos</span><span style="width: calc((100% - 12px) / 2); box-sizing: border-box; margin-left: 12px; margin-top: 9px">Plátanos</span>
+<span style="width: calc((100% - 12px) / 2); box-sizing: border-box; margin-top: 9px">Yogures</span><span style="width: calc((100% - 12px) / 2); box-sizing: border-box; margin-left: 12px; margin-top: 9px">Tomates</span>
+<span style="width: calc((100% - 12px) / 2); box-sizing: border-box; margin-top: 9px">Pasta</span><span style="width: calc((100% - 12px) / 2); box-sizing: border-box; margin-left: 12px; margin-top: 9px">Aceite</span>
+<span style="width: calc((100% - 12px) / 2); box-sizing: border-box; margin-top: 9px">Detergente</span><span style="color: #8a877f; width: calc((100% - 12px) / 2); box-sizing: border-box; margin-left: 12px; margin-top: 9px">+5 más</span>
+</div>
+<div style="flex-grow: 1; margin-top: 12px"></div>
+<div style="display: flex; justify-content: flex-end; margin-top: 12px">
+<button aria-label="Añadir a la compra" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #1d1d1b; color: #f4f3ef; padding: 0" type="button"><span style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%"><svg aria-hidden="true" fill="none" height="17" stroke="currentColor" stroke-linecap="round" stroke-width="1.6" viewbox="0 0 24 24" width="17"><path d="M12 5v14M5 12h14"></path></svg></span></button>
+</div>
+</div>
+<!-- Tareas (4 columnas) -->
+<a href="#" style="flex: 1 1 0; min-width: 0; text-decoration: none; background: #f4f3ef; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; margin-left: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600">Tareas de hoy</h2>
+<span style="font-size: 12px; color: #5c5a54">1 / 4</span>
+</div>
+<div style="display: flex; margin-top: 18px; flex-wrap: wrap; align-items: flex-start">
+<span style="height: 3px; background: #1d1d1b; border-radius: 2px; width: calc((100% - 24px) / 4); box-sizing: border-box"></span>
+<span style="height: 3px; background: #d6d3cb; border-radius: 2px; width: calc((100% - 24px) / 4); box-sizing: border-box; margin-left: 8px"></span>
+<span style="height: 3px; background: #d6d3cb; border-radius: 2px; width: calc((100% - 24px) / 4); box-sizing: border-box; margin-left: 8px"></span>
+<span style="height: 3px; background: #d6d3cb; border-radius: 2px; width: calc((100% - 24px) / 4); box-sizing: border-box; margin-left: 8px"></span>
+</div>
+<div style="flex-grow: 1; margin-top: 10px"></div>
+<div style="display: flex; flex-direction: column; margin-top: 10px">
+<div style="display: flex; align-items: center; min-height: 44px; border-bottom: 1px solid #e3e0d9"><span style="width: 20px; height: 20px; border-radius: 10px; background: #1d1d1b; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg aria-hidden="true" fill="none" height="10" stroke="#f4f3ef" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" viewbox="0 0 24 24" width="10"><path d="M5 12l5 5 9-10"></path></svg></span><span style="font-size: 13px; color: #8a877f; text-decoration: line-through; flex-grow: 1; margin-left: 10px">Poner lavadora</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #c98b8f; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 10px">L</span></div>
+<div style="display: flex; align-items: center; min-height: 44px; border-bottom: 1px solid #e3e0d9"><span style="width: 20px; height: 20px; border-radius: 10px; border: 1.3px solid #b9b6ae; box-sizing: border-box; flex-shrink: 0"></span><span style="font-size: 13px; flex-grow: 1; margin-left: 10px">Cambiar sábanas</span><span style="font-family: 'Space Mono', ui-monospace, monospace; font-size: 10px; color: #b04a30; margin-right: 4px; margin-left: 10px">de ayer</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #9a826b; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 10px">F</span></div>
+<div style="display: flex; align-items: center; min-height: 44px; border-bottom: 1px solid #e3e0d9"><span style="width: 20px; height: 20px; border-radius: 10px; border: 1.3px solid #b9b6ae; box-sizing: border-box; flex-shrink: 0"></span><span style="font-size: 13px; flex-grow: 1; margin-left: 10px">Regar plantas</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #c98b8f; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 10px">L</span></div>
+<div style="display: flex; align-items: center; min-height: 44px"><span style="width: 20px; height: 20px; border-radius: 10px; border: 1.3px solid #b9b6ae; box-sizing: border-box; flex-shrink: 0"></span><span style="font-size: 13px; flex-grow: 1; margin-left: 10px">Sacar la basura</span><span style="width: 18px; height: 18px; border-radius: 9px; background: #f0b95f; color: #1d1d1b; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 10px">M</span></div>
+</div>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+(function () {
+  var stage = document.getElementById('stage'), W = 1024, H = 768;
+  function fit() {
+    var top = window.navigator.standalone ? 20 : 14;
+    var vw = window.innerWidth, vh = window.innerHeight - top;
+    var s = Math.min(vw / W, vh / H);
+    stage.style.width = (vw / s) + 'px';
+    stage.style.height = (vh / s) + 'px';
+    var t = 'translate(0px,' + top + 'px) scale(' + s + ')';
+    stage.style.webkitTransform = t; stage.style.transform = t;
+  }
+  fit();
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', function () { setTimeout(fit, 300); });
+  var other = document.body.getAttribute('data-otra'), x0 = null;
+  document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; });
+  document.addEventListener('touchend', function (e) {
+    if (x0 === null || !other) return;
+    var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 80) location.href = other;
+  });
+})();
+</script>
+</body>
+</html>

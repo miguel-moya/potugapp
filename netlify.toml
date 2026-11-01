@@ -1,0 +1,9 @@
+# Netlify publica solo la carpeta app (sin paso de compilación)
+[build]
+  publish = "app"
+  command = ""
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"

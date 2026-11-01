@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PotugApp">
+<title>PotugApp</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Space+Mono&amp;display=swap">
+<!--
+  PotugApp · pantalla principal (iPad / escritorio)
+  Reglas del manual de marca (marca.html). Compatible con Safari de iOS 10:
+  sin `gap` (márgenes con  > * + *), alturas con flex (no grid), botones sin flex, JS ES5.
+-->
+<style>
+:root {
+  --fondo: #e4e1d9; --widget: #f4f3ef; --finde: #ecebe6; --tinta: #1d1d1b;
+  --sec: #5c5a54; --ter: #8a877f; --sep: #e3e0d9; --sep-fuerte: #d3cfc6; --pista: #d6d3cb;
+  --aviso: #b04a30; --ok: #3f8a54; --acento: #c9b29b;
+  --lidia: #c98b8f; --miguel: #f0b95f; --bruno: #ef6c50; --familia: #9a826b;
+  --mono: 'Space Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--fondo); }
+body { font-family: Manrope, -apple-system, sans-serif; color: var(--tinta); -webkit-user-select: none; user-select: none; }
+a { color: inherit; text-decoration: none; }
+.mono { font-family: var(--mono); }
+
+/* Lienzo escalable: diseño a 1024×768, se ajusta a cualquier pantalla */
+#stage { position: absolute; left: 0; top: 0; width: 1024px; height: 768px; -webkit-transform-origin: 0 0; transform-origin: 0 0; }
+.app { width: 100%; height: 100%; display: flex; }
+
+/* Menú lateral */
+.rail { width: 72px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 0 0 14px; }
+.rail > * + * { margin-top: 4px; }
+.logo { font-size: 28px; font-weight: 600; letter-spacing: -1px; height: 40px; margin-top: 3px; display: flex; align-items: center; }
+.logo span { color: var(--bruno); }
+.rail .esp { flex-grow: 1; }
+.nav { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; }
+.nav.activo { background: var(--tinta); color: var(--widget); }
+.nav svg { width: 22px; height: 22px; }
+
+/* Contenido */
+.content { flex-grow: 1; min-width: 0; padding: 0 14px 14px 0; display: flex; flex-direction: column; }
+.content > * + * { margin-top: 8px; }
+.topbar { height: 40px; padding-top: 4px; display: flex; align-items: center; justify-content: space-between; }
+.cuando { display: flex; align-items: baseline; }
+.cuando > * + * { margin-left: 12px; }
+#hora { font-size: 26px; font-weight: 300; letter-spacing: -1px; }
+#fecha { font-size: 14px; color: var(--sec); }
+.derecha { display: flex; align-items: center; }
+.derecha > * + * { margin-left: 16px; }
+#estado { font-family: var(--mono); font-size: 11px; color: var(--aviso); }
+.dots { display: flex; align-items: center; }
+.dots span { width: 18px; height: 3px; border-radius: 2px; background: #c3c0b8; }
+.dots span + span { margin-left: 5px; }
+.dots span.on { background: var(--tinta); }
+
+.filas { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; }
+.filas > * + * { margin-top: 14px; }
+.fila { flex: 1 1 0; min-height: 0; display: flex; }
+.fila > * { flex: 1 1 0; min-width: 0; }
+.fila > * + * { margin-left: 14px; }
+.w { background: var(--widget); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; overflow: hidden; }
+.w-cab { display: flex; justify-content: space-between; align-items: baseline; }
+.w-tit { margin: 0; font-size: 13px; font-weight: 600; }
+.t12 { font-size: 12px; color: var(--sec); }
+.rot { font-family: var(--mono); font-size: 10px; color: var(--sec); }
+.mas { font-size: 11px; color: var(--ter); }
+.crece { flex-grow: 1; }
+
+/* Burbujas */
+.bur { width: 18px; height: 18px; border-radius: 9px; font-size: 9px; font-weight: 600; color: var(--tinta); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.bur.L { background: var(--lidia); } .bur.M { background: var(--miguel); } .bur.B { background: var(--bruno); } .bur.F { background: var(--familia); }
+
+/* Calendario */
+.cal { padding: 10px; flex-direction: row; }
+.hoy { flex: 2.2 1 0; min-width: 0; background: var(--acento); border-radius: 14px; padding: 14px 14px 20px; display: flex; flex-direction: column; }
+.hoy-cab { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; }
+.hoy-num { display: flex; align-items: baseline; margin-top: 8px; }
+.hoy-num b { font-size: 60px; font-weight: 300; line-height: 0.9; letter-spacing: -2px; }
+.hoy-num span { font-size: 15px; margin-left: 8px; }
+.hoy-lista > * + * { margin-top: 7px; }
+.ev { display: flex; align-items: center; }
+.ev > * + * { margin-left: 8px; }
+.ev .h { font-family: var(--mono); font-size: 11px; width: 38px; flex-shrink: 0; }
+.ev .t { font-size: 13px; flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ev .td { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; }
+.ev .td .rot { color: var(--tinta); }
+.hoy .mas { color: #4a4640; padding-left: 46px; }
+.vacio-hoy { font-size: 13px; color: #4a4640; }
+.dia { flex: 1 1 0; min-width: 0; padding: 12px 9px; display: flex; flex-direction: column; border-left: 1px solid var(--sep); }
+.dia.primero { margin-left: 8px; border-left: 0; }
+.dia.finde { background: var(--finde); }
+.dia.finde + .dia.finde { border-left-color: var(--sep-fuerte); }
+.dia.ultimo { border-radius: 0 12px 12px 0; }
+.dia > * + * { margin-top: 8px; }
+.dia .rot { font-size: 11px; }
+.dia .num { font-size: 26px; font-weight: 300; line-height: 1; }
+.dia .it { display: flex; flex-direction: column; }
+.dia .it .rot { font-size: 10px; }
+.dia .it .t { font-size: 12px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.dia .fest { font-size: 12px; line-height: 1.3; color: var(--sec); }
+.dia .nada { font-size: 12px; color: var(--ter); }
+
+/* Tiempo */
+.tiempo > * + * { margin-top: 12px; }
+.tiempo .gran { display: flex; align-items: center; }
+.tiempo .gran b { font-size: 44px; font-weight: 300; line-height: 0.9; letter-spacing: -1.5px; }
+.tiempo .gran div { margin-left: 12px; display: flex; flex-direction: column; }
+.tiempo .gran div span + span { margin-top: 3px; }
+.dos { display: flex; margin-top: 20px !important; }
+.dos > div { flex: 1 1 0; display: flex; flex-direction: column; }
+.dos .v { font-size: 13px; margin-top: 2px; }
+.prev { display: flex; align-items: center; height: 38px; border-top: 1px solid var(--sep); }
+.prev .rot { width: 58px; }
+.prev .tt { font-size: 14px; font-weight: 300; margin-left: 8px; flex-grow: 1; }
+.prev .pp { display: flex; align-items: center; font-size: 12px; line-height: 1; }
+.prev .pp svg { margin-right: 3px; display: block; }
+.tiempo .prevs { margin-top: 0; }
+
+/* Pendiente */
+.pend { background: transparent; border: 1.5px dashed #c3bfb6; align-items: center; justify-content: center; text-align: center; }
+.pend .w-tit { margin-top: 8px; }
+.pend .t12 { margin-top: 4px; }
+
+/* Modo reposo (?cocina) */
+#standby { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: #000; z-index: 50; }
+#standby.on { display: block; }
+#standby .c { position: absolute; top: 50%; left: 0; right: 0; margin-top: -100px; text-align: center; }
+#sbHora { font-size: 150px; font-weight: 300; line-height: 1; color: #7a7a7a; }
+#sbFecha { font-size: 28px; margin-top: 18px; color: #555; }
+
+/* Puerta: clave familiar */
+#puerta { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: var(--fondo); z-index: 60; }
+#puerta.on { display: block; }
+#puerta form { position: absolute; top: 50%; left: 50%; width: 320px; margin: -110px 0 0 -160px; text-align: center; }
+#puerta .logo { justify-content: center; font-size: 44px; height: 56px; }
+#puerta p { font-size: 14px; color: var(--sec); margin: 14px 0 18px; }
+#puerta input { width: 100%; height: 48px; border: 1px solid var(--sep-fuerte); border-radius: 14px; background: var(--widget); padding: 0 16px; font: inherit; font-size: 16px; text-align: center; -webkit-appearance: none; -webkit-user-select: text; user-select: text; }
+#puerta button { margin-top: 12px; width: 100%; height: 48px; border: 0; border-radius: 14px; background: var(--tinta); color: var(--widget); font: inherit; font-size: 15px; font-weight: 600; -webkit-appearance: none; }
+#puerta .err { color: var(--aviso); font-size: 13px; margin-top: 12px; min-height: 18px; }
+</style>
+</head>
+<body>
+<div id="stage">
+<div class="app">
+
+  <nav class="rail" aria-label="Menú">
+    <div class="logo">P<span>.</span></div>
+    <div class="esp"></div>
+    <a href="#" class="nav activo" aria-label="Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
+    <a href="#" class="nav" aria-label="Calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
+    <a href="#" class="nav" aria-label="Compra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg></a>
+    <a href="#" class="nav" aria-label="Tareas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
+    <a href="#" class="nav" aria-label="Comer fuera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg></a>
+    <a href="#" class="nav" aria-label="Fotos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></a>
+    <div class="esp"></div>
+    <a href="#" class="nav" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg></a>
+  </nav>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="cuando"><span id="hora">--:--</span><span id="fecha"></span></div>
+      <div class="derecha">
+        <span id="estado"></span>
+        <div class="dots" aria-label="Página 1 de 2" role="img"><span class="on"></span><span></span></div>
+      </div>
+    </header>
+
+    <div class="filas">
+      <div class="fila">
+        <a href="#" class="w cal" id="cal">
+          <div class="hoy"><div class="hoy-cab"><span>hoy</span></div></div>
+        </a>
+      </div>
+      <div class="fila">
+        <a href="#" class="w tiempo" id="tiempo"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div><span class="t12">Cargando…</span></a>
+        <div class="w pend">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg>
+          <h2 class="w-tit">Compra</h2><span class="t12">Pendiente de desarrollo</span>
+        </div>
+        <div class="w pend">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          <h2 class="w-tit">Tareas de hoy</h2><span class="t12">Pendiente de desarrollo</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<div id="standby"><div class="c"><div id="sbHora"></div><div id="sbFecha"></div></div></div>
+
+<div id="puerta">
+  <form id="fPuerta">
+    <div class="logo">P<span>.</span></div>
+    <p>Escribe la clave familiar. Solo hace falta una vez en cada aparato.</p>
+    <input id="iClave" type="password" autocomplete="off" aria-label="Clave familiar" placeholder="Clave familiar">
+    <button type="submit">Entrar</button>
+    <div class="err" id="eClave"></div>
+  </form>
+</div>
+
+<script>
+/* ================= CONFIGURACIÓN ================= */
+var FN_CAL = 'https://hxkpogkirwlamgvnvawl.supabase.co/functions/v1/calendario?dias=7';
+var LAT = 39.62, LON = 2.75;          // Marratxí
+var IDLE_MS = 2 * 60 * 1000;          // reposo (solo ?cocina)
+var CAL_MS = 5 * 60 * 1000;           // refresco del calendario
+var MAX_HOY = 6, MAX_DIA = 2;         // eventos visibles antes de "+N más"
+/* ================================================= */
+
+var DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+var DIAS3 = ['dom','lun','mar','mié','jue','vie','sáb'];
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var Q = location.search.toLowerCase();
+var COCINA = Q.indexOf('cocina') !== -1;
+
+function $(id) { return document.getElementById(id); }
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function diaISO(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function masDias(d, n) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function borrar(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+/* ---------- Escala al tamaño de pantalla ---------- */
+function encajar() {
+  var st = $('stage'), top = window.navigator.standalone ? 20 : 14;
+  var vw = window.innerWidth, vh = window.innerHeight - top;
+  var s = Math.min(vw / 1024, vh / 768);
+  st.style.width = (vw / s) + 'px'; st.style.height = (vh / s) + 'px';
+  var t = 'translate(0px,' + top + 'px) scale(' + s + ')';
+  st.style.webkitTransform = t; st.style.transform = t;
+}
+window.addEventListener('resize', encajar);
+window.addEventListener('orientationchange', function () { setTimeout(encajar, 300); });
+
+/* ---------- Reloj ---------- */
+function reloj() {
+  var d = new Date(), h = pad(d.getHours()) + ':' + pad(d.getMinutes());
+  var f = cap(DIAS[d.getDay()]) + ', ' + d.getDate() + ' de ' + MESES[d.getMonth()];
+  $('hora').innerHTML = h; $('fecha').innerHTML = f;
+  $('sbHora').innerHTML = h; $('sbFecha').innerHTML = f;
+  if (ultimoDia && ultimoDia !== diaISO(d)) { ultimoDia = diaISO(d); pintarCal(); cargarCal(); cargarTiempo(); }
+}
+var ultimoDia = null;
+
+/* ---------- Peticiones (XHR: compatible con iOS 10) ---------- */
+function pedir(url, cabeceras, cb) {
+  var x = new XMLHttpRequest();
+  x.open('GET', url, true); x.timeout = 20000;
+  for (var k in cabeceras) if (cabeceras.hasOwnProperty(k)) x.setRequestHeader(k, cabeceras[k]);
+  x.onload = function () {
+    var j = null; try { j = JSON.parse(x.responseText); } catch (e) {}
+    cb(x.status >= 200 && x.status < 300 ? null : (x.status || 'red'), j);
+  };
+  x.onerror = function () { cb('red'); };
+  x.ontimeout = function () { cb('red'); };
+  x.send();
+}
+
+/* ---------- Estado de conexión (solo se ve si algo falla) ---------- */
+var calOk = null;
+function estado(msg) { $('estado').innerHTML = msg ? esc(msg) : ''; }
+
+/* ---------- Calendario ---------- */
+var eventos = [];
+function cargarCal() {
+  var clave = leer('potugapp.clave');
+  if (!clave) { mostrarPuerta(); return; }
+  pedir(FN_CAL, { 'x-familia': clave }, function (err, j) {
+    if (err === 401) { borrar('potugapp.clave'); mostrarPuerta('La clave no es correcta'); return; }
+    if (err || !j) {
+      estado(calOk ? 'offline · datos de las ' + calOk : 'sin conexión con el calendario');
+      return;
+    }
+    eventos = j.eventos || [];
+    var d = new Date(); calOk = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    estado(j.errores && j.errores.length ? 'algún calendario no responde' : '');
+    pintarCal();
+  });
+}
+
+function burbuja(q) { return q ? '<span class="bur ' + q + '">' + q + '</span>' : ''; }
+
+function pintarCal() {
+  var hoy = new Date(), porDia = {}, i, e;
+  for (i = 0; i < eventos.length; i++) { e = eventos[i]; (porDia[e.dia] = porDia[e.dia] || []).push(e); }
+
+  var html = '', h0 = diaISO(hoy), lista = porDia[h0] || [], fest = null, normales = [];
+  for (i = 0; i < lista.length; i++) { if (lista[i].festivo) fest = fest || lista[i]; else normales.push(lista[i]); }
+
+  // --- Hoy ---
+  html += '<div class="hoy"><div class="hoy-cab"><span>hoy' + (fest ? ' [F]' : '') + '</span>' + (fest ? '<span>' + esc(fest.titulo) + '</span>' : '') + '</div>';
+  html += '<div class="hoy-num"><b>' + hoy.getDate() + '</b><span>' + DIAS[hoy.getDay()] + '</span></div><div class="crece"></div><div class="hoy-lista">';
+  var visibles = normales.length > MAX_HOY ? MAX_HOY - 1 : normales.length;
+  if (!normales.length) html += '<div class="vacio-hoy">Nada previsto</div>';
+  for (i = 0; i < visibles; i++) {
+    e = normales[i];
+    if (e.todoElDia) html += '<div class="ev"><div class="td"><span class="rot">todo el día</span><span class="t">' + esc(e.titulo) + '</span></div>' + burbuja(e.quien) + '</div>';
+    else html += '<div class="ev"><span class="h">' + e.hora + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbuja(e.quien) + '</div>';
+  }
+  if (normales.length > visibles) html += '<div class="mas">+' + (normales.length - visibles) + ' más</div>';
+  html += '</div></div>';
+
+  // --- Próximos 6 días ---
+  for (var n = 1; n <= 6; n++) {
+    var d = masDias(hoy, n), iso = diaISO(d), l = porDia[iso] || [], f = null, nor = [];
+    for (i = 0; i < l.length; i++) { if (l[i].festivo) f = f || l[i]; else nor.push(l[i]); }
+    var dow = d.getDay(), clases = 'dia' + (n === 1 ? ' primero' : '') + (dow === 0 || dow === 6 ? ' finde' : '') + (n === 6 ? ' ultimo' : '');
+    html += '<div class="' + clases + '"><span class="rot">' + DIAS3[dow] + (f ? ' [F]' : '') + '</span><span class="num">' + d.getDate() + '</span>';
+    if (f) html += '<span class="fest">' + esc(f.titulo) + '</span>';
+    var cab = nor.length > MAX_DIA ? MAX_DIA : nor.length;
+    for (i = 0; i < cab; i++) {
+      e = nor[i];
+      html += '<div class="it"><span class="rot">' + (e.todoElDia ? 'todo el día' : e.hora) + '</span><span class="t">' + esc(e.titulo) + '</span></div>';
+    }
+    if (nor.length > cab) html += '<span class="mas">+' + (nor.length - cab) + ' más</span>';
+    if (!nor.length && !f) html += '<span class="nada">—</span>';
+    html += '</div>';
+  }
+  $('cal').innerHTML = html;
+}
+
+/* ---------- Tiempo (Open-Meteo, sin registro) ---------- */
+var SOL = '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/>';
+var CLAROS = '<circle cx="9" cy="9" r="3.2"/><path d="M9 3v1.2M3 9h1.2M4.8 4.8l.9.9M13.2 4.8l-.9.9"/><path d="M9.5 19h8a3 3 0 0 0 .3-6 4.5 4.5 0 0 0-8.6 1A2.5 2.5 0 0 0 9.5 19z" fill="#f4f3ef"/>';
+var NUBES = '<path d="M7 17h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 11 3 3 0 0 0 7 17z"/>';
+var LLUVIA = '<path d="M7 14h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 8 3 3 0 0 0 7 14z"/><path d="M9 17l-1 3M13 17l-1 3M17 17l-1 3"/>';
+var GOTA = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c3.4 4.4 5.5 7.4 5.5 10.6a5.5 5.5 0 0 1-11 0c0-3.2 2.1-6.2 5.5-10.6z"/></svg>';
+function icono(c, tam) {
+  var p = c <= 1 ? SOL : c === 2 ? CLAROS : (c === 3 || c === 45 || c === 48) ? NUBES : LLUVIA;
+  return '<svg width="' + tam + '" height="' + tam + '" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="display:block" aria-hidden="true">' + p + '</svg>';
+}
+function estadoCielo(c) {
+  if (c === 0) return 'Despejado'; if (c === 1) return 'Soleado'; if (c === 2) return 'Intervalos';
+  if (c === 3) return 'Nublado'; if (c === 45 || c === 48) return 'Niebla';
+  if (c >= 51 && c <= 57) return 'Llovizna'; if (c >= 61 && c <= 67) return 'Lluvia';
+  if (c >= 71 && c <= 77) return 'Nieve'; if (c >= 80 && c <= 82) return 'Chubascos'; if (c >= 95) return 'Tormenta';
+  return '—';
+}
+function cargarTiempo() {
+  var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON +
+    '&current=temperature_2m,weather_code&hourly=wind_speed_10m' +
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max' +
+    '&timezone=Europe%2FMadrid&forecast_days=3';
+  pedir(url, {}, function (err, d) {
+    if (err || !d || !d.daily) return;
+    var dl = d.daily, viento = 0, k;
+    for (k = 0; k < 24 && k < d.hourly.wind_speed_10m.length; k++) viento += d.hourly.wind_speed_10m[k];
+    viento = Math.round(viento / Math.min(24, d.hourly.wind_speed_10m.length));
+    var ahora = d.current ? Math.round(d.current.temperature_2m) : Math.round(dl.temperature_2m_max[0]);
+    var cod = d.current ? d.current.weather_code : dl.weather_code[0];
+    var h = '<div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span>' + icono(cod, 22) + '</div>' +
+      '<div class="gran"><b>' + ahora + '°</b><div><span style="font-size:13px">' + estadoCielo(cod) + '</span>' +
+      '<span class="t12">' + Math.round(dl.temperature_2m_min[0]) + '° / ' + Math.round(dl.temperature_2m_max[0]) + '°</span></div></div>' +
+      '<div class="dos"><div><span class="rot">viento</span><span class="v">' + viento + ' km/h</span></div>' +
+      '<div><span class="rot">lluvia</span><span class="v">' + dl.precipitation_probability_max[0] + '%</span></div></div>' +
+      '<div class="crece"></div><div class="prevs">';
+    for (k = 1; k <= 2; k++) {
+      var p = dl.time[k].split('-'), fd = new Date(+p[0], +p[1] - 1, +p[2]);
+      h += '<div class="prev"><span class="rot">' + DIAS3[fd.getDay()] + '</span>' + icono(dl.weather_code[k], 20) +
+        '<span class="tt">' + Math.round(dl.temperature_2m_max[k]) + '°</span><span class="pp">' + GOTA + dl.precipitation_probability_max[k] + '%</span></div>';
+    }
+    $('tiempo').innerHTML = h + '</div>';
+  });
+}
+
+/* ---------- Puerta (clave familiar) ---------- */
+function mostrarPuerta(msg) { $('eClave').innerHTML = msg || ''; $('puerta').className = 'on'; }
+$('fPuerta').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var v = $('iClave').value.replace(/^\s+|\s+$/g, '');
+  if (!v) return;
+  guardar('potugapp.clave', v); $('iClave').value = ''; $('iClave').blur();
+  $('puerta').className = ''; cargarCal();
+});
+
+/* ---------- Modo reposo (solo ?cocina) ---------- */
+var reposo = false, tReposo = null;
+function dormir() { reposo = true; $('standby').className = 'on'; }
+function despertar() { reposo = false; $('standby').className = ''; cargarCal(); vigilar(); }
+function vigilar() { if (!COCINA) return; clearTimeout(tReposo); tReposo = setTimeout(dormir, IDLE_MS); }
+document.addEventListener('touchstart', function () { if (!reposo) vigilar(); }, true);
+document.addEventListener('mousedown', function () { if (!reposo) vigilar(); }, true);
+$('standby').addEventListener('touchend', function (e) { e.preventDefault(); despertar(); });
+$('standby').addEventListener('click', despertar);
+
+/* ---------- Arranque ---------- */
+encajar(); ultimoDia = diaISO(new Date()); reloj(); pintarCal();
+setInterval(reloj, 10000);
+cargarCal(); setInterval(function () { if (!reposo) cargarCal(); }, CAL_MS);
+cargarTiempo(); setInterval(cargarTiempo, 30 * 60 * 1000);
+vigilar();
+setTimeout(function () { location.reload(); }, 6 * 60 * 60 * 1000);
+</script>
+</body>
+</html>
