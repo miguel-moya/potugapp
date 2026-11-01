@@ -52,7 +52,7 @@ a { color: inherit; text-decoration: none; }
 .izq { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; }
 .izq > * + * { margin-top: 14px; }
 
-.dia { flex-grow: 1; min-height: 0; padding: 16px 16px 20px; display: flex; flex-direction: column; background: var(--acento); }
+.dia { flex-grow: 1; min-height: 0; padding: 16px 16px 30px; display: flex; flex-direction: column; background: var(--acento); }
 .dia.otro { background: var(--widget); }
 .dia.otro .dia-fest { color: var(--sec); }
 .volver { font-family: var(--mono); font-size: 10px; text-decoration: underline; }
@@ -85,10 +85,11 @@ a { color: inherit; text-decoration: none; }
 .mini td.sindatos { color: #b9b5ac; }
 .mini-cab { display: flex; align-items: center; justify-content: space-between; }
 .mini-cab b { font-size: 13px; font-weight: 600; }
-.flechas { display: flex; }
+.flechas { display: flex; margin-right: -7px; }
 .flechas a { width: 30px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; }
 .flechas a + a { margin-left: 2px; }
-.mini table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+/* La tabla sobresale 8 px por cada lado: así el círculo del lunes queda alineado con «noviembre» y el del domingo con el borde derecho */
+.mini table { width: calc(100% + 16px); margin: 6px -8px 0; border-collapse: collapse; }
 .mini th { font-family: var(--mono); font-size: 10px; font-weight: 400; color: var(--ter); height: 22px; }
 .mini td { text-align: center; font-size: 12px; padding: 0; }
 .mini td span { display: inline-block; width: 24px; height: 24px; line-height: 24px; border-radius: 12px; }
