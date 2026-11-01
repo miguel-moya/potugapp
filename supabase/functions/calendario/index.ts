@@ -202,7 +202,7 @@ async function guardarCache(fuente, eventos) {
 }
 async function descargar(url) {
   const pedir = () => fetch(url.replace(/^webcal:/i, "https:"), {
-    headers: { "User-Agent": "Mozilla/5.0 (compatible; PotugApp/1.0; +https://potugapp.netlify.app)", Accept: "text/calendar, */*" },
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; PotugApp/1.0; +https://miguel-moya.github.io/potugapp/)", Accept: "text/calendar, */*" },
   });
   let r = await pedir();
   if (r.status === 429 || r.status >= 500) { await new Promise((ok) => setTimeout(ok, 1500)); r = await pedir(); }
