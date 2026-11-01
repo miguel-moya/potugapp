@@ -116,7 +116,7 @@ a { color: inherit; text-decoration: none; }
 .tiempo { position: relative; padding-top: 24px; }
 .tiempo > * + * { margin-top: 12px; }
 .tiempo .w-cab { align-items: flex-start; }
-.tiempo .ico-hoy { position: absolute; top: 18px; right: 16px; }
+.tiempo .ico-hoy { position: absolute; top: 12px; right: 16px; }
 .dos > div + div { margin-left: 8px; }
 .dos + .dos { margin-top: 10px !important; }
 .pp .n { font-variant-numeric: tabular-nums; }
@@ -334,7 +334,7 @@ function pintarCal() {
   if (fest) html += '<div class="hoy-fest">' + esc(fest.titulo) + '</div>';
   html += '<div class="crece"></div><div class="hoy-lista">';
   var visibles = normales.length > MAX_HOY ? MAX_HOY - 1 : normales.length;
-  if (!normales.length) html += '<div class="vacio-hoy">Nada previsto 🛋️</div>';
+  if (!normales.length) html += '<div class="vacio-hoy">Nada previsto :)</div>';
   for (i = 0; i < visibles; i++) {
     e = normales[i];
     if (e.todoElDia) html += '<div class="ev"><div class="td"><span class="rot">todo el día</span><span class="t">' + esc(e.titulo) + '</span></div>' + burbujas(e.quienes) + '</div>';
@@ -368,8 +368,8 @@ var SOL = '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h
 var CLAROS = '<circle cx="9" cy="9" r="3.2"/><path d="M9 3v1.2M3 9h1.2M4.8 4.8l.9.9M13.2 4.8l-.9.9"/><path d="M9.5 19h8a3 3 0 0 0 .3-6 4.5 4.5 0 0 0-8.6 1A2.5 2.5 0 0 0 9.5 19z" fill="#f4f3ef"/>';
 var NUBES = '<path d="M7 17h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 11 3 3 0 0 0 7 17z"/>';
 var LLUVIA = '<path d="M7 14h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 8 3 3 0 0 0 7 14z"/><path d="M9 17l-1 3M13 17l-1 3M17 17l-1 3"/>';
-var NIEVE = '<path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/><path d="M9.5 4.5L12 7l2.5-2.5M9.5 19.5L12 17l2.5 2.5"/>';
-var RAYO = '<path d="M7 14h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 8 3 3 0 0 0 7 14z"/><path d="M12.5 15.5L10.5 19h3l-2 3.5"/>';
+var NIEVE = '<path d="M12 12L12.0 3.0M12.0 6.0L10.3 4.0M12.0 6.0L13.7 4.0M12 12L4.2 7.5M6.8 9.0L4.2 9.5M6.8 9.0L5.9 6.6M12 12L4.2 16.5M6.8 15.0L5.9 17.4M6.8 15.0L4.2 14.5M12 12L12.0 21.0M12.0 18.0L13.7 20.0M12.0 18.0L10.3 20.0M12 12L19.8 16.5M17.2 15.0L19.8 14.5M17.2 15.0L18.1 17.4M12 12L19.8 7.5M17.2 9.0L18.1 6.6M17.2 9.0L19.8 9.5"/>';
+var RAYO = '<path d="M13.5 2.5L6 13.5h5.5L10.5 21.5 18 10.5h-5.5z"/>';
 var GOTA = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c3.4 4.4 5.5 7.4 5.5 10.6a5.5 5.5 0 0 1-11 0c0-3.2 2.1-6.2 5.5-10.6z"/></svg>';
 function icono(c, tam, cls) {
   // Códigos WMO de Open-Meteo: 71-77 y 85-86 nieve, 95-99 tormenta
