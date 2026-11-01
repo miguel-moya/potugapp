@@ -157,7 +157,11 @@ body.movil #movil { display: block; padding: 14px 14px 96px; }
 .m-fecha { font-size: 13px; color: var(--sec); margin-top: 2px; }
 #estadoM { font-family: var(--mono); font-size: 10px; color: var(--aviso); margin-top: 4px; }
 #estadoM:empty { display: none; }
-#movil .w + .w, #movil .m-fila { margin-top: 12px; }
+#movil .w + .w, #movil .m-fila, #movil .m-fila + .w { margin-top: 12px; }
+.m-g, .m-p, .m-m { overflow: hidden; }
+.m-cal { display: flex; flex-direction: column; }
+.m-hoy { flex-shrink: 0; }
+.m-dias { flex: 1 1 0; min-height: 0; overflow: hidden; }
 .m-cal { padding: 8px; }
 .m-hoy { background: var(--acento); border-radius: 14px; padding: 14px; }
 .m-hoy-cab { display: flex; justify-content: space-between; align-items: baseline; }
@@ -169,7 +173,7 @@ body.movil #movil { display: block; padding: 14px 14px 96px; }
 .m-hoy .hoy-lista { margin-top: 12px; }
 .m-hoy .ev .t { font-size: 14px; }
 .m-hoy .ev .h { width: 40px; }
-.m-dia { display: flex; align-items: baseline; padding: 10px 8px; border-bottom: 1px solid var(--sep); }
+.m-dia { display: flex; align-items: baseline; padding: 8px 8px; border-bottom: 1px solid var(--sep); }
 .m-dia:last-child { border-bottom: 0; }
 .m-dia.finde { background: var(--finde); border-bottom-color: var(--sep-fuerte); }
 .m-dia .rot { width: 34px; flex-shrink: 0; font-size: 11px; }
@@ -180,18 +184,15 @@ body.movil #movil { display: block; padding: 14px 14px 96px; }
 .m-dia .t.nada { color: var(--ter); }
 .m-dia .mas { margin-left: 12px; flex-shrink: 0; }
 .m-fila { display: flex; align-items: stretch; }
-.m-fila > * { width: 50%; min-width: 0; }
+.m-fila > * { flex: 1 1 0; min-width: 0; }
 .m-fila > * + * { margin-left: 12px; }
-.m-col { display: flex; flex-direction: column; }
-.m-col > * { flex: 1 1 0; }
-.m-col > * + * { margin-top: 12px !important; }
 .m-tiempo { padding: 14px; }
 .m-tiempo .w-cab { align-items: center; }
 .m-tiempo .rot { font-size: 10px; }
 .m-tiempo b { font-size: 36px; font-weight: 300; line-height: 1; letter-spacing: -1px; margin-top: 8px; }
 .m-tiempo .t12 { margin-top: 8px; }
 .m-tiempo .sig { border-top: 1px solid var(--sep); padding-top: 8px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-#movil .pend { padding: 12px; min-height: 96px; }
+#movil .pend { padding: 12px; }
 .m-nav { position: fixed; left: 0; right: 0; bottom: 0; background: var(--widget); border-top: 1px solid #dcd9d1; padding: 8px 14px 26px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); display: flex; z-index: 20; }
 .m-nav a { flex: 1 1 0; height: 44px; display: flex; align-items: center; justify-content: center; }
 .m-nav svg { width: 20px; height: 20px; }
@@ -268,14 +269,14 @@ body.movil #movil { display: block; padding: 14px 14px 96px; }
     <div><div class="logo">P<span>.</span></div><div class="m-fecha" id="fechaM"></div><div id="estadoM"></div></div>
     <a href="#" id="ajustesM" aria-label="Ajustes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg></a>
   </header>
-  <a href="#" class="w m-cal" id="calM" style="margin-top:12px"></a>
+  <!-- Rejilla de 2 columnas: grande 2x2 (cuadrado), mediano 2x1 (rectángulo), pequeño 1x1 (cuadrado) -->
+  <a href="#" class="w m-cal m-g" id="calM" style="margin-top:12px"></a>
   <div class="m-fila">
-    <a href="#" class="w m-tiempo" id="tiempoM"><span class="rot">hoy · marratxí</span><span class="t12">Cargando…</span></a>
-    <div class="m-col">
-      <div class="w pend"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg><h2 class="w-tit">Compra</h2><span class="t12">Pendiente</span></div>
-      <div class="w pend"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><h2 class="w-tit">Mis tareas</h2><span class="t12">Pendiente</span></div>
-    </div>
+    <a href="#" class="w m-tiempo m-p" id="tiempoM"><span class="rot">hoy · marratxí</span><span class="t12">Cargando…</span></a>
+    <div class="w pend m-p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg><h2 class="w-tit">Comer fuera</h2><span class="t12">Pendiente</span></div>
   </div>
+  <div class="w pend m-m"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg><h2 class="w-tit">Compra</h2><span class="t12">Pendiente de desarrollo</span></div>
+  <div class="w pend m-m"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><h2 class="w-tit">Mis tareas de hoy</h2><span class="t12">Pendiente de desarrollo</span></div>
   <nav class="m-nav" aria-label="Menú">
     <a href="#" aria-label="Inicio"><span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></span></a>
     <a href="#" aria-label="Calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
@@ -348,7 +349,7 @@ function modo() {
 
 /* ---------- Escala al tamaño de pantalla ---------- */
 function encajar() {
-  modo(); if (MOVIL) return;
+  modo(); if (MOVIL) { rejilla(); return; }
   var st = $('stage'), top = window.navigator.standalone ? 20 : 14;
   var vw = window.innerWidth, vh = window.innerHeight - top;
   var s = Math.min(vw / 1024, vh / 768);
@@ -464,10 +465,11 @@ function pintarCal() {
     html += '</div>';
   }
   $('cal').innerHTML = html;
-  pintarCalMovil(porDia, hoy, fest, normales, visibles);
+  pintarCalMovil(porDia, hoy, fest, normales);
 }
 
-function pintarCalMovil(porDia, hoy, fest, normales, visibles) {
+function pintarCalMovil(porDia, hoy, fest, normales) {
+  var visibles = normales.length > 3 ? 2 : normales.length;
   var h = '<div class="m-hoy"><div class="m-hoy-cab"><span class="n"><b>' + hoy.getDate() + '</b><span>' + DIAS[hoy.getDay()] + '</span></span>' +
     '<span class="rot">hoy' + (fest ? ' [F]' : '') + '</span></div>';
   if (fest) h += '<div class="hoy-fest">' + esc(fest.titulo) + '</div>';
@@ -478,7 +480,7 @@ function pintarCalMovil(porDia, hoy, fest, normales, visibles) {
     h += '<div class="ev"><span class="h">' + (e.todoElDia ? '' : e.hora) + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
   }
   if (normales.length > visibles) h += '<div class="mas" style="padding-left:48px;color:#4a4640">+' + (normales.length - visibles) + ' más</div>';
-  h += '</div></div>';
+  h += '</div></div><div class="m-dias" id="diasM">';
   for (var n = 1; n <= 6; n++) {
     var d = masDias(hoy, n), l = porDia[diaISO(d)] || [], f = null, nor = [], k;
     for (k = 0; k < l.length; k++) { if (l[k].festivo) f = f || l[k]; else nor.push(l[k]); }
@@ -492,7 +494,24 @@ function pintarCalMovil(porDia, hoy, fest, normales, visibles) {
     if (resto > 0) h += '<span class="mas">+' + resto + ' más</span>';
     h += '</div>';
   }
-  $('calM').innerHTML = h;
+  $('calM').innerHTML = h + '</div>';
+  recortarDias();
+}
+// El calendario es cuadrado: se muestran los días que caben enteros
+function recortarDias() {
+  var c = $('diasM'); if (!c || !MOVIL) return;
+  var filas = c.childNodes, k;
+  for (k = 0; k < filas.length; k++) filas[k].style.display = '';
+  var lim = c.getBoundingClientRect().bottom;
+  for (k = 0; k < filas.length; k++) if (filas[k].getBoundingClientRect().bottom > lim + 0.5) filas[k].style.display = 'none';
+}
+function rejilla() {
+  if (!MOVIL) return;
+  var W = $('movil').clientWidth - 28, c = Math.floor((W - 12) / 2), k, l;
+  l = document.querySelectorAll('.m-p'); for (k = 0; k < l.length; k++) l[k].style.height = c + 'px';
+  l = document.querySelectorAll('.m-m'); for (k = 0; k < l.length; k++) l[k].style.height = c + 'px';
+  $('calM').style.height = W + 'px';
+  recortarDias();
 }
 
 /* ---------- Tiempo (Open-Meteo, sin registro) ---------- */
