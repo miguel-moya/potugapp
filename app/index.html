@@ -283,7 +283,7 @@ function cargarCal() {
     eventos = j.eventos || [];
     var d = new Date(); calOk = pad(d.getHours()) + ':' + pad(d.getMinutes());
     var NOM = { CAL_LIDIA: 'Lidia', CAL_MIGUEL: 'Miguel', CAL_BRUNO: 'Bruno', CAL_FAMILIA: 'Familia', CAL_FESTIVOS: 'Festivos' }, fallan = [];
-    for (var z = 0; j.errores && z < j.errores.length; z++) { var s0 = j.errores[z].split(':')[0]; fallan.push(NOM[s0] || s0); }
+    for (var z = 0; j.errores && z < j.errores.length; z++) { var s0 = j.errores[z].split(':')[0], mot = j.errores[z].slice(s0.length + 1).replace(/^\s+/, '').slice(0, 40); fallan.push((NOM[s0] || s0) + ' (' + mot + ')'); }
     estado(fallan.length ? 'no responde: ' + fallan.join(', ') : '');
     if (fallan.length && window.console) console.log('Calendarios con error:', j.errores);
     pintarCal();
