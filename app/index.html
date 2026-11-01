@@ -827,6 +827,26 @@ cargarCal(); setInterval(function () { if (!reposo) cargarCal(); }, CAL_MS);
 cargarTiempo(); setInterval(cargarTiempo, 30 * 60 * 1000);
 vigilar();
 setTimeout(function () { location.reload(); }, 6 * 60 * 60 * 1000);
+
+/* ---------- Actualización automática ----------
+   GitHub Pages deja la página en caché unos 10 minutos. Cada 5 minutos se mira version.txt
+   (sin caché); si ha cambiado, se recarga con una dirección nueva para saltarse la caché. */
+var versionVista = null;
+function mirarVersion() {
+  var x = new XMLHttpRequest();
+  x.open('GET', 'version.txt?t=' + Date.now(), true);
+  x.onload = function () {
+    if (x.status !== 200) return;
+    var v = x.responseText.replace(/\s+$/, '');
+    if (versionVista === null) { versionVista = v; return; }
+    if (v !== versionVista) {
+      var q = location.search.replace(/[?&]v=\d+/, '').replace(/^\?/, '');
+      location.replace(location.pathname + '?' + (q ? q + '&' : '') + 'v=' + Date.now() + location.hash);
+    }
+  };
+  x.send();
+}
+mirarVersion(); setInterval(mirarVersion, 5 * 60 * 1000);
 </script>
 </body>
 </html>
