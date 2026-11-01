@@ -21,7 +21,6 @@ const FUENTES = [
   { secreto: "CAL_FAMILIA", quien: "F" },
   { secreto: "CAL_FESTIVOS", quien: null, festivo: true },
 ];
-const CACHE_MS = 5 * 60 * 1000;
 const CORS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "x-familia, content-type, apikey, authorization",
@@ -110,25 +109,71 @@ export function ordenar(eventos) {
 }
 
 // ---------- servidor ----------
-let cache = { en: 0, clave: "", datos: null };
+// Google limita (HTTP 429) las descargas desde servidores en la nube. Para no depender de cada
+// descarga, guardamos lo último que funcionó de cada calendario en la tabla `calendario_cache`
+// y solo volvemos a pedirlo a Google cada REFRESCO_MS. Si Google falla, se usa lo guardado.
+const REFRESCO_MS = 15 * 60 * 1000;
+const VENTANA_ATRAS = 1, VENTANA_DIAS = 32;          // lo que se guarda: de ayer a +31 días
+const SB_URL = typeof Deno !== "undefined" ? Deno.env.get("SUPABASE_URL") : "";
+const SB_KEY = typeof Deno !== "undefined" ? (Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "") : "";
+const SB_HEAD = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, "Content-Type": "application/json" };
+
+async function leerCache() {
+  try {
+    const r = await fetch(`${SB_URL}/rest/v1/calendario_cache?select=fuente,eventos,actualizado`, { headers: SB_HEAD });
+    if (!r.ok) return {};
+    const filas = await r.json(), m = {};
+    for (const f of filas) m[f.fuente] = f;
+    return m;
+  } catch (_) { return {}; }
+}
+async function guardarCache(fuente, eventos) {
+  try {
+    await fetch(`${SB_URL}/rest/v1/calendario_cache?on_conflict=fuente`, {
+      method: "POST",
+      headers: { ...SB_HEAD, Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ fuente, eventos, actualizado: new Date().toISOString() }),
+    });
+  } catch (_) { /* si no se puede guardar, seguimos */ }
+}
+async function descargar(url) {
+  const pedir = () => fetch(url.replace(/^webcal:/i, "https:"), {
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; PotugApp/1.0; +https://potugapp.netlify.app)", Accept: "text/calendar, */*" },
+  });
+  let r = await pedir();
+  if (r.status === 429 || r.status >= 500) { await new Promise((ok) => setTimeout(ok, 1500)); r = await pedir(); }
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.text();
+}
+
+let cacheMem = { en: 0, datos: null };
 
 async function construir(dias) {
-  const desde = diaMadrid(new Date());
-  const hasta = sumarDias(desde, dias);
+  const hoy = diaMadrid(new Date());
+  const hasta = sumarDias(hoy, dias);
+  const desdeVentana = sumarDias(hoy, -VENTANA_ATRAS), hastaVentana = sumarDias(hoy, VENTANA_DIAS);
+  const guardado = await leerCache();
   const errores = [];
+
   const listas = await Promise.all(FUENTES.map(async (f) => {
+    const previo = guardado[f.secreto];
+    const fresco = previo && Date.now() - new Date(previo.actualizado).getTime() < REFRESCO_MS;
+    if (fresco) return previo.eventos;
     const url = Deno.env.get(f.secreto);
-    if (!url) { errores.push(`${f.secreto}: falta el secreto`); return []; }
+    if (!url) { errores.push(`${f.secreto}: falta el secreto`); return previo ? previo.eventos : []; }
     try {
-      const r = await fetch(url.replace(/^webcal:/i, "https:"));
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return eventosDeICS(await r.text(), f, desde, hasta);
+      const evs = eventosDeICS(await descargar(url), f, desdeVentana, hastaVentana);
+      await guardarCache(f.secreto, evs);
+      return evs;
     } catch (e) {
+      if (previo) return previo.eventos;               // Google falla: usamos lo último bueno, sin avisar
       errores.push(`${f.secreto}: ${e.message}`);
       return [];
     }
   }));
-  return { generado: new Date().toISOString(), desde, dias, eventos: ordenar(listas.flat()), errores };
+
+  const eventos = listas.flat().filter((e) => e.dia >= hoy && e.dia < hasta);
+  return { generado: new Date().toISOString(), desde: hoy, dias, eventos: ordenar(eventos), errores };
 }
 
 async function atender(req) {
@@ -138,11 +183,10 @@ async function atender(req) {
     return new Response(JSON.stringify({ error: "clave" }), { status: 401, headers: { ...CORS, "Content-Type": "application/json" } });
   }
   const dias = Math.min(Math.max(parseInt(new URL(req.url).searchParams.get("dias") || "7", 10) || 7, 1), 31);
-  const k = `${diaMadrid(new Date())}|${dias}`;
-  if (!cache.datos || cache.clave !== k || Date.now() - cache.en > CACHE_MS) {
-    cache = { en: Date.now(), clave: k, datos: await construir(dias) };
+  if (!cacheMem.datos || cacheMem.datos.dias !== dias || cacheMem.datos.desde !== diaMadrid(new Date()) || Date.now() - cacheMem.en > 60 * 1000) {
+    cacheMem = { en: Date.now(), datos: await construir(dias) };
   }
-  return new Response(JSON.stringify(cache.datos), { headers: { ...CORS, "Content-Type": "application/json; charset=utf-8" } });
+  return new Response(JSON.stringify(cacheMem.datos), { headers: { ...CORS, "Content-Type": "application/json; charset=utf-8" } });
 }
 
 if (typeof Deno !== "undefined") Deno.serve(atender);
