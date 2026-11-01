@@ -100,15 +100,10 @@ a { color: inherit; text-decoration: none; }
 .der { flex-grow: 1; min-width: 0; margin-left: 14px; padding: 16px 16px 12px; display: flex; flex-direction: column; }
 .der-cab { display: flex; justify-content: space-between; align-items: center; }
 .der-cab h1 { margin: 0; font-size: 13px; font-weight: 600; }
-.der-izq { display: flex; align-items: center; }
-.der-izq .flechas { margin: 0 0 0 10px; }
-.der-izq .volver { margin-left: 10px; }
+.der-dcha { display: flex; align-items: center; }
+.der-dcha .volver { margin-right: 10px; }
 .c.fuera-rango .n { color: #c3bfb6; }
 .der-cab .rango { font-size: 12px; color: var(--sec); margin-left: 8px; font-weight: 400; }
-.filtro { display: flex; align-items: center; }
-.filtro > * + * { margin-left: 6px; }
-.chip { width: 26px; height: 26px; border-radius: 13px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
-.chip.off { background: transparent; border: 1.3px solid var(--sep-fuerte); color: var(--ter); }
 .sem-cab { display: flex; margin-top: 12px; }
 .sem-cab span { flex: 1 1 0; padding-bottom: 6px; font-family: var(--mono); font-size: 10px; color: var(--ter); padding-left: 8px; }
 .semanas { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 4px; border-top: 1px solid var(--sep); }
@@ -182,13 +177,12 @@ a { color: inherit; text-decoration: none; }
       <!-- 5 semanas desde la actual. Puntos = de quién es; [F] festivo; finde en gris; hoy en moka. Filtro de personas arriba. -->
       <section class="w der">
         <div class="der-cab">
-          <div class="der-izq"><h1 id="titSem">Próximas semanas<span class="rango">26 oct – 29 nov</span></h1>
+          <h1>Próximas semanas<span class="rango" id="rango">26 oct – 29 nov</span></h1>
+          <div class="der-dcha"><span id="volverSem"></span>
             <div class="flechas">
               <a aria-label="Semana anterior"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></a>
               <a aria-label="Semana siguiente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
-            </div><span id="volverSem"></span></div>
-          <div class="filtro">
-            <span class="chip L">L</span><span class="chip M">M</span><span class="chip B">B</span><span class="chip F">F</span>
+            </div>
           </div>
         </div>
         <div class="sem-cab"><span>lun</span><span>mar</span><span>mié</span><span>jue</span><span>vie</span><span>sáb</span><span>dom</span></div>
@@ -253,7 +247,7 @@ var ini = new Date(+pi[0], +pi[1] - 1, +pi[2]), h = '', LIMITE = new Date(2027, 
 var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 var fin = new Date(ini.getFullYear(), ini.getMonth(), ini.getDate() + 34);
 if (INI) {
-  document.getElementById('titSem').innerHTML = ini.getDate() + ' ' + MES3[ini.getMonth()] + ' – ' + fin.getDate() + ' ' + MES3[fin.getMonth()];
+  document.getElementById('rango').innerHTML = ini.getDate() + ' ' + MES3[ini.getMonth()] + ' – ' + fin.getDate() + ' ' + MES3[fin.getMonth()];
   document.getElementById('volverSem').innerHTML = '<a class="volver">volver a hoy</a>';
 }
 for (var s = 0; s < 5; s++) {
