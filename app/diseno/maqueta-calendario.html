@@ -52,8 +52,10 @@ a { color: inherit; text-decoration: none; }
 .izq { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; }
 .izq > * + * { margin-top: 14px; }
 
-.dia { flex-grow: 1; min-height: 0; padding: 10px; display: flex; flex-direction: column; }
-.dia-card { flex-grow: 1; background: var(--acento); border-radius: 14px; padding: 14px 14px 18px; display: flex; flex-direction: column; }
+.dia { flex-grow: 1; min-height: 0; padding: 16px 16px 18px; display: flex; flex-direction: column; background: var(--acento); }
+.dia.otro { background: var(--widget); }
+.dia.otro .dia-fest { color: var(--sec); }
+.volver { font-family: var(--mono); font-size: 10px; text-decoration: underline; }
 .dia-cab { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; }
 .dia-num { display: flex; align-items: baseline; margin-top: 8px; }
 .dia-num b { font-size: 60px; font-weight: 300; line-height: 0.9; letter-spacing: -2px; }
@@ -75,7 +77,10 @@ a { color: inherit; text-decoration: none; }
 .pasado { opacity: 0.45; }
 
 /* Mes en blanco para navegar */
-.mini { padding: 14px 16px 12px; flex-shrink: 0; }
+.mini { width: 300px; height: 300px; padding: 14px 16px 12px; flex-shrink: 0; display: flex; flex-direction: column; }
+.mini table { flex-grow: 1; }
+.mini td.sel span { box-shadow: inset 0 0 0 1.3px var(--tinta); }
+.mini td.sindatos { color: #b9b5ac; }
 .mini-cab { display: flex; align-items: center; justify-content: space-between; }
 .mini-cab b { font-size: 13px; font-weight: 600; }
 .flechas { display: flex; }
@@ -83,7 +88,7 @@ a { color: inherit; text-decoration: none; }
 .flechas a + a { margin-left: 2px; }
 .mini table { width: 100%; border-collapse: collapse; margin-top: 6px; }
 .mini th { font-family: var(--mono); font-size: 10px; font-weight: 400; color: var(--ter); height: 22px; }
-.mini td { text-align: center; height: 27px; font-size: 12px; padding: 0; }
+.mini td { text-align: center; font-size: 12px; padding: 0; }
 .mini td span { display: inline-block; width: 24px; height: 24px; line-height: 24px; border-radius: 12px; }
 .mini td.hoy span { background: var(--tinta); color: var(--widget); }
 .mini td.fuera { color: #c3bfb6; }
@@ -98,21 +103,20 @@ a { color: inherit; text-decoration: none; }
 .chip { width: 26px; height: 26px; border-radius: 13px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
 .chip.off { background: transparent; border: 1.3px solid var(--sep-fuerte); color: var(--ter); }
 .sem-cab { display: flex; margin-top: 12px; }
-.sem-cab span { flex: 1 1 0; font-family: var(--mono); font-size: 10px; color: var(--ter); padding-left: 8px; }
+.sem-cab span { flex: 1 1 0; padding-bottom: 6px; font-family: var(--mono); font-size: 10px; color: var(--ter); padding-left: 8px; }
 .semanas { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 4px; border-top: 1px solid var(--sep); }
 .sem { flex: 1 1 0; min-height: 0; display: flex; border-bottom: 1px solid var(--sep); }
 .sem:last-child { border-bottom: 0; }
-.c { flex: 1 1 0; min-width: 0; padding: 6px 6px 4px 8px; border-left: 1px solid var(--sep); display: flex; flex-direction: column; overflow: hidden; }
-.c:first-child { border-left: 0; }
+.c { flex: 1 1 0; min-width: 0; padding: 7px 6px 4px 8px; display: flex; flex-direction: column; overflow: hidden; }
+.c.sel { box-shadow: inset 0 0 0 1.5px var(--tinta); }
 .c.finde { background: var(--finde); }
 .c .n { font-size: 15px; font-weight: 300; line-height: 1.2; display: flex; justify-content: space-between; align-items: baseline; }
 .c .n em { font-style: normal; font-family: var(--mono); font-size: 9px; color: var(--sec); }
-.c.hoy { background: var(--acento); border-radius: 10px; border-left-color: transparent; }
-.c.hoy + .c { border-left-color: transparent; }
+.c.hoy { background: var(--acento); }
 .c.pasado .n, .c.pasado .it { opacity: 0.4; }
 .c.mes1 .n { }
 .c .mesn { font-family: var(--mono); font-size: 9px; color: var(--sec); margin-left: 3px; }
-.it { font-size: 11px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.it { font-size: 11px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 .it.fest { color: var(--sec); }
 .pto { display: inline-block; width: 6px; height: 6px; border-radius: 3px; margin-right: 4px; vertical-align: 1px; }
 .pto + .pto { margin-left: -2px; }
@@ -142,14 +146,13 @@ a { color: inherit; text-decoration: none; }
     <div class="cuerpo">
       <div class="izq">
         <!-- Día elegido (hoy por defecto). Si se toca otro día, la tarjeta pasa a fondo claro y arriba pone "volver a hoy". -->
-        <section class="w dia">
-          <div class="dia-card">
-            <div class="dia-cab"><span>hoy</span><span>[F]</span></div>
+        <section class="w dia" id="dia">
+          <div>
+            <div class="dia-cab" id="diaCab"><span>hoy</span><span>[F]</span></div>
             <div class="dia-num"><b>1</b><span>domingo</span></div>
             <div class="dia-fest">Día de Todos los Santos</div>
             <div class="lista">
               <div class="ev pasado"><span class="h">11:00</span><span class="t">Comida con los abuelos</span><span class="burs"><span class="bur F">F</span></span></div>
-              <div class="ahora"><span>17:40</span><i></i></div>
               <div class="ev"><span class="h">18:00</span><span class="t">Cine</span><span class="burs"><span class="bur L">L</span><span class="bur M">M</span></span></div>
               <div class="ev"><span class="h">20:30</span><span class="t">Cena en casa de Joan</span><span class="burs"><span class="bur F">F</span></span></div>
             </div>
@@ -198,7 +201,7 @@ var EV = {
   '2026-11-11': [['17:30','Natación','B'], ['20:00','Pádel','M']],
   '2026-11-12': [['','Viaje a Madrid','M']],
   '2026-11-13': [['','Viaje a Madrid','M'], ['18:00','Peluquería','L']],
-  '2026-11-16': [['17:30','Natación','B'], ['17:00','Reunión del cole','LM'], ['21:00','Cena equipo','L']],
+  '2026-11-16': [['17:00','Reunión del cole','LM'], ['17:30','Natación','B'], ['21:00','Cena equipo','L']],
   '2026-11-18': [['17:30','Natación','B']],
   '2026-11-21': [['21:00','Cena con amigos','LM']],
   '2026-11-23': [['17:30','Natación','B']],
@@ -210,6 +213,8 @@ function pad(n) { return n < 10 ? '0' + n : '' + n; }
 function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
 var MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
+// Estado de ejemplo: ?dia=2026-11-16 muestra un día elegido distinto de hoy
+var SEL = (location.search.match(/dia=([\d-]+)/) || [])[1] || '2026-11-01';
 // 5 semanas
 var ini = new Date(2026, 9, 26), h = '';
 for (var s = 0; s < 5; s++) {
@@ -218,12 +223,13 @@ for (var s = 0; s < 5; s++) {
     var d = new Date(2026, 9, 26 + s * 7 + k), key = iso(d), l = EV[key] || [], cls = 'c';
     if (k >= 5) cls += ' finde';
     if (key === '2026-11-01') cls += ' hoy';
+    if (key === SEL && SEL !== '2026-11-01') cls += ' sel';
     else if (d < new Date(2026, 10, 1)) cls += ' pasado';
     var fest = null, nor = [];
     for (var i = 0; i < l.length; i++) { if (l[i][0] === 'F' && l[i].length === 2) fest = l[i]; else nor.push(l[i]); }
     var etiqueta = (d.getDate() === 1 || (s === 0 && k === 0)) ? '<span class="mesn">' + MES3[d.getMonth()] + '</span>' : '';
     h += '<div class="' + cls + '"><span class="n"><span>' + d.getDate() + etiqueta + '</span>' + (fest ? '<em>[F]</em>' : '') + '</span>';
-    var max = fest ? 1 : 2, vis = nor.length > max + 1 ? max : nor.length;
+    var cab = fest ? 3 : 4, vis = nor.length > cab ? cab - 1 : nor.length;
     if (fest) h += '<span class="it fest">' + fest[1] + '</span>';
     for (i = 0; i < vis; i++) {
       var p = '', q = nor[i][2];
@@ -242,13 +248,30 @@ var m = '<tr><th>L</th><th>M</th><th>X</th><th>J</th><th>V</th><th>S</th><th>D</
 for (var f = 0; f < 6; f++) {
   m += '<tr>';
   for (var c = 0; c < 7; c++) {
-    var cl = dia.getMonth() !== 10 ? 'fuera' : (dia.getDate() === 1 ? 'hoy' : '');
+    var cl = dia.getMonth() !== 10 ? 'fuera' : (dia.getDate() === 1 ? 'hoy' : (iso(dia) === SEL ? 'sel' : ''));
     m += '<td class="' + cl + '"><span>' + dia.getDate() + '</span></td>';
     dia = new Date(dia.getFullYear(), dia.getMonth(), dia.getDate() + 1);
   }
   m += '</tr>';
 }
 document.getElementById('mini').innerHTML = m;
+
+// Día elegido distinto de hoy
+if (SEL !== '2026-11-01') {
+  var pd = SEL.split('-'), dd = new Date(+pd[0], +pd[1] - 1, +pd[2]), DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  document.getElementById('dia').className = 'w dia otro';
+  document.getElementById('diaCab').innerHTML = '<span>' + MES3[dd.getMonth()] + ' ' + dd.getFullYear() + '</span><a class="volver">volver a hoy</a>';
+  var lst = EV[SEL] || [], hh = '';
+  for (var y = 0; y < lst.length; y++) {
+    var bb = '', qq = lst[y][2] || '';
+    for (var z2 = 0; z2 < qq.length; z2++) bb += '<span class="bur ' + qq.charAt(z2) + '">' + qq.charAt(z2) + '</span>';
+    hh += '<div class="ev"><span class="' + (lst[y][0] ? 'h' : 'td') + '">' + (lst[y][0] || 'todo el día') + '</span><span class="t">' + lst[y][1] + '</span><span class="burs">' + bb + '</span></div>';
+  }
+  var nums = document.querySelector('.dia-num');
+  nums.innerHTML = '<b>' + dd.getDate() + '</b><span>' + DIAS[dd.getDay()] + '</span>';
+  var fe = document.querySelector('.dia-fest'); fe.parentNode.removeChild(fe);
+  document.querySelector('.lista').innerHTML = hh || '<div class="ev"><span class="t" style="color:#8a877f">Nada previsto :)</span></div>';
+}
 </script>
 </body>
 </html>
