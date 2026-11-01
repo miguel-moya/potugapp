@@ -52,7 +52,7 @@ a { color: inherit; text-decoration: none; }
 .izq { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; }
 .izq > * + * { margin-top: 14px; }
 
-.dia { flex-grow: 1; min-height: 0; padding: 16px 16px 18px; display: flex; flex-direction: column; background: var(--acento); }
+.dia { flex-grow: 1; min-height: 0; padding: 16px 16px 20px; display: flex; flex-direction: column; background: var(--acento); }
 .dia.otro { background: var(--widget); }
 .dia.otro .dia-fest { color: var(--sec); }
 .volver { font-family: var(--mono); font-size: 10px; text-decoration: underline; }
@@ -61,8 +61,10 @@ a { color: inherit; text-decoration: none; }
 .dia-num b { font-size: 60px; font-weight: 300; line-height: 0.9; letter-spacing: -2px; }
 .dia-num span { font-size: 15px; margin-left: 8px; }
 .dia-fest { font-size: 12px; color: #4a4640; margin-top: 6px; }
-.lista { margin-top: 22px; }
-.ev { display: flex; align-items: center; min-height: 34px; }
+/* Igual que el widget Hoy de la portada: eventos abajo, 7 px entre ellos */
+.crece { flex-grow: 1; }
+.lista > * + * { margin-top: 7px; }
+.ev { display: flex; align-items: center; }
 .ev > * + * { margin-left: 8px; }
 .ev .h { font-family: var(--mono); font-size: 11px; width: 38px; flex-shrink: 0; }
 .ev .t { font-size: 13px; flex-grow: 1; min-width: 0; }
@@ -147,10 +149,11 @@ a { color: inherit; text-decoration: none; }
       <div class="izq">
         <!-- Día elegido (hoy por defecto). Si se toca otro día, la tarjeta pasa a fondo claro y arriba pone "volver a hoy". -->
         <section class="w dia" id="dia">
-          <div>
+          <div style="display:flex;flex-direction:column;flex-grow:1">
             <div class="dia-cab" id="diaCab"><span>hoy</span><span>[F]</span></div>
             <div class="dia-num"><b>1</b><span>domingo</span></div>
             <div class="dia-fest">Día de Todos los Santos</div>
+            <div class="crece"></div>
             <div class="lista">
               <div class="ev pasado"><span class="h">11:00</span><span class="t">Comida con los abuelos</span><span class="burs"><span class="bur F">F</span></span></div>
               <div class="ev"><span class="h">18:00</span><span class="t">Cine</span><span class="burs"><span class="bur L">L</span><span class="bur M">M</span></span></div>
