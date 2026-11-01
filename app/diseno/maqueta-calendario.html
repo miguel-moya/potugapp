@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1024, user-scalable=no">
+<title>Maqueta · Calendario (detalle)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Space+Mono&amp;display=swap">
+<!--
+  Maqueta de la pantalla de detalle del calendario (iPad apaisado, 1024×768).
+  Solo lectura. Izquierda: el día elegido + mes en blanco para navegar. Derecha: 5 semanas con puntos por persona.
+  Datos inventados. Reglas iOS 10: sin gap, flex, ES5.
+-->
+<style>
+:root {
+  --fondo: #e4e1d9; --widget: #f4f3ef; --finde: #ecebe6; --tinta: #1d1d1b;
+  --sec: #5c5a54; --ter: #8a877f; --sep: #e3e0d9; --sep-fuerte: #d3cfc6;
+  --aviso: #b04a30; --acento: #c9b29b;
+  --lidia: #c98b8f; --miguel: #f0b95f; --bruno: #ef6c50; --familia: #9a826b;
+  --mono: 'Space Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--fondo); }
+body { font-family: Manrope, -apple-system, sans-serif; color: var(--tinta); }
+a { color: inherit; text-decoration: none; }
+.app { width: 1024px; height: 768px; display: flex; padding-top: 14px; }
+.rot { font-family: var(--mono); font-size: 10px; color: var(--sec); }
+
+/* Menú lateral (igual que la principal, con Calendario activo) */
+.rail { width: 72px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 0 0 14px; }
+.rail > * + * { margin-top: 4px; }
+.logo { font-size: 28px; font-weight: 600; letter-spacing: -1px; height: 40px; margin-top: 3px; display: flex; align-items: center; }
+.logo span { color: var(--bruno); }
+.esp { flex-grow: 1; }
+.nav { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; }
+.nav.activo { background: var(--tinta); color: var(--widget); }
+.nav svg { width: 22px; height: 22px; }
+.yo { width: 36px; height: 36px; border-radius: 18px; background: var(--lidia); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+
+.content { flex-grow: 1; min-width: 0; padding: 0 14px 14px 0; display: flex; flex-direction: column; }
+.topbar { height: 40px; padding-top: 4px; display: flex; align-items: center; justify-content: space-between; }
+.cuando { display: flex; align-items: baseline; }
+.cuando > * + * { margin-left: 12px; }
+.hora { font-size: 26px; font-weight: 300; letter-spacing: -1px; }
+.fecha { font-size: 14px; color: var(--sec); }
+.volver { font-size: 12px; color: var(--sec); display: flex; align-items: center; }
+.volver svg { margin-right: 4px; }
+
+.cuerpo { flex-grow: 1; min-height: 0; display: flex; margin-top: 8px; }
+.w { background: var(--widget); border-radius: 20px; }
+
+/* ---------- Columna izquierda ---------- */
+.izq { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; }
+.izq > * + * { margin-top: 14px; }
+
+.dia { flex-grow: 1; min-height: 0; padding: 10px; display: flex; flex-direction: column; }
+.dia-card { flex-grow: 1; background: var(--acento); border-radius: 14px; padding: 14px 14px 18px; display: flex; flex-direction: column; }
+.dia-cab { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; }
+.dia-num { display: flex; align-items: baseline; margin-top: 8px; }
+.dia-num b { font-size: 60px; font-weight: 300; line-height: 0.9; letter-spacing: -2px; }
+.dia-num span { font-size: 15px; margin-left: 8px; }
+.dia-fest { font-size: 12px; color: #4a4640; margin-top: 6px; }
+.lista { margin-top: 22px; }
+.ev { display: flex; align-items: center; min-height: 34px; }
+.ev > * + * { margin-left: 8px; }
+.ev .h { font-family: var(--mono); font-size: 11px; width: 38px; flex-shrink: 0; }
+.ev .t { font-size: 13px; flex-grow: 1; min-width: 0; }
+.ev .td { font-family: var(--mono); font-size: 10px; width: 38px; flex-shrink: 0; line-height: 1.2; }
+.burs { display: flex; flex-shrink: 0; }
+.burs > * + * { margin-left: 3px; }
+.bur { width: 18px; height: 18px; border-radius: 9px; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.L { background: var(--lidia); } .M { background: var(--miguel); } .B { background: var(--bruno); } .F { background: var(--familia); }
+.ahora { display: flex; align-items: center; margin: 4px 0; }
+.ahora span { font-family: var(--mono); font-size: 10px; color: var(--tinta); margin-right: 8px; }
+.ahora i { flex-grow: 1; height: 1px; background: var(--tinta); opacity: 0.45; }
+.pasado { opacity: 0.45; }
+
+/* Mes en blanco para navegar */
+.mini { padding: 14px 16px 12px; flex-shrink: 0; }
+.mini-cab { display: flex; align-items: center; justify-content: space-between; }
+.mini-cab b { font-size: 13px; font-weight: 600; }
+.flechas { display: flex; }
+.flechas a { width: 30px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; }
+.flechas a + a { margin-left: 2px; }
+.mini table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+.mini th { font-family: var(--mono); font-size: 10px; font-weight: 400; color: var(--ter); height: 22px; }
+.mini td { text-align: center; height: 27px; font-size: 12px; padding: 0; }
+.mini td span { display: inline-block; width: 24px; height: 24px; line-height: 24px; border-radius: 12px; }
+.mini td.hoy span { background: var(--tinta); color: var(--widget); }
+.mini td.fuera { color: #c3bfb6; }
+
+/* ---------- Derecha: 5 semanas ---------- */
+.der { flex-grow: 1; min-width: 0; margin-left: 14px; padding: 16px 16px 12px; display: flex; flex-direction: column; }
+.der-cab { display: flex; justify-content: space-between; align-items: center; }
+.der-cab h1 { margin: 0; font-size: 13px; font-weight: 600; }
+.der-cab .rango { font-size: 12px; color: var(--sec); margin-left: 8px; font-weight: 400; }
+.filtro { display: flex; align-items: center; }
+.filtro > * + * { margin-left: 6px; }
+.chip { width: 26px; height: 26px; border-radius: 13px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.chip.off { background: transparent; border: 1.3px solid var(--sep-fuerte); color: var(--ter); }
+.sem-cab { display: flex; margin-top: 12px; }
+.sem-cab span { flex: 1 1 0; font-family: var(--mono); font-size: 10px; color: var(--ter); padding-left: 8px; }
+.semanas { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 4px; border-top: 1px solid var(--sep); }
+.sem { flex: 1 1 0; min-height: 0; display: flex; border-bottom: 1px solid var(--sep); }
+.sem:last-child { border-bottom: 0; }
+.c { flex: 1 1 0; min-width: 0; padding: 6px 6px 4px 8px; border-left: 1px solid var(--sep); display: flex; flex-direction: column; overflow: hidden; }
+.c:first-child { border-left: 0; }
+.c.finde { background: var(--finde); }
+.c .n { font-size: 15px; font-weight: 300; line-height: 1.2; display: flex; justify-content: space-between; align-items: baseline; }
+.c .n em { font-style: normal; font-family: var(--mono); font-size: 9px; color: var(--sec); }
+.c.hoy { background: var(--acento); border-radius: 10px; border-left-color: transparent; }
+.c.hoy + .c { border-left-color: transparent; }
+.c.pasado .n, .c.pasado .it { opacity: 0.4; }
+.c.mes1 .n { }
+.c .mesn { font-family: var(--mono); font-size: 9px; color: var(--sec); margin-left: 3px; }
+.it { font-size: 11px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.it.fest { color: var(--sec); }
+.pto { display: inline-block; width: 6px; height: 6px; border-radius: 3px; margin-right: 4px; vertical-align: 1px; }
+.pto + .pto { margin-left: -2px; }
+.mas { font-size: 10px; color: var(--ter); margin-top: 1px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail">
+    <div class="logo">P<span>.</span></div>
+    <div class="esp"></div>
+    <a class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
+    <a class="nav activo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
+    <a class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg></a>
+    <a class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
+    <a class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg></a>
+    <a class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></a>
+    <div class="esp"></div>
+    <span class="yo">L</span>
+  </nav>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="cuando"><span class="hora">17:40</span><span class="fecha">Domingo, 1 de noviembre</span></div>
+    </header>
+
+    <div class="cuerpo">
+      <div class="izq">
+        <!-- Día elegido (hoy por defecto). Si se toca otro día, la tarjeta pasa a fondo claro y arriba pone "volver a hoy". -->
+        <section class="w dia">
+          <div class="dia-card">
+            <div class="dia-cab"><span>hoy</span><span>[F]</span></div>
+            <div class="dia-num"><b>1</b><span>domingo</span></div>
+            <div class="dia-fest">Día de Todos los Santos</div>
+            <div class="lista">
+              <div class="ev pasado"><span class="h">11:00</span><span class="t">Comida con los abuelos</span><span class="burs"><span class="bur F">F</span></span></div>
+              <div class="ahora"><span>17:40</span><i></i></div>
+              <div class="ev"><span class="h">18:00</span><span class="t">Cine</span><span class="burs"><span class="bur L">L</span><span class="bur M">M</span></span></div>
+              <div class="ev"><span class="h">20:30</span><span class="t">Cena en casa de Joan</span><span class="burs"><span class="bur F">F</span></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mes en blanco: solo fechas, se pasa de mes con las flechas. Tocar un día lo abre arriba. -->
+        <section class="w mini">
+          <div class="mini-cab"><b>noviembre 2026</b>
+            <div class="flechas">
+              <a aria-label="Mes anterior"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></a>
+              <a aria-label="Mes siguiente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+            </div>
+          </div>
+          <table id="mini"></table>
+        </section>
+      </div>
+
+      <!-- 5 semanas desde la actual. Puntos = de quién es; [F] festivo; finde en gris; hoy en moka. Filtro de personas arriba. -->
+      <section class="w der">
+        <div class="der-cab">
+          <h1>Próximas semanas<span class="rango">26 oct – 29 nov</span></h1>
+          <div class="filtro">
+            <span class="chip L">L</span><span class="chip M">M</span><span class="chip B">B</span><span class="chip F">F</span>
+          </div>
+        </div>
+        <div class="sem-cab"><span>lun</span><span>mar</span><span>mié</span><span>jue</span><span>vie</span><span>sáb</span><span>dom</span></div>
+        <div class="semanas" id="semanas"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+// Datos inventados para la maqueta
+var EV = {
+  '2026-10-27': [['17:30','Natación','B']],
+  '2026-10-29': [['17:30','Natación','B']],
+  '2026-11-01': [['F','Todos los Santos'], ['11:00','Comida con los abuelos','F'], ['18:00','Cine','LM'], ['20:30','Cena en casa de Joan','F']],
+  '2026-11-02': [['','Libre','LM'], ['','Sin cole','B']],
+  '2026-11-03': [['10:00','Dentista','L']],
+  '2026-11-04': [['17:30','Natación','B'], ['20:00','Pádel','M']],
+  '2026-11-06': [['19:00','Cumple de Martina','B']],
+  '2026-11-08': [['10:00','Excursión a Valldemossa','F']],
+  '2026-11-09': [['17:30','Natación','B']],
+  '2026-11-11': [['17:30','Natación','B'], ['20:00','Pádel','M']],
+  '2026-11-12': [['','Viaje a Madrid','M']],
+  '2026-11-13': [['','Viaje a Madrid','M'], ['18:00','Peluquería','L']],
+  '2026-11-16': [['17:30','Natación','B'], ['17:00','Reunión del cole','LM'], ['21:00','Cena equipo','L']],
+  '2026-11-18': [['17:30','Natación','B']],
+  '2026-11-21': [['21:00','Cena con amigos','LM']],
+  '2026-11-23': [['17:30','Natación','B']],
+  '2026-11-25': [['17:30','Natación','B'], ['20:00','Pádel','M']],
+  '2026-11-26': [['16:00','Dentista','B']],
+  '2026-11-28': [['11:00','Mercadillo de Navidad','F']]
+};
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+var MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+// 5 semanas
+var ini = new Date(2026, 9, 26), h = '';
+for (var s = 0; s < 5; s++) {
+  h += '<div class="sem">';
+  for (var k = 0; k < 7; k++) {
+    var d = new Date(2026, 9, 26 + s * 7 + k), key = iso(d), l = EV[key] || [], cls = 'c';
+    if (k >= 5) cls += ' finde';
+    if (key === '2026-11-01') cls += ' hoy';
+    else if (d < new Date(2026, 10, 1)) cls += ' pasado';
+    var fest = null, nor = [];
+    for (var i = 0; i < l.length; i++) { if (l[i][0] === 'F' && l[i].length === 2) fest = l[i]; else nor.push(l[i]); }
+    var etiqueta = (d.getDate() === 1 || (s === 0 && k === 0)) ? '<span class="mesn">' + MES3[d.getMonth()] + '</span>' : '';
+    h += '<div class="' + cls + '"><span class="n"><span>' + d.getDate() + etiqueta + '</span>' + (fest ? '<em>[F]</em>' : '') + '</span>';
+    var max = fest ? 1 : 2, vis = nor.length > max + 1 ? max : nor.length;
+    if (fest) h += '<span class="it fest">' + fest[1] + '</span>';
+    for (i = 0; i < vis; i++) {
+      var p = '', q = nor[i][2];
+      for (var z = 0; z < q.length; z++) p += '<span class="pto ' + q.charAt(z) + '"></span>';
+      h += '<span class="it">' + p + nor[i][1] + '</span>';
+    }
+    if (nor.length > vis) h += '<span class="mas">+' + (nor.length - vis) + ' más</span>';
+    h += '</div>';
+  }
+  h += '</div>';
+}
+document.getElementById('semanas').innerHTML = h;
+
+// Mes en blanco (noviembre 2026: empieza en domingo)
+var m = '<tr><th>L</th><th>M</th><th>X</th><th>J</th><th>V</th><th>S</th><th>D</th></tr>', dia = new Date(2026, 9, 26);
+for (var f = 0; f < 6; f++) {
+  m += '<tr>';
+  for (var c = 0; c < 7; c++) {
+    var cl = dia.getMonth() !== 10 ? 'fuera' : (dia.getDate() === 1 ? 'hoy' : '');
+    m += '<td class="' + cl + '"><span>' + dia.getDate() + '</span></td>';
+    dia = new Date(dia.getFullYear(), dia.getMonth(), dia.getDate() + 1);
+  }
+  m += '</tr>';
+}
+document.getElementById('mini').innerHTML = m;
+</script>
+</body>
+</html>
