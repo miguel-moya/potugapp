@@ -100,6 +100,10 @@ a { color: inherit; text-decoration: none; }
 .der { flex-grow: 1; min-width: 0; margin-left: 14px; padding: 16px 16px 12px; display: flex; flex-direction: column; }
 .der-cab { display: flex; justify-content: space-between; align-items: center; }
 .der-cab h1 { margin: 0; font-size: 13px; font-weight: 600; }
+.der-izq { display: flex; align-items: center; }
+.der-izq .flechas { margin: 0 0 0 10px; }
+.der-izq .volver { margin-left: 10px; }
+.c.fuera-rango .n { color: #c3bfb6; }
 .der-cab .rango { font-size: 12px; color: var(--sec); margin-left: 8px; font-weight: 400; }
 .filtro { display: flex; align-items: center; }
 .filtro > * + * { margin-left: 6px; }
@@ -165,7 +169,7 @@ a { color: inherit; text-decoration: none; }
 
         <!-- Mes en blanco: solo fechas, se pasa de mes con las flechas. Tocar un día lo abre arriba. -->
         <section class="w mini">
-          <div class="mini-cab"><b>noviembre 2026</b>
+          <div class="mini-cab"><b id="miniTit">noviembre 2026</b>
             <div class="flechas">
               <a aria-label="Mes anterior"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></a>
               <a aria-label="Mes siguiente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
@@ -178,7 +182,11 @@ a { color: inherit; text-decoration: none; }
       <!-- 5 semanas desde la actual. Puntos = de quién es; [F] festivo; finde en gris; hoy en moka. Filtro de personas arriba. -->
       <section class="w der">
         <div class="der-cab">
-          <h1>Próximas semanas<span class="rango">26 oct – 29 nov</span></h1>
+          <div class="der-izq"><h1 id="titSem">Próximas semanas<span class="rango">26 oct – 29 nov</span></h1>
+            <div class="flechas">
+              <a aria-label="Semana anterior"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></a>
+              <a aria-label="Semana siguiente"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>
+            </div><span id="volverSem"></span></div>
           <div class="filtro">
             <span class="chip L">L</span><span class="chip M">M</span><span class="chip B">B</span><span class="chip F">F</span>
           </div>
@@ -211,7 +219,26 @@ var EV = {
   '2026-11-23': [['17:30','Natación','B']],
   '2026-11-25': [['17:30','Natación','B'], ['20:00','Pádel','M']],
   '2026-11-26': [['16:00','Dentista','B']],
-  '2026-11-28': [['11:00','Mercadillo de Navidad','F']]
+  '2026-11-28': [['11:00','Mercadillo de Navidad','F']],
+  '2026-12-08': [['F','Inmaculada Concepción']],
+  '2026-12-16': [['17:30','Natación','B'], ['18:00','Festival de Navidad','F']],
+  '2026-12-18': [['','Último día de cole','B'], ['21:00','Cena de empresa','L']],
+  '2026-12-19': [['','Vacaciones','LM']],
+  '2026-12-21': [['','Vacaciones','LM'], ['','Sin cole','B']],
+  '2026-12-22': [['','Vacaciones','LM'], ['','Sin cole','B']],
+  '2026-12-23': [['','Vacaciones','LM'], ['','Sin cole','B'], ['','Llegan los abuelos','F']],
+  '2026-12-24': [['','Vacaciones','LM'], ['','Sin cole','B'], ['21:00','Nochebuena en casa','F']],
+  '2026-12-25': [['F','Navidad'], ['14:00','Comida en Sóller','F']],
+  '2026-12-26': [['F','Sant Esteve']],
+  '2026-12-28': [['','Sin cole','B'], ['','Teletrabajo','M']],
+  '2026-12-29': [['','Sin cole','B'], ['11:00','Cine infantil','LB']],
+  '2026-12-30': [['','Sin cole','B']],
+  '2026-12-31': [['','Sin cole','B'], ['21:00','Nochevieja con amigos','F']],
+  '2027-01-01': [['F','Año Nuevo']],
+  '2027-01-04': [['','Sin cole','B']],
+  '2027-01-05': [['','Sin cole','B'], ['18:00','Cabalgata','F']],
+  '2027-01-06': [['F','Reyes'], ['','Sin cole','B']],
+  '2027-01-07': [['','Vuelta al cole','B']]
 };
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
@@ -220,17 +247,26 @@ var MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','d
 // Estado de ejemplo: ?dia=2026-11-16 muestra un día elegido distinto de hoy
 var SEL = (location.search.match(/dia=([\d-]+)/) || [])[1] || '2026-11-01';
 // 5 semanas
-var ini = new Date(2026, 9, 26), h = '';
+// ?ini=2026-12-14 : la rejilla movida con las flechas
+var INI = (location.search.match(/ini=([\d-]+)/) || [])[1], pi = (INI || '2026-10-26').split('-');
+var ini = new Date(+pi[0], +pi[1] - 1, +pi[2]), h = '', LIMITE = new Date(2027, 1, 1);
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var fin = new Date(ini.getFullYear(), ini.getMonth(), ini.getDate() + 34);
+if (INI) {
+  document.getElementById('titSem').innerHTML = ini.getDate() + ' ' + MES3[ini.getMonth()] + ' – ' + fin.getDate() + ' ' + MES3[fin.getMonth()];
+  document.getElementById('volverSem').innerHTML = '<a class="volver">volver a hoy</a>';
+}
 for (var s = 0; s < 5; s++) {
   h += '<div class="sem">';
   for (var k = 0; k < 7; k++) {
-    var d = new Date(2026, 9, 26 + s * 7 + k), key = iso(d), l = EV[key] || [], cls = 'c';
+    var d = new Date(ini.getFullYear(), ini.getMonth(), ini.getDate() + s * 7 + k), key = iso(d), l = EV[key] || [], cls = 'c';
     if (k >= 5) cls += ' finde';
     if (key === '2026-11-01') cls += ' hoy';
     if (key === SEL && SEL !== '2026-11-01') cls += ' sel';
     else if (d < new Date(2026, 10, 1)) cls += ' pasado';
     var fest = null, nor = [];
     for (var i = 0; i < l.length; i++) { if (l[i][0] === 'F' && l[i].length === 2) fest = l[i]; else nor.push(l[i]); }
+    if (d >= LIMITE) cls += ' fuera-rango';
     var etiqueta = (d.getDate() === 1 || (s === 0 && k === 0)) ? '<span class="mesn">' + MES3[d.getMonth()] + '</span>' : '';
     h += '<div class="' + cls + '"><span class="n"><span>' + d.getDate() + etiqueta + '</span>' + (fest ? '<em>[F]</em>' : '') + '</span>';
     var cab = fest ? 3 : 4, vis = nor.length > cab ? cab - 1 : nor.length;
@@ -248,11 +284,14 @@ for (var s = 0; s < 5; s++) {
 document.getElementById('semanas').innerHTML = h;
 
 // Mes en blanco (noviembre 2026: empieza en domingo)
-var m = '<tr><th>L</th><th>M</th><th>X</th><th>J</th><th>V</th><th>S</th><th>D</th></tr>', dia = new Date(2026, 9, 26);
+var MM = INI ? ini.getMonth() + (ini.getDate() > 7 ? 0 : 0) : 10, AA = INI ? ini.getFullYear() : 2026;
+document.getElementById('miniTit').innerHTML = MESES[MM] + ' ' + AA;
+var p1 = new Date(AA, MM, 1), dia = new Date(AA, MM, 1 - ((p1.getDay() + 6) % 7));
+var m = '<tr><th>L</th><th>M</th><th>X</th><th>J</th><th>V</th><th>S</th><th>D</th></tr>';
 for (var f = 0; f < 6; f++) {
   m += '<tr>';
   for (var c = 0; c < 7; c++) {
-    var cl = dia.getMonth() !== 10 ? 'fuera' : (dia.getDate() === 1 ? 'hoy' : (iso(dia) === SEL ? 'sel' : ''));
+    var cl = dia.getMonth() !== MM ? 'fuera' : dia >= LIMITE ? 'sindatos' : (dia.getFullYear() !== 2026 || dia.getMonth() !== 10) ? (iso(dia) === SEL ? 'sel' : '') : (dia.getDate() === 1 ? 'hoy' : (iso(dia) === SEL ? 'sel' : ''));
     m += '<td class="' + cl + '"><span>' + dia.getDate() + '</span></td>';
     dia = new Date(dia.getFullYear(), dia.getMonth(), dia.getDate() + 1);
   }
