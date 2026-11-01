@@ -12,8 +12,9 @@
 // Secretos (Supabase → Edge Functions → Secrets):
 //   FAMILY_KEY, GOOGLE_SA, CAL_LIDIA, CAL_MIGUEL, CAL_BRUNO, CAL_FAMILIA, CAL_FESTIVOS
 //
-// Petición:  GET /functions/v1/calendario?dias=7    cabecera  x-familia: <clave>
-// Respuesta: { generado, desde, dias, eventos: [{dia, hora, fin, todoElDia, titulo, quien, festivo}], errores: [] }
+// Petición:  GET /functions/v1/calendario    cabecera  x-familia: <clave>
+// Respuesta: { generado, hoy, desde, hasta, eventos: [{dia, hora, fin, todoElDia, titulo, quien, festivo}], errores: [] }
+//   Ventana: desde 7 días antes del día 1 del mes actual hasta hoy + 92 días ("3 meses vista"; hasta excluido).
 
 import ICAL from "npm:ical.js@2.2.1";
 
@@ -177,7 +178,11 @@ export async function eventosDeAPI(idCal, fuente, desde, hasta, token, pedir = f
 // descarga, guardamos lo último que funcionó de cada calendario en la tabla `calendario_cache`
 // y solo volvemos a pedirlo a Google cada REFRESCO_MS. Si Google falla, se usa lo guardado.
 const REFRESCO_MS = 15 * 60 * 1000;
-const VENTANA_ATRAS = 1, VENTANA_DIAS = 32;          // lo que se guarda: de ayer a +31 días
+const VENTANA_DIAS = 92;                              // 3 meses vista
+export function ventana(hoy) {
+  // desde: 7 días antes del día 1 del mes (cubre la semana en curso y todo el mes del calendario pequeño)
+  return { desde: sumarDias(hoy.slice(0, 8) + "01", -7), hasta: sumarDias(hoy, VENTANA_DIAS) };
+}
 const SB_URL = typeof Deno !== "undefined" ? Deno.env.get("SUPABASE_URL") : "";
 const SB_KEY = typeof Deno !== "undefined" ? (Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "") : "";
 const SB_HEAD = { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, "Content-Type": "application/json" };
@@ -187,16 +192,20 @@ async function leerCache() {
     const r = await fetch(`${SB_URL}/rest/v1/calendario_cache?select=fuente,eventos,actualizado`, { headers: SB_HEAD });
     if (!r.ok) return {};
     const filas = await r.json(), m = {};
-    for (const f of filas) m[f.fuente] = f;
+    for (const f of filas) {
+      const e = f.eventos;
+      m[f.fuente] = Array.isArray(e) ? { ...f, ventana: null } : { ...f, eventos: (e && e.lista) || [], ventana: e && e.ventana };
+    }
     return m;
   } catch (_) { return {}; }
 }
-async function guardarCache(fuente, eventos) {
+async function guardarCache(fuente, eventos, ventana) {
   try {
     await fetch(`${SB_URL}/rest/v1/calendario_cache?on_conflict=fuente`, {
       method: "POST",
       headers: { ...SB_HEAD, Prefer: "resolution=merge-duplicates,return=minimal" },
-      body: JSON.stringify({ fuente, eventos, actualizado: new Date().toISOString() }),
+      // la ventana se guarda dentro de "eventos" para no tener que cambiar la tabla
+      body: JSON.stringify({ fuente, eventos: { ventana, lista: eventos }, actualizado: new Date().toISOString() }),
     });
   } catch (_) { /* si no se puede guardar, seguimos */ }
 }
@@ -212,16 +221,16 @@ async function descargar(url) {
 
 let cacheMem = { en: 0, datos: null };
 
-async function construir(dias) {
+async function construir() {
   const hoy = diaMadrid(new Date());
-  const hasta = sumarDias(hoy, dias);
-  const desdeVentana = sumarDias(hoy, -VENTANA_ATRAS), hastaVentana = sumarDias(hoy, VENTANA_DIAS);
+  const { desde: desdeVentana, hasta: hastaVentana } = ventana(hoy);
   const guardado = await leerCache();
   const errores = [];
 
   const listas = await Promise.all(FUENTES.map(async (f) => {
     const previo = guardado[f.secreto];
-    const fresco = previo && Date.now() - new Date(previo.actualizado).getTime() < REFRESCO_MS;
+    const cubre = previo && Array.isArray(previo.eventos) && previo.ventana === `${desdeVentana}/${hastaVentana}`;
+    const fresco = cubre && Date.now() - new Date(previo.actualizado).getTime() < REFRESCO_MS;
     if (fresco) return previo.eventos;
     const url = Deno.env.get(f.secreto);
     if (!url) { errores.push(`${f.secreto}: falta el secreto`); return previo ? previo.eventos : []; }
@@ -234,7 +243,7 @@ async function construir(dias) {
         if (!sa) throw new Error("falta GOOGLE_SA");
         evs = await eventosDeAPI(url.trim(), f, desdeVentana, hastaVentana, await tokenCuentaServicio(JSON.parse(sa)));
       }
-      await guardarCache(f.secreto, evs);
+      await guardarCache(f.secreto, evs, `${desdeVentana}/${hastaVentana}`);
       return evs;
     } catch (e) {
       if (previo) return previo.eventos;               // Google falla: usamos lo último bueno, sin avisar
@@ -243,8 +252,8 @@ async function construir(dias) {
     }
   }));
 
-  const eventos = listas.flat().filter((e) => e.dia >= hoy && e.dia < hasta);
-  return { generado: new Date().toISOString(), desde: hoy, dias, eventos: ordenar(eventos), errores };
+  const eventos = listas.flat().filter((e) => e.dia >= desdeVentana && e.dia < hastaVentana);
+  return { generado: new Date().toISOString(), hoy, desde: desdeVentana, hasta: hastaVentana, eventos: ordenar(eventos), errores };
 }
 
 async function atender(req) {
@@ -253,9 +262,8 @@ async function atender(req) {
   if (!clave || req.headers.get("x-familia") !== clave) {
     return new Response(JSON.stringify({ error: "clave" }), { status: 401, headers: { ...CORS, "Content-Type": "application/json" } });
   }
-  const dias = Math.min(Math.max(parseInt(new URL(req.url).searchParams.get("dias") || "7", 10) || 7, 1), 31);
-  if (!cacheMem.datos || cacheMem.datos.dias !== dias || cacheMem.datos.desde !== diaMadrid(new Date()) || Date.now() - cacheMem.en > 60 * 1000) {
-    cacheMem = { en: Date.now(), datos: await construir(dias) };
+  if (!cacheMem.datos || cacheMem.datos.hoy !== diaMadrid(new Date()) || Date.now() - cacheMem.en > 60 * 1000) {
+    cacheMem = { en: Date.now(), datos: await construir() };
   }
   return new Response(JSON.stringify(cacheMem.datos), { headers: { ...CORS, "Content-Type": "application/json; charset=utf-8" } });
 }
