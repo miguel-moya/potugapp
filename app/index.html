@@ -420,6 +420,8 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 #mCompra .cp-sug { background: var(--widget); border-radius: 20px; padding: 4px 12px; }
 #mCompra .cp-items { margin-top: 16px; background: var(--widget); border-radius: 20px; overflow: hidden; }
 #mCompra .cp-bas { margin-top: 16px; overflow: visible; }
+.cp-super { font-family: var(--mono); font-size: 10px; color: var(--ok); margin: 12px 4px 0; }
+.cp-super:empty { display: none; }
 #mCompra.v-lista #mcBas, #mCompra.v-bas #mcLis { display: none; }
 
 /* Modo reposo (?cocina) */
@@ -529,6 +531,7 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
     <div id="mcLis">
       <div class="cp-in"><input id="mcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añadir algo…" aria-label="Añadir a la lista"><a data-acc="mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
       <div class="cp-sug" id="mcSug"></div>
+      <div class="cp-super" id="mcSuper"></div>
       <div class="cp-items" id="mcItems"></div>
     </div>
     <section class="cp-bas" id="mcBas"></section>
@@ -1055,19 +1058,24 @@ function enviarCompra() {
   x.send(lote.length ? JSON.stringify({ acciones: lote }) : null);
 }
 // Ritmo de consulta (para no gastar el plan gratuito de Supabase):
-//  · cada 5 s mientras alguien está usando la página (tocada en los últimos 3 min)
-//  · cada 60 s si la página está abierta pero nadie la toca
-//  · nada si la app está en segundo plano o el iPad en reposo
+//  · «En el súper»: en cuanto hay algo tachado (alguien está comprando) → cada 10 s,
+//    mientras se haya tocado la app en los últimos 20 min. Se acaba al «Terminar compra».
+//  · El resto del tiempo → cada 15 min con la página abierta, y al abrirla o volver a ella.
+//  · Nada si la app está en segundo plano o el iPad en reposo. Lo que haces se envía al momento.
 var ultimoToque = Date.now(), ultimaConsulta = 0;
 function tocado() { ultimoToque = Date.now(); }
 document.addEventListener('touchstart', tocado, true);
 document.addEventListener('mousedown', tocado, true);
 document.addEventListener('keydown', tocado, true);
+function enSuper() {
+  for (var i = 0; i < CS.lista.length; i++) if (CS.lista[i].hecho) return Date.now() - ultimoToque < 20 * 60 * 1000;
+  return false;
+}
 function sincCompra(forzar) {
   if (reposo || document.hidden) return;
   if (clasePagina() !== 'p-compra' && !cola.length) return;
-  var activo = Date.now() - ultimoToque < 3 * 60 * 1000;
-  if (!forzar && !cola.length && !activo && Date.now() - ultimaConsulta < 60 * 1000) return;
+  var cada = enSuper() ? 10 * 1000 : 15 * 60 * 1000;
+  if (!forzar && !cola.length && Date.now() - ultimaConsulta < cada - 500) return;
   ultimaConsulta = Date.now();
   enviarCompra();
 }
@@ -1126,7 +1134,8 @@ function pintarCompra() {
   $('cBas').innerHTML = bas; $('mcBas').innerHTML = bas;
   $('cBas').className = 'cp-bas' + (CV.editar ? ' editando' : ''); $('mcBas').className = $('cBas').className;
   $('cItems').innerHTML = lis; $('mcItems').innerHTML = lis;
-  $('cCuenta').innerHTML = pend ? pend + ' por comprar' : '';
+  $('cCuenta').innerHTML = (pend ? pend + ' por comprar' : '') + (enSuper() ? ' · en el súper' : '');
+  $('mcSuper').innerHTML = enSuper() ? 'en el súper · se actualiza cada 10 s' : '';
   $('mcSegL').innerHTML = 'Lista' + (pend ? '<b>' + pend + '</b>' : '');
   $('mcSegL').className = CV.vistaMovil === 'lista' ? 'on' : ''; $('mcSegB').className = CV.vistaMovil === 'bas' ? 'on' : '';
   $('mCompra').className = 'v-' + CV.vistaMovil;
