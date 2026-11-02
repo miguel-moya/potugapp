@@ -438,7 +438,7 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 
 /* Widget Compra */
 .wc { display: flex; flex-direction: column; padding: 0; background: transparent; cursor: pointer; }
-.wc-a { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 16px; z-index: 2; }
+.wc-a { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 16px 16px 20px; z-index: 2; }
 .wc-a .cp-in { margin-top: auto !important; }   /* el campo, al fondo de su mitad */
 .wc-b { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 52px 16px 12px; box-shadow: none; overflow: hidden; }
 .wc-b .wc-pills { margin-top: auto; }
@@ -452,14 +452,15 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 .wc-pills .cp-pill { height: 32px; padding: 0 12px; font-size: 12px; border-radius: 16px; }
 .wc-ok { font-size: 12px; color: var(--sec); }
 .wc-n { font-size: 12px; color: var(--sec); }
-#wCompraM .wc-a { padding: 12px 16px; flex: 0 0 auto; }
-#wCompraM .wc-b { padding: 48px 16px 0; }
+#wCompraM .wc-a { padding: 16px; flex: 0 0 auto; }
+#wCompraM .wc-b { padding: 48px 16px 8px; justify-content: center; }
 #wCompraM .wc-b .wc-pills { margin-top: 0; }
 #wCompra .cp-in { margin-top: 16px; height: 44px; flex-shrink: 0; }
 #wCompra .wc-pills { max-height: 112px; }   /* hasta 3 filas */
 .wc-super .pto { margin-right: 3px; vertical-align: 0; }
 #wCompraM .cp-in { background: var(--finde); box-shadow: none; }
-#wCompraM .wc-cab { margin-bottom: 8px; }
+#wCompraM .wc-cab { margin-bottom: 16px; }
+#wCompraM .wc-b .rot { display: none; }
 #wCompraM .wc-pills { max-height: 36px; }
 
 /* Modo reposo (?cocina) */
@@ -1204,8 +1205,8 @@ function pintarWidgetCompra(pend) {
   }
   hb = habituales(10); var pills = '';
   for (i = 0; i < hb.length; i++) pills += '<span class="cp-pill" data-acc="wc-pill" data-b="' + hb[i].id + '">' + esc(hb[i].nombre) + '</span>';
-  h = '<div class="wc-cab"><h2 class="w-tit">Lista de la compra</h2><span class="wc-super">' + sup + '</span></div>' +
-    '<div class="wc-cifra">' + (pend ? '<b>' + pend + '</b><span>por comprar</span>' : '<span class="wc-ok" style="margin:0">La lista está vacía</span>') + '</div>';
+  h = '<div class="wc-cab"><h2 class="w-tit">Lista de la compra</h2>' + (sup ? '<span class="wc-super">' + sup + '</span>' : pend ? '' : '<span class="wc-n">la lista está vacía</span>') + '</div>' +
+    (pend ? '<div class="wc-cifra"><b>' + pend + '</b><span>por comprar</span></div>' : '');
   $('wcTop').innerHTML = h; $('wcP').innerHTML = pills;
   $('wcNM').innerHTML = sup ? '<span class="wc-super">' + sup + '</span>' : (pend ? pend + ' por comprar' : 'la lista está vacía');
   hb = habituales(6); pills = '';
