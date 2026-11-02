@@ -303,9 +303,10 @@ body.p-cal #pagCal { display: flex; }
 body.movil.p-cal #mInicio { display: none; }
 #mCal { display: none; }
 body.movil.p-cal #mCal { display: block; margin-top: 16px; }
-#mCal .k-mini { width: auto; height: auto; padding-bottom: 8px; }
+#mCal .k-mini { width: auto; height: auto; padding-bottom: 16px; }   /* el alto lo fija cuadrarMes() */
+#mCal .k-mini td { height: auto; }
 #mCal .k-mini table { margin-top: 4px; }
-#mCal .k-mini td { height: 42px; vertical-align: top; padding-top: 4px; }
+#mCal .k-mini td { vertical-align: top; padding-top: 4px; }
 #mCal .k-mini td > span { width: 28px; height: 28px; line-height: 28px; border-radius: 14px; font-size: 13px; }
 .k-pts { display: block; height: 6px; line-height: 0; margin-top: 2px; }
 .k-pts .pto { margin: 0 2px; width: 5px; height: 5px; vertical-align: top; }
@@ -507,7 +508,7 @@ function modo() {
 
 /* ---------- Escala al tamaño de pantalla ---------- */
 function encajar() {
-  modo(); if (MOVIL) { rejilla(); return; }
+  modo(); if (MOVIL) { rejilla(); if ($('kMiniM')) cuadrarMes(); return; }
   var st = $('stage'), top = window.navigator.standalone ? 20 : 14;
   var vw = window.innerWidth, vh = window.innerHeight - top;
   var s = Math.min(vw / 1024, vh / 768);
@@ -815,7 +816,7 @@ function pintarPagCal() {
   var dia = htmlDia();
   $('kDia').className = dia.cls; $('kDia').innerHTML = dia.html;
   $('kDiaM').className = dia.cls; $('kDiaM').innerHTML = dia.html;
-  $('kMiniM').innerHTML = htmlMini(true);
+  $('kMiniM').innerHTML = htmlMini(true); cuadrarMes();
   $('kAg').innerHTML = htmlAgenda(0); $('kAgM').innerHTML = htmlAgenda(0);
   var lm = $('kAgM').lastChild; if (lm) lm.className += ' ultima';
   $('kSem').innerHTML = htmlMes();
@@ -843,6 +844,24 @@ function tocarCal(ev) {
   if (MOVIL && dia && /k-bar/.test(t.className)) { var y = $('kDiaM').getBoundingClientRect().top + (window.pageYOffset || 0) - 12; window.scrollTo(0, y); }
 }
 $('pagCal').addEventListener('click', tocarCal);
+
+// Móvil: el mes es cuadrado (alto = ancho)
+function cuadrarMes() { var m = $('kMiniM'); if (MOVIL && m.offsetWidth) m.style.height = m.offsetWidth + 'px'; }
+
+// Deslizar el dedo sobre un mes cambia de mes (móvil y iPad)
+function deslizarMes(el) {
+  var x0 = null, y0 = null;
+  el.addEventListener('touchstart', function (e) { var t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; }, false);
+  el.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    var nm = new Date(K.mes.getFullYear(), K.mes.getMonth() + (dx < 0 ? 1 : -1), 1);
+    if (nm < mesMin() || nm > mesMax()) return;
+    K.mes = nm; pintarPagCal();
+  }, false);
+}
+deslizarMes($('kMiniM')); deslizarMes($('kSem'));
 $('mCal').addEventListener('click', tocarCal);
 
 /* ---------- Widget del calendario: tocar un día lo abre en la página ---------- */
