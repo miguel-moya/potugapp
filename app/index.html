@@ -179,7 +179,7 @@ body.movil { overflow: auto; height: auto; -webkit-overflow-scrolling: touch; }
 html.movil { overflow: auto; height: auto; }
 body.movil #stage { display: none; }
 /* Arriba: solo el hueco de la barra de estado del teléfono (0 en el navegador). Abajo: sitio para el menú flotante */
-body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe-area-inset-top); }
+body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe-area-inset-top); min-height: 101vh; }   /* páginas cortas: que haya algo de scroll, como en las largas (si no, iOS deja el menú más arriba) */
 .m-top { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
 .m-top .logo { font-size: 22px; height: auto; margin: 0; }
 .m-fecha { font-size: 13px; color: var(--sec); margin-top: 2px; }
@@ -233,7 +233,7 @@ body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe
 .m-tiempo .sig + .sig { margin-top: -40px; }
 #movil .pend { padding: 12px; }
 /* Menú flotante: píldora blanca a 16 px de los lados y del fondo; 8 px entre el círculo activo y el borde */
-.m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 8px; background: var(--widget); color: var(--tinta); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; z-index: 20; box-shadow: 0 8px 32px rgba(29,29,27,0.10), 0 1px 4px rgba(29,29,27,0.04); }
+.m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 8px; background: var(--widget); color: var(--tinta); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; z-index: 20; box-shadow: 0 8px 32px rgba(29,29,27,0.16), 0 1px 4px rgba(29,29,27,0.06); }
 .m-nav a { width: 48px; height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .m-nav svg { width: 22px; height: 22px; }
 .m-nav .on { width: 48px; height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; }
@@ -352,7 +352,7 @@ body.p-compra #pagCompra { display: flex; }
 .cp-bas { flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .cp-carta { position: relative; flex-shrink: 0; background: var(--widget); border-radius: 20px; padding: 52px 16px 12px; box-shadow: inset 0 -1px 0 var(--sep); }
 .cp-carta + .cp-carta { margin-top: -40px; }
-.cp-carta.cp-cab { padding: 16px; z-index: 60; }
+.cp-carta.cp-cab { padding: 16px 16px 20px; z-index: 60; }
 .cp-carta.ultima { flex-grow: 1; box-shadow: none; }
 .cp-tit { display: flex; align-items: center; justify-content: space-between; height: 36px; }
 .cp-tit h1 { margin: 0; font-size: 16px; font-weight: 600; }
@@ -371,11 +371,17 @@ body.p-compra #pagCompra { display: flex; }
 /* Lista */
 .cp-lis { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
 /* Carta de la lista: se mete 40 px bajo la cabecera; las franjas van de borde a borde */
-.cp-lcarta { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 40px 0 0; box-shadow: none; overflow: hidden; }
-.cp-lcarta .cp-items { margin-top: 0; padding-top: 8px; }
+.cp-lcarta { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 20px 0 0; box-shadow: none; overflow: hidden; }
+.cp-lcarta .cp-items { margin-top: 0; padding-top: 0; }
+/* La primera franja empieza bajo la curva de la cabecera: así no queda una rendija blanca */
+.cp-lcarta .cp-items > .cp-fr:first-child { height: 52px; padding-top: 20px; }
+.cp-lcarta .cp-items > .cp-vacio:first-child { padding-top: 40px; }
 .cp-lis-cab { padding: 16px 16px 0; flex-shrink: 0; }
 .cp-in { display: flex; align-items: center; height: 48px; margin-top: 12px; padding: 0 6px 0 16px; border-radius: 24px; background: var(--finde); }
 .cp-in input { flex-grow: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--tinta); outline: none; -webkit-appearance: none; -webkit-user-select: text; user-select: text; }
+/* Campos: 48 px (iPad / ordenador) · 52 px con botón de 40 px en el móvil */
+body.movil .cp-in { height: 52px !important; padding: 0 6px 0 16px; border-radius: 26px; }
+body.movil .cp-in a { width: 40px !important; height: 40px !important; border-radius: 20px !important; }
 .cp-in a { width: 36px; height: 36px; border-radius: 18px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
 .cp-sug { margin-top: 8px; }
 .cp-sug:empty { display: none; }
@@ -432,8 +438,10 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 
 /* Widget Compra */
 .wc { display: flex; flex-direction: column; padding: 0; background: transparent; cursor: pointer; }
-.wc-a { padding: 16px; z-index: 2; }
-.wc-b { flex-grow: 1; min-height: 0; padding: 52px 16px 12px; box-shadow: none; }
+.wc-a { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 16px; z-index: 2; }
+.wc-a .cp-in { margin-top: auto !important; }   /* el campo, al fondo de su mitad */
+.wc-b { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 52px 16px 12px; box-shadow: none; overflow: hidden; }
+.wc-b .wc-pills { margin-top: auto; }
 .wc-cab { display: flex; justify-content: space-between; align-items: baseline; }
 .wc-super { font-family: var(--mono); font-size: 10px; color: var(--ok); }
 .wc-cifra { display: flex; align-items: baseline; margin-top: 12px; }
@@ -444,12 +452,14 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 .wc-pills .cp-pill { height: 32px; padding: 0 12px; font-size: 12px; border-radius: 16px; }
 .wc-ok { font-size: 12px; color: var(--sec); }
 .wc-n { font-size: 12px; color: var(--sec); }
-#wCompraM .wc-a { padding: 16px 16px 12px; }
-#wCompraM .wc-b { padding: 48px 16px 8px; overflow: hidden; }
+#wCompraM .wc-a { padding: 12px 16px; flex: 0 0 auto; }
+#wCompraM .wc-b { padding: 48px 16px 0; }
+#wCompraM .wc-b .wc-pills { margin-top: 0; }
 #wCompra .cp-in { margin-top: 16px; height: 44px; flex-shrink: 0; }
 #wCompra .wc-pills { max-height: 112px; }   /* hasta 3 filas */
 .wc-super .pto { margin-right: 3px; vertical-align: 0; }
-#wCompraM .cp-in { margin-top: 8px; height: 40px; background: var(--finde); box-shadow: none; }
+#wCompraM .cp-in { background: var(--finde); box-shadow: none; }
+#wCompraM .wc-cab { margin-bottom: 8px; }
 #wCompraM .wc-pills { max-height: 36px; }
 
 /* Modo reposo (?cocina) */
@@ -1144,7 +1154,7 @@ function htmlItem(it) {
 function htmlLista() {
   var gs = gruposOrden(), pend = [], hechos = [], h = '', i, k;
   for (i = 0; i < CS.lista.length; i++) (CS.lista[i].hecho ? hechos : pend).push(CS.lista[i]);
-  if (!pend.length && !hechos.length) return '<div class="cp-vacio">La lista está vacía. Abre un grupo de básicos y toca lo que haga falta.</div>';
+  if (!pend.length && !hechos.length) return '<div class="cp-vacio">La lista está vacía</div>';
   var grupos = gs.concat([{ id: null, nombre: 'Otros' }]);
   for (i = 0; i < grupos.length; i++) {
     var de = [];
@@ -1195,9 +1205,9 @@ function pintarWidgetCompra(pend) {
   hb = habituales(10); var pills = '';
   for (i = 0; i < hb.length; i++) pills += '<span class="cp-pill" data-acc="wc-pill" data-b="' + hb[i].id + '">' + esc(hb[i].nombre) + '</span>';
   h = '<div class="wc-cab"><h2 class="w-tit">Lista de la compra</h2><span class="wc-super">' + sup + '</span></div>' +
-    '<div class="wc-cifra">' + (pend ? '<b>' + pend + '</b><span>por comprar</span>' : '<span class="wc-ok" style="margin:0">Lista vacía</span>') + '</div>';
+    '<div class="wc-cifra">' + (pend ? '<b>' + pend + '</b><span>por comprar</span>' : '<span class="wc-ok" style="margin:0">La lista está vacía</span>') + '</div>';
   $('wcTop').innerHTML = h; $('wcP').innerHTML = pills;
-  $('wcNM').innerHTML = sup ? '<span class="wc-super">' + sup + '</span>' : (pend ? pend + ' por comprar' : 'lista vacía');
+  $('wcNM').innerHTML = sup ? '<span class="wc-super">' + sup + '</span>' : (pend ? pend + ' por comprar' : 'la lista está vacía');
   hb = habituales(6); pills = '';
   for (i = 0; i < hb.length; i++) pills += '<span class="cp-pill" data-acc="wc-pill" data-b="' + hb[i].id + '">' + esc(hb[i].nombre) + '</span>';
   $('wcPM').innerHTML = pills;
