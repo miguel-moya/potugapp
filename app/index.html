@@ -187,6 +187,7 @@ body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe
 #estadoM:empty { display: none; }
 #movil .w + .w, #movil .m-fila, #movil .m-fila + .w { margin-top: 16px; }
 #movil .m-fila > .w + .w { margin-top: 0; }
+#movil .m-fila + .wc, #movil .wc + .w { margin-top: 16px; }
 .m-g, .m-p, .m-m { overflow: hidden; }
 .m-cal { display: flex; flex-direction: column; }
 .m-hoy { flex-shrink: 0; }
@@ -232,7 +233,7 @@ body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe
 .m-tiempo .sig + .sig { margin-top: -40px; }
 #movil .pend { padding: 12px; }
 /* Menú flotante: píldora blanca a 16 px de los lados y del fondo; 8 px entre el círculo activo y el borde */
-.m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 7px; background: var(--widget); color: var(--tinta); border: 1px solid var(--sep); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; z-index: 20; box-shadow: 0 4px 16px rgba(29,29,27,0.08); }
+.m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 8px; background: var(--widget); color: var(--tinta); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; z-index: 20; box-shadow: 0 8px 32px rgba(29,29,27,0.10), 0 1px 4px rgba(29,29,27,0.04); }
 .m-nav a { width: 48px; height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .m-nav svg { width: 22px; height: 22px; }
 .m-nav .on { width: 48px; height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; }
@@ -430,7 +431,9 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 #mCompra.v-lista #mcBas, #mCompra.v-bas #mcLis { display: none; }
 
 /* Widget Compra */
-.wc { display: flex; flex-direction: column; padding: 16px; cursor: pointer; }
+.wc { display: flex; flex-direction: column; padding: 0; background: transparent; cursor: pointer; }
+.wc-a { padding: 16px; z-index: 2; }
+.wc-b { flex-grow: 1; min-height: 0; padding: 52px 16px 12px; box-shadow: none; }
 .wc-cab { display: flex; justify-content: space-between; align-items: baseline; }
 .wc-super { font-family: var(--mono); font-size: 10px; color: var(--ok); }
 .wc-cifra { display: flex; align-items: baseline; margin-top: 12px; }
@@ -441,11 +444,13 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 .wc-pills .cp-pill { height: 32px; padding: 0 12px; font-size: 12px; border-radius: 16px; }
 .wc-ok { font-size: 12px; color: var(--sec); }
 .wc-n { font-size: 12px; color: var(--sec); }
-#wCompraM { padding: 16px; }
+#wCompraM .wc-a { padding: 16px 16px 12px; }
+#wCompraM .wc-b { padding: 48px 16px 8px; overflow: hidden; }
 #wCompra .cp-in { margin-top: 16px; height: 44px; flex-shrink: 0; }
 #wCompra .wc-pills { max-height: 112px; }   /* hasta 3 filas */
-#wCompraM .cp-in { margin-top: 12px; height: 44px; background: var(--finde); box-shadow: none; }
-#wCompraM .wc-pills { margin-top: 8px; max-height: 40px; }
+.wc-super .pto { margin-right: 3px; vertical-align: 0; }
+#wCompraM .cp-in { margin-top: 8px; height: 40px; background: var(--finde); box-shadow: none; }
+#wCompraM .wc-pills { max-height: 36px; }
 
 /* Modo reposo (?cocina) */
 #standby { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: #000; z-index: 50; }
@@ -499,7 +504,7 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
       </div>
       <div class="fila">
         <a href="#" class="w tiempo" id="tiempo"><div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div><span class="t12">Cargando…</span></div></a>
-        <div class="w wc" id="wCompra"><div id="wcTop" data-acc="ir"></div><div class="cp-in"><input id="wcInT" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div><div class="crece" data-acc="ir"></div><span class="rot">habituales</span><div class="wc-pills" id="wcP"></div></div>
+        <div class="wc" id="wCompra"><div class="cp-carta wc-a"><div id="wcTop" data-acc="ir"></div><div class="cp-in"><input id="wcInT" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div></div><div class="cp-carta wc-b" data-acc="ir"><span class="rot">habituales</span><div class="wc-pills" id="wcP"></div></div></div>
         <div class="w pend">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
           <h2 class="w-tit">Tareas de hoy</h2><span class="t12">Pendiente de desarrollo</span>
@@ -542,9 +547,9 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
     <a href="#" class="w m-tiempo m-p" id="tiempoM"><div class="t-hoy"><span class="rot">hoy · marratxí</span><span class="t12">Cargando…</span></div></a>
     <div class="w pend m-p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg><h2 class="w-tit">Comer fuera</h2><span class="t12">Pendiente</span></div>
   </div>
-  <div class="w wc m-m" id="wCompraM"><div class="wc-cab" data-acc="ir"><h2 class="w-tit">Compra</h2><span class="wc-n" id="wcNM"></span></div>
-    <div class="cp-in"><input id="wcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
-    <div class="wc-pills" id="wcPM"></div></div>
+  <div class="wc m-m" id="wCompraM"><div class="cp-carta wc-a"><div class="wc-cab" data-acc="ir"><h2 class="w-tit">Lista de la compra</h2><span class="wc-n" id="wcNM"></span></div>
+    <div class="cp-in"><input id="wcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div></div>
+    <div class="cp-carta wc-b"><span class="rot">habituales</span><div class="wc-pills" id="wcPM"></div></div></div>
   <div class="w pend m-m"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><h2 class="w-tit">Mis tareas de hoy</h2><span class="t12">Pendiente de desarrollo</span></div>
   </div>
   <div id="mCal"><section class="w k-mini" id="kMiniM"></section><section class="w k-dia" id="kDiaM"></section><section class="w k-ag" id="kAgM"></section></div>
@@ -1092,10 +1097,13 @@ function tocado() { ultimoToque = Date.now(); }
 document.addEventListener('touchstart', tocado, true);
 document.addEventListener('mousedown', tocado, true);
 document.addEventListener('keydown', tocado, true);
-function enSuper() {
-  for (var i = 0; i < CS.lista.length; i++) if (CS.lista[i].hecho) return Date.now() - ultimoToque < 20 * 60 * 1000;
-  return false;
+// Quién está en el súper: quien ha tachado algo desde su móvil (lo tachado desde el iPad de la cocina no cuenta)
+function enElSuper() {
+  var q = [];
+  for (var i = 0; i < CS.lista.length; i++) { var t = CS.lista[i]; if (t.hecho && t.tachado_por && q.indexOf(t.tachado_por) < 0) q.push(t.tachado_por); }
+  return q.sort(function (a, b) { return 'LMB'.indexOf(a) - 'LMB'.indexOf(b); });
 }
+function enSuper() { return enElSuper().length > 0 && Date.now() - ultimoToque < 20 * 60 * 1000; }
 function sincCompra(forzar) {
   if (reposo || document.hidden) return;
   var pag = clasePagina();
@@ -1160,7 +1168,7 @@ function pintarCompra() {
   $('cBas').innerHTML = bas; $('mcBas').innerHTML = bas;
   $('cBas').className = 'cp-bas' + (CV.editar ? ' editando' : ''); $('mcBas').className = $('cBas').className;
   $('cItems').innerHTML = lis; $('mcItems').innerHTML = lis;
-  $('cCuenta').innerHTML = (pend ? pend + ' por comprar' : '') + (enSuper() ? ' · en el súper' : '');
+  $('cCuenta').innerHTML = (pend ? pend + ' por comprar' : '') + (enElSuper().length ? ' · en el súper' : '');
   $('mcSuper').innerHTML = enSuper() ? 'en el súper · se actualiza cada 10 s' : '';
   $('mcSegL').innerHTML = 'Lista' + (pend ? '<b>' + pend + '</b>' : '');
   $('mcSegL').className = CV.vistaMovil === 'lista' ? 'on' : ''; $('mcSegB').className = CV.vistaMovil === 'bas' ? 'on' : '';
@@ -1179,15 +1187,17 @@ function quienCompra() {
   return null;
 }
 function pintarWidgetCompra(pend) {
-  var hay = false, q = quienCompra(), i, h, hb;
-  for (i = 0; i < CS.lista.length; i++) if (CS.lista[i].hecho) hay = true;
-  var sup = hay ? (q && NOMBRES[q] ? NOMBRES[q] + ' está en el súper' : 'en el súper') : '';
+  var qs = enElSuper(), i, h, hb, sup = '';
+  if (qs.length) {
+    for (i = 0; i < qs.length; i++) sup += '<span class="pto ' + qs[i] + '"></span>';
+    sup += 'en el súper';
+  }
   hb = habituales(10); var pills = '';
   for (i = 0; i < hb.length; i++) pills += '<span class="cp-pill" data-acc="wc-pill" data-b="' + hb[i].id + '">' + esc(hb[i].nombre) + '</span>';
-  h = '<div class="wc-cab"><h2 class="w-tit">Compra</h2><span class="wc-super">' + sup + '</span></div>' +
+  h = '<div class="wc-cab"><h2 class="w-tit">Lista de la compra</h2><span class="wc-super">' + sup + '</span></div>' +
     '<div class="wc-cifra">' + (pend ? '<b>' + pend + '</b><span>por comprar</span>' : '<span class="wc-ok" style="margin:0">Lista vacía</span>') + '</div>';
   $('wcTop').innerHTML = h; $('wcP').innerHTML = pills;
-  $('wcNM').innerHTML = (pend ? pend + ' por comprar' : 'lista vacía') + (sup ? ' · ' + sup : '');
+  $('wcNM').innerHTML = sup ? '<span class="wc-super">' + sup + '</span>' : (pend ? pend + ' por comprar' : 'lista vacía');
   hb = habituales(6); pills = '';
   for (i = 0; i < hb.length; i++) pills += '<span class="cp-pill" data-acc="wc-pill" data-b="' + hb[i].id + '">' + esc(hb[i].nombre) + '</span>';
   $('wcPM').innerHTML = pills;
@@ -1364,6 +1374,29 @@ function irPagina() {
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', irPagina);
+
+/* ---------- Deslizar el dedo de lado: pasar a la página siguiente o anterior (en bucle) ----------
+   Orden del menú, solo con las páginas que ya existen. No actúa sobre los meses del calendario
+   (allí deslizar cambia de mes), con un campo de texto abierto ni empezando pegado al borde
+   (en el iPhone ese gesto es «atrás» del navegador). */
+var ORDEN_PAG = ['', 'calendario', 'compra'];
+(function () {
+  var x0 = null, y0 = null, valido = false;
+  document.addEventListener('touchstart', function (e) {
+    var t = e.touches[0], el = e.target; x0 = t.clientX; y0 = t.clientY;
+    valido = e.touches.length === 1 && x0 > 24 && x0 < window.innerWidth - 24 && !HOJA && !reposo &&
+      !(document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName));
+    while (valido && el && el !== document) { if (el.id === 'kMiniM' || el.id === 'kSem' || el.id === 'puerta') valido = false; el = el.parentNode; }
+  }, true);
+  document.addEventListener('touchend', function (e) {
+    if (!valido || x0 === null) return;
+    var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    var i = ORDEN_PAG.indexOf(location.hash.slice(1)); if (i < 0) i = 0;
+    i = (i + (dx < 0 ? 1 : -1) + ORDEN_PAG.length) % ORDEN_PAG.length;
+    location.hash = ORDEN_PAG[i] ? '#' + ORDEN_PAG[i] : '#';
+  }, true);
+})();
 
 /* ---------- Tiempo (Open-Meteo, sin registro) ---------- */
 var SOL = '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/>';
