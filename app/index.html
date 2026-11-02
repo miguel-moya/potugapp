@@ -179,7 +179,7 @@ body.movil { overflow: auto; height: auto; -webkit-overflow-scrolling: touch; }
 html.movil { overflow: auto; height: auto; }
 body.movil #stage { display: none; }
 /* Arriba: solo el hueco de la barra de estado del teléfono (0 en el navegador). Abajo: sitio para el menú flotante */
-body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe-area-inset-top); padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe-area-inset-top); }
 .m-top { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
 .m-top .logo { font-size: 22px; height: auto; margin: 0; }
 .m-fecha { font-size: 13px; color: var(--sec); margin-top: 2px; }
@@ -231,11 +231,11 @@ body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe
 .m-tiempo .sig.sig2 { z-index: 1; }
 .m-tiempo .sig + .sig { margin-top: -40px; }
 #movil .pend { padding: 12px; }
-/* Menú flotante: píldora oscura separada 16 px de los bordes */
-.m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); height: 64px; padding: 0 8px; background: var(--tinta); color: var(--widget); border-radius: 32px; display: flex; align-items: center; z-index: 20; box-shadow: 0 8px 24px rgba(29,29,27,0.18); }
-.m-nav a { flex: 1 1 0; height: 64px; display: flex; align-items: center; justify-content: center; }
+/* Menú flotante: píldora blanca a 16 px de los lados y del fondo; 8 px entre el círculo activo y el borde */
+.m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 7px; background: var(--widget); color: var(--tinta); border: 1px solid var(--sep); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; z-index: 20; box-shadow: 0 4px 16px rgba(29,29,27,0.08); }
+.m-nav a { width: 48px; height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .m-nav svg { width: 22px; height: 22px; }
-.m-nav .on { width: 48px; height: 48px; border-radius: 24px; background: var(--widget); color: var(--tinta); display: flex; align-items: center; justify-content: center; }
+.m-nav .on { width: 48px; height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; }
 
 /* ================= PÁGINA CALENDARIO (#calendario) ================= */
 .pagina { display: none; }
