@@ -1054,8 +1054,25 @@ function enviarCompra() {
   x.onerror = x.ontimeout = function () { CV.enviando = false; };
   x.send(lote.length ? JSON.stringify({ acciones: lote }) : null);
 }
-function sincCompra() { if (!reposo && (clasePagina() === 'p-compra' || cola.length)) enviarCompra(); }
+// Ritmo de consulta (para no gastar el plan gratuito de Supabase):
+//  · cada 5 s mientras alguien está usando la página (tocada en los últimos 3 min)
+//  · cada 60 s si la página está abierta pero nadie la toca
+//  · nada si la app está en segundo plano o el iPad en reposo
+var ultimoToque = Date.now(), ultimaConsulta = 0;
+function tocado() { ultimoToque = Date.now(); }
+document.addEventListener('touchstart', tocado, true);
+document.addEventListener('mousedown', tocado, true);
+document.addEventListener('keydown', tocado, true);
+function sincCompra(forzar) {
+  if (reposo || document.hidden) return;
+  if (clasePagina() !== 'p-compra' && !cola.length) return;
+  var activo = Date.now() - ultimoToque < 3 * 60 * 1000;
+  if (!forzar && !cola.length && !activo && Date.now() - ultimaConsulta < 60 * 1000) return;
+  ultimaConsulta = Date.now();
+  enviarCompra();
+}
 setInterval(sincCompra, 5000);
+document.addEventListener('visibilitychange', function () { if (!document.hidden) sincCompra(true); });
 
 // ---------- pintar ----------
 function gruposOrden() { return CS.grupos.slice(0).sort(function (a, b) { return (a.orden - b.orden) || (a.id > b.id ? 1 : -1); }); }
@@ -1265,7 +1282,7 @@ function irPagina() {
   $('navCompra').className = 'nav' + (c === 'p-compra' ? ' activo' : '');
   marcarMovil($('mNavInicio'), !c); marcarMovil($('mNavCal'), c === 'p-cal'); marcarMovil($('mNavCompra'), c === 'p-compra');
   if (c === 'p-cal') pintarPagCal();
-  if (c === 'p-compra') { pintarCompra(); sincCompra(); }
+  if (c === 'p-compra') { pintarCompra(); sincCompra(true); }
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', irPagina);
