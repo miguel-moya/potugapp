@@ -1048,9 +1048,12 @@ function enviarCompra() {
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) {}
     if (x.status !== 200 || !j || !j.lista) { estado('compra: sin conexión, se guardará al volver'); return; }
     cola = cola.slice(lote.length);
+    var antes = JSON.stringify(CS);
     CS = { grupos: j.grupos, basicos: j.basicos, lista: j.lista };
     for (var i = 0; i < cola.length; i++) aplicarLocal(cola[i]);
-    guardarLocal(); pintarCompra();
+    guardarLocal();
+    // Solo se repinta si algo ha cambiado: así un toque no se pierde porque la lista se redibuje debajo del dedo
+    if (JSON.stringify(CS) !== antes) pintarCompra();
     if (j.errores && j.errores.length && window.console) console.log('Compra, errores:', j.errores);
     if (cola.length) enviarCompra();
   };
