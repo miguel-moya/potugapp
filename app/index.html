@@ -356,11 +356,12 @@ body.p-compra #pagCompra { display: flex; }
 .cp-tit { display: flex; align-items: center; justify-content: space-between; height: 36px; }
 .cp-tit h1 { margin: 0; font-size: 16px; font-weight: 600; }
 .cp-tit .sub { font-size: 12px; color: var(--sec); font-weight: 400; margin-left: 8px; }
+.cp-btn svg { position: relative; left: 1px; top: -1px; }   /* el lápiz es asimétrico: centrado óptico */
 .cp-btn { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 0 1px var(--sep-fuerte); cursor: pointer; }
 .cp-btn.on { background: var(--tinta); color: var(--widget); box-shadow: none; }
 .cp-g { display: flex; align-items: center; height: 28px; font-size: 14px; font-weight: 500; cursor: pointer; }
 .cp-g .n { margin-left: auto; margin-right: 12px; font-family: var(--mono); font-size: 10px; color: var(--sec); }
-.cp-pills { display: flex; flex-wrap: wrap; margin: 4px 0 4px -4px; }
+.cp-pills { display: flex; flex-wrap: wrap; margin: 12px 0 4px -4px; }
 .cp-pill { margin: 4px 0 0 4px; height: 36px; padding: 0 14px; border-radius: 18px; background: var(--finde); font-size: 13px; display: flex; align-items: center; white-space: nowrap; cursor: pointer; }
 .cp-pill.en { background: var(--acento); }
 .cp-pill.mas { width: 36px; padding: 0; justify-content: center; background: transparent; box-shadow: inset 0 0 0 1px var(--sep-fuerte); color: var(--sec); }
@@ -368,9 +369,12 @@ body.p-compra #pagCompra { display: flex; }
 .cp-nuevo-g { margin-top: 12px; height: 40px; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--sep-fuerte); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--sec); cursor: pointer; }
 /* Lista */
 .cp-lis { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+/* Carta de la lista: se mete 40 px bajo la cabecera; las franjas van de borde a borde */
+.cp-lcarta { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 40px 0 0; box-shadow: none; overflow: hidden; }
+.cp-lcarta .cp-items { margin-top: 0; padding-top: 8px; }
 .cp-lis-cab { padding: 16px 16px 0; flex-shrink: 0; }
 .cp-in { display: flex; align-items: center; height: 48px; margin-top: 12px; padding: 0 6px 0 16px; border-radius: 24px; background: var(--finde); }
-.cp-in input { flex-grow: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 16px; color: var(--tinta); outline: none; -webkit-appearance: none; -webkit-user-select: text; user-select: text; }
+.cp-in input { flex-grow: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--tinta); outline: none; -webkit-appearance: none; -webkit-user-select: text; user-select: text; }
 .cp-in a { width: 36px; height: 36px; border-radius: 18px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
 .cp-sug { margin-top: 8px; }
 .cp-sug:empty { display: none; }
@@ -416,9 +420,10 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 .cp-seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 18px; cursor: pointer; }
 .cp-seg span.on { background: var(--tinta); color: var(--widget); }
 .cp-seg span b { font-family: var(--mono); font-weight: 400; font-size: 10px; margin-left: 6px; opacity: 0.7; }
-#mCompra .cp-in { background: var(--widget); box-shadow: inset 0 0 0 1px var(--sep); margin-top: 16px; }
-#mCompra .cp-sug { background: var(--widget); border-radius: 20px; padding: 4px 12px; }
-#mCompra .cp-items { margin-top: 16px; background: var(--widget); border-radius: 20px; overflow: hidden; }
+#mcLis { margin-top: 16px; }
+#mCompra .cp-cab .cp-in { margin-top: 0; }
+#mCompra .cp-lcarta { padding-bottom: 8px; }
+#mCompra .cp-items { overflow: visible; }
 #mCompra .cp-bas { margin-top: 16px; overflow: visible; }
 .cp-super { font-family: var(--mono); font-size: 10px; color: var(--ok); margin: 12px 4px 0; }
 .cp-super:empty { display: none; }
@@ -494,7 +499,7 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
       </div>
       <div class="fila">
         <a href="#" class="w tiempo" id="tiempo"><div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div><span class="t12">Cargando…</span></div></a>
-        <div class="w wc" id="wCompra"><div id="wcTop" data-acc="ir"></div><div class="cp-in"><input id="wcInT" type="text" autocomplete="off" autocorrect="off" placeholder="Apuntar algo…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div><div class="crece" data-acc="ir"></div><span class="rot">habituales</span><div class="wc-pills" id="wcP"></div></div>
+        <div class="w wc" id="wCompra"><div id="wcTop" data-acc="ir"></div><div class="cp-in"><input id="wcInT" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div><div class="crece" data-acc="ir"></div><span class="rot">habituales</span><div class="wc-pills" id="wcP"></div></div>
         <div class="w pend">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
           <h2 class="w-tit">Tareas de hoy</h2><span class="t12">Pendiente de desarrollo</span>
@@ -505,11 +510,11 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
     <!-- Página Compra -->
     <div class="pagina" id="pagCompra">
       <section class="cp-bas" id="cBas"></section>
-      <section class="w cp-lis">
-        <div class="cp-lis-cab"><div class="cp-tit"><h1>Lista<span class="sub" id="cCuenta"></span></h1></div>
-          <div class="cp-in"><input id="cIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añadir algo…" aria-label="Añadir a la lista"><a data-acc="mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
+      <section class="cp-lis">
+        <div class="cp-carta cp-cab"><div class="cp-tit"><h1>Lista de la compra<span class="sub" id="cCuenta"></span></h1></div>
+          <div class="cp-in"><input id="cIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Añadir a la lista"><a data-acc="mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
           <div class="cp-sug" id="cSug"></div></div>
-        <div class="cp-items" id="cItems"></div>
+        <div class="cp-carta cp-lcarta"><div class="cp-items" id="cItems"></div></div>
       </section>
     </div>
 
@@ -538,7 +543,7 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
     <div class="w pend m-p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg><h2 class="w-tit">Comer fuera</h2><span class="t12">Pendiente</span></div>
   </div>
   <div class="w wc m-m" id="wCompraM"><div class="wc-cab" data-acc="ir"><h2 class="w-tit">Compra</h2><span class="wc-n" id="wcNM"></span></div>
-    <div class="cp-in"><input id="wcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Apuntar algo…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
+    <div class="cp-in"><input id="wcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
     <div class="wc-pills" id="wcPM"></div></div>
   <div class="w pend m-m"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><h2 class="w-tit">Mis tareas de hoy</h2><span class="t12">Pendiente de desarrollo</span></div>
   </div>
@@ -546,10 +551,10 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
   <div id="mCompra" class="v-lista">
     <div class="cp-seg"><span data-acc="seg" data-v="lista" id="mcSegL">Lista</span><span data-acc="seg" data-v="bas" id="mcSegB">Básicos</span></div>
     <div id="mcLis">
-      <div class="cp-in"><input id="mcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añadir algo…" aria-label="Añadir a la lista"><a data-acc="mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
+      <div class="cp-carta cp-cab"><div class="cp-in"><input id="mcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Añadir a la lista"><a data-acc="mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
       <div class="cp-sug" id="mcSug"></div>
-      <div class="cp-super" id="mcSuper"></div>
-      <div class="cp-items" id="mcItems"></div>
+      <div class="cp-super" id="mcSuper"></div></div>
+      <div class="cp-carta cp-lcarta"><div class="cp-items" id="mcItems"></div></div>
     </div>
     <section class="cp-bas" id="mcBas"></section>
   </div>
@@ -1106,7 +1111,7 @@ document.addEventListener('visibilitychange', function () { if (!document.hidden
 // ---------- pintar ----------
 function gruposOrden() { return CS.grupos.slice(0).sort(function (a, b) { return (a.orden - b.orden) || (a.id > b.id ? 1 : -1); }); }
 function htmlBasicos() {
-  var gs = gruposOrden(), h = '<div class="cp-carta cp-cab"><div class="cp-tit"><h1>Básicos</h1><a class="cp-btn' + (CV.editar ? ' on' : '') + '" data-acc="editar" aria-label="Editar básicos">' + LAPIZ + '</a></div></div>', i, k;
+  var gs = gruposOrden(), h = '<div class="cp-carta cp-cab"><div class="cp-tit"><h1>Básicos del supermercado</h1><a class="cp-btn' + (CV.editar ? ' on' : '') + '" data-acc="editar" aria-label="Editar básicos">' + LAPIZ + '</a></div></div>', i, k;
   for (i = 0; i < gs.length; i++) {
     var g = gs[i], ab = CV.abierto === g.id, bs = [], n = 0;
     for (k = 0; k < CS.basicos.length; k++) if (CS.basicos[k].grupo_id === g.id) bs.push(CS.basicos[k]);
