@@ -310,8 +310,11 @@ body.movil.p-cal #mCal { display: block; margin-top: 12px; }
 .k-dia.otro { box-shadow: inset 0 -1px 0 var(--sep); }
 /* Baraja: los días siguientes se meten 40 px bajo la tarjeta de arriba */
 .k-ag { position: relative; z-index: 1; margin-top: -40px !important; padding: 0; background: transparent; border-radius: 0; display: flex; flex-direction: column; overflow: hidden; }
-.k-izq .k-dia { flex: 1 1 0; }
+/* iPad: la destacada mide lo que su contenido (mínimo 240 px); debajo, todos los días desplegados y un degradado al final */
+.k-izq .k-dia { flex: 0 0 auto; min-height: 240px; }
 .k-izq .k-ag { flex: 1 1 0; min-height: 0; }
+.k-izq .k-ag:after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 96px; z-index: 30; pointer-events: none;
+  background: -webkit-linear-gradient(top, rgba(228,225,217,0), #e4e1d9 85%); background: linear-gradient(rgba(228,225,217,0), #e4e1d9 85%); }
 .k-bar { position: relative; flex-shrink: 0; display: flex; padding: 52px 16px 12px; background: var(--widget); border-radius: 20px; cursor: pointer; box-shadow: inset 0 -1px 0 var(--sep); }
 .k-bar + .k-bar { margin-top: -40px; }
 .k-bar.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-finde); }
@@ -503,7 +506,6 @@ function encajar() {
   st.style.width = (vw / s) + 'px'; st.style.height = (vh / s) + 'px';
   var t = 'translate(0px,' + top + 'px) scale(' + s + ')';
   st.style.webkitTransform = t; st.style.transform = t;
-  if (/p-cal/.test(document.body.className) && $('kAg')) encajarBaraja($('kAg'));
 }
 window.addEventListener('resize', encajar);
 window.addEventListener('orientationchange', function () { setTimeout(encajar, 300); });
@@ -796,28 +798,13 @@ function htmlAgenda(lineas) {
   }
   return tarjetas.join('');
 }
-// iPad: deja solo las tarjetas que caben enteras; la última se estira hasta abajo
-function encajarBaraja(c) {
-  var t = c.childNodes, k, lim = c.getBoundingClientRect().bottom, ult = null;
-  for (k = 0; k < t.length; k++) {
-    t[k].className = t[k].className.replace(/\s*ultima/g, '');
-    t[k].style.display = '';
-  }
-  for (k = 0; k < t.length; k++) {
-    if (t[k].getBoundingClientRect().bottom > lim + 0.5) { for (var j = k; j < t.length; j++) t[j].style.display = 'none'; break; }
-    ult = t[k];
-  }
-  if (ult) ult.className += ' ultima';
-}
-
 function pintarPagCal() {
   var dia = htmlDia();
   $('kDia').className = dia.cls; $('kDia').innerHTML = dia.html;
   $('kDiaM').className = dia.cls; $('kDiaM').innerHTML = dia.html;
   $('kMiniM').innerHTML = htmlMini(true);
-  $('kAg').innerHTML = htmlAgenda(3); $('kAgM').innerHTML = htmlAgenda(0);
-  if (!MOVIL && /p-cal/.test(document.body.className)) encajarBaraja($('kAg'));
-  else { var lm = $('kAgM').lastChild; if (lm) lm.className += ' ultima'; }
+  $('kAg').innerHTML = htmlAgenda(0); $('kAgM').innerHTML = htmlAgenda(0);
+  var lm = $('kAgM').lastChild; if (lm) lm.className += ' ultima';
   $('kSem').innerHTML = htmlMes();
 }
 
