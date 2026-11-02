@@ -85,7 +85,7 @@ a { color: inherit; text-decoration: none; }
 /* Calendario */
 .cal { padding: 0; flex-direction: row; }
 /* Hoy a sangre: sin margen arriba, abajo ni a la izquierda; el texto queda a 16 px, alineado con el widget del tiempo */
-.hoy { flex: 2.2 1 0; min-width: 0; background: var(--acento); padding: 24px 16px 30px 16px; display: flex; flex-direction: column; }
+.hoy { flex: 2.2 1 0; min-width: 0; background: var(--acento); border-radius: 20px; padding: 24px 16px 30px 16px; display: flex; flex-direction: column; }
 .hoy-cab { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; }
 .hoy-num { display: flex; align-items: baseline; margin-top: 8px; }
 .hoy-num b { font-size: 60px; font-weight: 300; line-height: 0.9; letter-spacing: -2px; }
@@ -105,7 +105,8 @@ a { color: inherit; text-decoration: none; }
 .dia.finde + .dia.finde { border-left-color: var(--sep-fuerte); }
 .dia.ultimo { padding-right: 14px; }
 /* Variante en dos filas de tres días (?filas2) */
-.dias6 { flex: 6 1 0; min-width: 0; display: flex; flex-direction: column; }
+.cal.f2 .hoy { flex: 1 1 0; }        /* dos filas: hoy 25 %, días 75 % */
+.dias6 { flex: 3 1 0; min-width: 0; display: flex; flex-direction: column; }
 .dias-fila { flex: 1 1 0; min-height: 0; display: flex; }
 .dias-fila + .dias-fila { border-top: 1px solid var(--sep); }
 .dias6 .dia { padding: 16px 14px 10px; overflow: hidden; }
@@ -176,7 +177,7 @@ body.movil #movil { display: block; padding: 14px 14px 96px; }
 .m-hoy { flex-shrink: 0; }
 .m-dias { flex: 1 1 0; min-height: 0; overflow: hidden; }
 .m-cal { padding: 0 0 6px; }
-.m-hoy { background: var(--acento); padding: 16px; }
+.m-hoy { background: var(--acento); border-radius: 20px; padding: 16px; }
 .m-hoy-cab { display: flex; justify-content: space-between; align-items: baseline; }
 .m-hoy-cab .n { display: flex; align-items: baseline; }
 .m-hoy-cab b { font-size: 44px; font-weight: 300; line-height: 0.9; letter-spacing: -1.5px; }
@@ -594,6 +595,7 @@ function pintarCal() {
   }
   if (FILAS2) html += '</div></div>';
   $('cal').innerHTML = html;
+  $('cal').className = 'w cal' + (FILAS2 ? ' f2' : '');
   pintarCalMovil(porDia, hoy, fest, normales);
 }
 
