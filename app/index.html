@@ -105,10 +105,10 @@ a { color: inherit; text-decoration: none; }
 .dia.finde { background: var(--finde); }
 .dia.finde + .dia.finde { border-left-color: var(--sep-fuerte); }
 .dia.ultimo { padding-right: 16px; }
-/* Tarjetas apiladas (una fila): cada día es una cartulina que se mete 20 px bajo la anterior */
+/* Tarjetas apiladas (una fila): cada día se mete 40 px (dos veces el radio) bajo la anterior, para que no asome su curva */
 .cal.apil { background: transparent; }
 .cal.apil .hoy { position: relative; }
-.cal.apil .dia { position: relative; background: var(--widget); border-radius: 20px; margin-left: -20px; padding-left: 32px; border: 0; box-shadow: inset -1px 0 0 var(--sep); }
+.cal.apil .dia { position: relative; background: var(--widget); border-radius: 20px; margin-left: -40px; padding-left: 52px; border: 0; box-shadow: inset -1px 0 0 var(--sep); }
 .cal.apil .dia.finde { background: var(--finde); box-shadow: inset -1px 0 0 var(--sep-fuerte); }
 .cal.apil .dia.ultimo { box-shadow: none; }
 /* Variante en dos filas de tres días (?filas2) */
@@ -153,7 +153,7 @@ a { color: inherit; text-decoration: none; }
 .dos { display: flex; margin-top: 20px !important; }
 .dos > div { flex: 1 1 0; display: flex; flex-direction: column; }
 .dos .v { font-size: 13px; margin-top: 2px; }
-.prev { position: relative; display: flex; align-items: center; flex-shrink: 0; height: 64px; margin-top: -20px; padding: 20px 16px 0; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
+.prev { position: relative; display: flex; align-items: center; flex-shrink: 0; height: 84px; margin-top: -40px; padding: 40px 16px 0; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
 .prev.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-fuerte); }
 .prev.ultima { box-shadow: none; }
 .prev .rot { width: 58px; }
@@ -219,7 +219,7 @@ body.movil #movil { display: block; padding: 16px 16px 96px; }
 .m-tiempo .rot { font-size: 10px; }
 .m-tiempo b { font-size: 36px; font-weight: 300; line-height: 1; letter-spacing: -1px; margin-top: 8px; }
 .m-tiempo .t12 { margin-top: 8px; }
-.m-tiempo .sig { position: relative; z-index: 2; flex-shrink: 0; height: 52px; margin-top: -20px; padding: 20px 16px 0; background: var(--widget); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.m-tiempo .sig { position: relative; z-index: 2; flex-shrink: 0; height: 72px; margin-top: -40px; padding: 40px 16px 0; background: var(--widget); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
 .m-tiempo .sig.finde { background: var(--finde); }
 #movil .pend { padding: 12px; }
 .m-nav { position: fixed; left: 0; right: 0; bottom: 0; background: var(--widget); border-top: 1px solid #dcd9d1; padding: 8px 16px 24px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); display: flex; z-index: 20; }
