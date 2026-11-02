@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Space+Mono&amp;display=swap">
 <!--
   Maqueta de la página Compra. Datos inventados.
-  ?vista=ipad (1024×768) · ?vista=movil (lista) · ?vista=movil-despensa · ?vista=movil-buscar
+  ?vista=ipad (1024×768) · ?vista=movil (lista) · ?vista=movil-despensa · ?vista=movil-buscar · ?vista=movil-nota
   Reglas: escala 4/8, tarjetas en baraja (40 px de solape) cuando son partes de una misma cosa.
 -->
 <style>
@@ -63,6 +63,33 @@ svg { display: block; }
 .pill.en b { font-family: var(--mono); font-size: 10px; font-weight: 400; margin-left: 8px; opacity: 0.7; }
 .pill.mas { background: transparent; box-shadow: inset 0 0 0 1px var(--sep-fuerte); color: var(--sec); }
 
+/* Básicos: acordeón en baraja */
+.desp2 { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+.d-cab { padding: 16px !important; box-shadow: inset 0 -1px 0 var(--sep); }
+.d-grupo { cursor: pointer; }
+.d-tit { display: flex; align-items: center; height: 28px; font-size: 14px; font-weight: 500; }
+.d-tit .d-n { margin-left: auto; margin-right: 12px; font-family: var(--mono); font-size: 10px; color: var(--sec); display: flex; align-items: center; }
+.d-n i { width: 6px; height: 6px; border-radius: 3px; background: var(--acento); margin-right: 6px; }
+.d-grupo.abierto .pills { margin-top: 8px; padding-bottom: 8px; }
+.d-grupo.ultima { flex-grow: 1; box-shadow: none; }
+.pill.en { background: var(--acento) !important; color: var(--tinta) !important; }
+.pill.mas { width: 36px; padding: 0; justify-content: center; }
+.item .n1 { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item .nota { display: block; font-size: 12px; color: var(--sec); margin-top: 2px; white-space: normal; }
+.item .nom { padding: 8px 0; }
+.pista { margin-top: 12px; text-align: center; font-size: 11px; color: var(--ter); }
+/* Nota (mantener pulsado) */
+.velo { position: fixed; z-index: 100; left: 0; top: 0; right: 0; bottom: 0; background: rgba(29,29,27,0.35); }
+.hoja { position: fixed; z-index: 101; left: 16px; right: 16px; bottom: 296px; background: var(--widget); border-radius: 20px; padding: 16px; }
+.hoja .rot { font-size: 10px; }
+.hoja h2 { margin: 4px 0 0; font-size: 18px; font-weight: 600; display: flex; align-items: center; }
+.hoja h2 .pto { margin-left: 8px; }
+.campo { margin-top: 12px; min-height: 72px; padding: 12px 16px; border-radius: 16px; background: var(--fondo); font-size: 14px; }
+.campo i { display: inline-block; width: 1px; height: 16px; background: var(--tinta); vertical-align: -3px; }
+.botones { display: flex; align-items: center; margin-top: 12px; }
+.botones .quitar { font-size: 13px; color: var(--aviso); }
+.botones .guardar { margin-left: auto; height: 44px; padding: 0 24px; border-radius: 22px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; font-size: 13px; font-weight: 600; }
+
 /* Lista */
 .lista { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; }
 .lista-cab { padding: 16px 16px 0; }
@@ -105,7 +132,7 @@ svg { display: block; }
 .movil .anadir { margin-top: 16px; background: var(--widget); box-shadow: inset 0 0 0 1px var(--sep); }
 .movil .baraja { margin-top: 16px; overflow: visible; }
 .movil .carta.primera { padding-top: 16px; }
-.movil .desp { padding: 16px; margin-top: 16px; }
+.movil .desp2 { margin-top: 16px; overflow: visible; }
 .sugs { margin-top: 8px; background: var(--widget); border-radius: 20px; padding: 8px 16px; box-shadow: 0 4px 16px rgba(29,29,27,0.08); }
 .sug { display: flex; align-items: center; min-height: 44px; font-size: 14px; }
 .sug + .sug { border-top: 1px solid var(--sep); }
@@ -113,7 +140,7 @@ svg { display: block; }
 .sug b { font-weight: 600; }
 .nuevo { display: flex; align-items: center; margin-top: 12px; padding: 12px 16px; border-radius: 20px; background: var(--finde); font-size: 13px; color: var(--sec); }
 .nuevo .chip { margin-left: auto; height: 32px; padding: 0 12px; border-radius: 16px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; font-size: 12px; font-weight: 600; white-space: nowrap; }
-.teclado { position: absolute; left: 0; right: 0; bottom: 0; height: 280px; background: #d1d3d9; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: #7a7d85; }
+.teclado { position: fixed; z-index: 101; left: 0; right: 0; bottom: 0; height: 280px; background: #d1d3d9; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: #7a7d85; }
 .m-nav { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 7px; background: var(--widget); border: 1px solid var(--sep); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 16px rgba(29,29,27,0.08); }
 .m-nav a { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
 .m-nav svg { width: 22px; height: 22px; }
@@ -135,6 +162,8 @@ var I = {
   mas: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   menos: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg>',
   masp: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  abajo: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+  arriba: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>',
   tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f4f3ef" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
 };
 
@@ -151,32 +180,39 @@ var DESP = [
   ['Higiene', ['Papel WC', 'Gel', 'Champú', 'Pasta de dientes']]
 ];
 // Lista: [artículo, cantidad, quién, en el carro?, fuera de básicos?]
+// Lista: [artículo, quién, nota, fuera de básicos?]
 var LISTA = {
-  'Fruta': [['Plátanos', '1 u.', 'L'], ['Fresas', '1 u.', 'M']],
-  'Verdura': [['Tomates', '1 u.', 'L']],
-  'Carne': [['Pechugas', '2 u.', 'L'], ['Carne picada ternera', '1 u.', 'M']],
-  'Lácteos y huevos': [['Huevos', '2 doc.', 'L'], ['Leche', '6 u.', 'L']],
-  'Postres': [['Yogur griego', '4 u.', 'M']],
-  'Otros': [['Piñones', '1 u.', 'L', false, true]],
-  'Limpieza': [['Friegasuelos', '1 u.', 'L'], ['Lejía', '1 u.', 'M']]
+  'Fruta': [['Plátanos', 'L'], ['Fresas', 'M', 'Si están buenas; si no, mandarinas']],
+  'Verdura': [['Tomates', 'L']],
+  'Carne': [['Carne', 'L', 'Ternera para guisar, unos 800 g'], ['Pechugas', 'L']],
+  'Lácteos y huevos': [['Huevos', 'L'], ['Leche', 'L']],
+  'Postres': [['Yogur griego', 'M']],
+  'Otros': [['Piñones', 'L', null, true]],
+  'Limpieza': [['Friegasuelos', 'L'], ['Lejía', 'M', 'La de lavadora, no la normal']]
 };
-var CARRO = [['Pan de molde', '1 u.', 'M'], ['Café', '2 u.', 'L']];
+var CARRO = ['Pan de molde', 'Café'];
 var ORDEN = ['Fruta', 'Verdura', 'Carne', 'Pescado', 'Lácteos y huevos', 'Postres', 'Despensa', 'Otros', 'Limpieza', 'Higiene'];
+var ABIERTO = 'Fruta';
 
-function enLista(nom) { for (var g in LISTA) for (var k = 0; k < LISTA[g].length; k++) if (LISTA[g][k][0] === nom) return LISTA[g][k][1]; return null; }
+function enLista(nom) { for (var g in LISTA) for (var k = 0; k < LISTA[g].length; k++) if (LISTA[g][k][0] === nom) return true; return false; }
 function cuenta() { var n = 0; for (var g in LISTA) n += LISTA[g].length; return n; }
+function enGrupo(g) { var n = 0; for (var k = 0; k < g[1].length; k++) if (enLista(g[1][k])) n++; return n; }
 
+// Básicos: acordeón en baraja; solo un grupo abierto
 function htmlDespensa(movil) {
-  var h = '<section class="w desp"><div class="cab"><h1>Básicos<span class="sub">toca para añadir a la lista</span></h1><a class="ico-btn borde" aria-label="Editar">' + I.lapiz + '</a></div><div class="grupos">';
+  var h = '<section class="desp2"><div class="carta d-cab" style="z-index:40"><div class="cab"><h1>Básicos<span class="sub">toca para añadir</span></h1><a class="ico-btn borde" aria-label="Editar">' + I.lapiz + '</a></div></div>';
   for (var g = 0; g < DESP.length; g++) {
-    h += '<div class="grupo"><span class="rot">' + DESP[g][0].toLowerCase() + '</span><div class="pills">';
-    for (var k = 0; k < DESP[g][1].length; k++) {
-      var n = DESP[g][1][k], c = enLista(n);
-      h += '<span class="pill' + (c ? ' en' : '') + '">' + n + (c ? '<b>' + c + '</b>' : '') + '</span>';
+    var abierto = DESP[g][0] === ABIERTO, n = enGrupo(DESP[g]);
+    h += '<div class="carta d-grupo' + (abierto ? ' abierto' : '') + (g === DESP.length - 1 ? ' ultima' : '') + '" style="z-index:' + (39 - g) + '">' +
+      '<div class="d-tit"><span>' + DESP[g][0] + '</span><span class="d-n">' + (n ? '<i></i>' + n + ' en la lista' : '') + '</span>' + (abierto ? I.arriba : I.abajo) + '</div>';
+    if (abierto) {
+      h += '<div class="pills">';
+      for (var k = 0; k < DESP[g][1].length; k++) { var nm = DESP[g][1][k]; h += '<span class="pill' + (enLista(nm) ? ' en' : '') + '">' + nm + '</span>'; }
+      h += '<span class="pill mas">' + I.masp + '</span></div>';
     }
-    h += '</div></div>';
+    h += '</div>';
   }
-  return h + '</div></section>';
+  return h + '</section>';
 }
 
 function htmlLista(movil) {
@@ -186,14 +222,14 @@ function htmlLista(movil) {
     h += '<div class="carta' + (primera ? ' primera' : '') + '" style="z-index:' + (z--) + '"><span class="rot"><span>' + g.toLowerCase() + '</span><span>' + l.length + '</span></span>';
     for (var k = 0; k < l.length; k++) {
       var it = l[k];
-      h += '<div class="item"><span class="check"></span><span class="nom">' + it[0] + '<span class="pto ' + it[2] + '"></span>' + (it[4] ? '<em>nuevo</em>' : '') + '</span>' +
-        '<span class="cant"><a>' + I.menos + '</a><span>' + it[1] + '</span><a>' + I.masp + '</a></span></div>';
+      h += '<div class="item"><span class="check"></span><span class="nom"><span class="n1">' + it[0] + '<span class="pto ' + it[1] + '"></span>' + (it[3] ? '<em>nuevo</em>' : '') + '</span>' +
+        (it[2] ? '<span class="nota">' + it[2] + '</span>' : '') + '</span></div>';
     }
     h += '</div>'; primera = false;
   }
   h += '<div class="carta carro" style="z-index:1"><span class="rot"><span>en el carro</span><span>' + CARRO.length + '</span></span>';
-  for (var c = 0; c < CARRO.length; c++) h += '<div class="item"><span class="check ok">' + I.tick + '</span><span class="nom">' + CARRO[c][0] + '</span><span class="cant"><span>' + CARRO[c][1] + '</span></span></div>';
-  h += '<div class="terminar">Terminar compra</div></div>';
+  for (var c = 0; c < CARRO.length; c++) h += '<div class="item"><span class="check ok">' + I.tick + '</span><span class="nom"><span class="n1">' + CARRO[c] + '</span></span></div>';
+  h += '<div class="terminar">Terminar compra</div><div class="pista">Mantén pulsado un artículo para añadirle una nota</div></div>';
   return h + '</div>';
 }
 
@@ -207,7 +243,7 @@ function ipad() {
     '</div></main></div>';
 }
 
-function movil(pest, buscar) {
+function movil(pest, buscar, nota) {
   var h = '<div class="movil"><div class="m-top"><div><div class="logo">P<span>.</span></div><div class="m-fecha">Domingo, 1 de noviembre</div></div><span class="m-yo">L</span></div>' +
     '<div class="seg"><span class="' + (pest === 'lista' ? 'on' : '') + '">Lista<b>' + cuenta() + '</b></span><span class="' + (pest === 'desp' ? 'on' : '') + '">Básicos</span></div>';
   if (pest === 'lista') {
@@ -221,12 +257,14 @@ function movil(pest, buscar) {
     }
     h += '<div class="anadir"><span>Añadir algo…</span><a class="mas-btn">' + I.mas + '</a></div>' + htmlLista(true);
   } else h += htmlDespensa(true);
-  h += '<nav class="m-nav"><a>' + I.inicio + '</a><a>' + I.cal + '</a><a><span class="on">' + I.compra + '</span></a><a>' + I.tareas + '</a><a>' + I.mas3 + '</a></nav>';
+  if (nota) h += '<div class="velo"></div><div class="hoja"><span class="rot">carne · nota para quien compra</span><h2>Carne<span class="pto L"></span></h2>' +
+    '<div class="campo">Ternera para guisar, unos 800 g<i></i></div><div class="botones"><span class="quitar">Quitar de la lista</span><span class="guardar">Guardar</span></div></div><div class="teclado">teclado</div>';
+  if (!nota) h += '<nav class="m-nav"><a>' + I.inicio + '</a><a>' + I.cal + '</a><a><span class="on">' + I.compra + '</span></a><a>' + I.tareas + '</a><a>' + I.mas3 + '</a></nav>';
   return h + '</div>';
 }
 
 var v = (location.search.match(/vista=([\w-]+)/) || [])[1] || 'ipad';
-document.getElementById('raiz').innerHTML = v === 'ipad' ? ipad() : v === 'movil-despensa' ? movil('desp') : v === 'movil-buscar' ? movil('lista', true) : movil('lista');
+document.getElementById('raiz').innerHTML = v === 'ipad' ? ipad() : v === 'movil-despensa' ? movil('desp') : v === 'movil-buscar' ? movil('lista', true) : v === 'movil-nota' ? movil('lista', false, true) : movil('lista');
 </script>
 </body>
 </html>
