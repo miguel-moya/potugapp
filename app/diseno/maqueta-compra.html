@@ -90,6 +90,15 @@ svg { display: block; }
 .botones .quitar { font-size: 13px; color: var(--aviso); }
 .botones .guardar { margin-left: auto; height: 44px; padding: 0 24px; border-radius: 22px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; font-size: 13px; font-weight: 600; }
 
+/* Lista con franjas de grupo */
+.lista2 { flex-grow: 1; min-height: 0; overflow: hidden; padding-bottom: 16px; }
+.franja { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 16px; background: var(--finde); font-size: 12px; font-weight: 600; color: var(--sec); }
+.lista2 .item { padding: 0 16px; }
+.lista2 .item + .item { border-top: 0; box-shadow: inset 0 1px 0 var(--sep); }
+.lista2 .item.hecho .n1 { color: var(--ter); text-decoration: line-through; }
+.lista2 .terminar { margin: 16px 16px 0; }
+.movil .lista2 { margin-top: 16px; background: var(--widget); border-radius: 20px; overflow: hidden; }
+
 /* Lista */
 .lista { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; }
 .lista-cab { padding: 16px 16px 0; }
@@ -200,11 +209,11 @@ function enGrupo(g) { var n = 0; for (var k = 0; k < g[1].length; k++) if (enLis
 
 // Básicos: acordeón en baraja; solo un grupo abierto
 function htmlDespensa(movil) {
-  var h = '<section class="desp2"><div class="carta d-cab" style="z-index:40"><div class="cab"><h1>Básicos<span class="sub">toca para añadir</span></h1><a class="ico-btn borde" aria-label="Editar">' + I.lapiz + '</a></div></div>';
+  var h = '<section class="desp2"><div class="carta d-cab" style="z-index:40"><div class="cab"><h1>Básicos</h1><a class="ico-btn borde" aria-label="Editar">' + I.lapiz + '</a></div></div>';
   for (var g = 0; g < DESP.length; g++) {
     var abierto = DESP[g][0] === ABIERTO, n = enGrupo(DESP[g]);
     h += '<div class="carta d-grupo' + (abierto ? ' abierto' : '') + (g === DESP.length - 1 ? ' ultima' : '') + '" style="z-index:' + (39 - g) + '">' +
-      '<div class="d-tit"><span>' + DESP[g][0] + '</span><span class="d-n">' + (n ? '<i></i>' + n + ' en la lista' : '') + '</span>' + (abierto ? I.arriba : I.abajo) + '</div>';
+      '<div class="d-tit"><span>' + DESP[g][0] + '</span><span class="d-n">' + (n ? n + ' en la lista' : '') + '</span>' + (abierto ? I.arriba : I.abajo) + '</div>';
     if (abierto) {
       h += '<div class="pills">';
       for (var k = 0; k < DESP[g][1].length; k++) { var nm = DESP[g][1][k]; h += '<span class="pill' + (enLista(nm) ? ' en' : '') + '">' + nm + '</span>'; }
@@ -215,21 +224,21 @@ function htmlDespensa(movil) {
   return h + '</section>';
 }
 
+// Lista: una sola tarjeta; cada grupo empieza con una franja gris a sangre
 function htmlLista(movil) {
-  var h = '<div class="baraja">', z = 30, primera = true;
+  var h = '<div class="lista2">';
   for (var o = 0; o < ORDEN.length; o++) {
     var g = ORDEN[o], l = LISTA[g]; if (!l) continue;
-    h += '<div class="carta' + (primera ? ' primera' : '') + '" style="z-index:' + (z--) + '"><span class="rot"><span>' + g.toLowerCase() + '</span><span>' + l.length + '</span></span>';
+    h += '<div class="franja"><span>' + g + '</span><span class="rot">' + l.length + '</span></div>';
     for (var k = 0; k < l.length; k++) {
       var it = l[k];
       h += '<div class="item"><span class="check"></span><span class="nom"><span class="n1">' + it[0] + '<span class="pto ' + it[1] + '"></span>' + (it[3] ? '<em>nuevo</em>' : '') + '</span>' +
         (it[2] ? '<span class="nota">' + it[2] + '</span>' : '') + '</span></div>';
     }
-    h += '</div>'; primera = false;
   }
-  h += '<div class="carta carro" style="z-index:1"><span class="rot"><span>en el carro</span><span>' + CARRO.length + '</span></span>';
-  for (var c = 0; c < CARRO.length; c++) h += '<div class="item"><span class="check ok">' + I.tick + '</span><span class="nom"><span class="n1">' + CARRO[c] + '</span></span></div>';
-  h += '<div class="terminar">Terminar compra</div><div class="pista">Mantén pulsado un artículo para añadirle una nota</div></div>';
+  h += '<div class="franja"><span>En el carro</span><span class="rot">' + CARRO.length + '</span></div>';
+  for (var c = 0; c < CARRO.length; c++) h += '<div class="item hecho"><span class="check ok">' + I.tick + '</span><span class="nom"><span class="n1">' + CARRO[c] + '</span></span></div>';
+  h += '<div class="terminar">Terminar compra</div>';
   return h + '</div>';
 }
 
@@ -239,7 +248,7 @@ function ipad() {
     '<div class="esp"></div><span class="yo">L</span></nav><main class="content"><header class="topbar"><span class="hora">17:40</span><span class="fecha">Domingo, 1 de noviembre</span></header>' +
     '<div class="cuerpo">' + htmlDespensa() +
     '<section class="w lista"><div class="lista-cab"><div class="cab"><h1>Lista<span class="sub">' + cuenta() + ' por comprar</span></h1></div>' +
-    '<div class="anadir"><span>Añadir algo…</span><a class="mas-btn">' + I.mas + '</a></div></div><div style="height:12px"></div>' + htmlLista() + '</section>' +
+    '<div class="anadir"><span>Añadir algo…</span><a class="mas-btn">' + I.mas + '</a></div></div><div style="height:16px"></div>' + htmlLista() + '</section>' +
     '</div></main></div>';
 }
 
