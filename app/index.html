@@ -248,6 +248,7 @@ body.p-cal #pagCal { display: flex; }
 .k-c { flex: 1 1 0; min-width: 0; padding: 7px 6px 4px 8px; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; }
 .k-c.finde { background: var(--finde); }
 .k-c.khoy { background: var(--acento); }
+.k-c.fuera .k-n, .k-c.fuera .k-it { opacity: 0.35; }
 .k-c.sel { box-shadow: inset 0 0 0 1.5px var(--tinta); }
 .k-c.pasado .k-n, .k-c.pasado .k-it { opacity: 0.4; }
 .k-c.sindatos { cursor: default; }
@@ -274,6 +275,7 @@ body.movil.p-cal #mCal { display: block; margin-top: 12px; }
 #mCal .k-dia .crece { min-height: 18px; }
 #mCal .k-dia .ev .t { font-size: 14px; }
 .k-ag { margin-top: 12px; padding: 6px 8px; }
+.k-izq .k-ag { height: 300px; flex-shrink: 0; margin-top: 14px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 8px 6px; }
 .k-ag-dia { display: flex; padding: 10px 8px; border-bottom: 1px solid var(--sep); cursor: pointer; }
 .k-ag-dia:last-child { border-bottom: 0; }
 .k-ag-dia.finde { background: var(--finde); border-bottom-color: var(--sep-fuerte); }
@@ -356,7 +358,7 @@ body.movil.p-cal #mCal { display: block; margin-top: 12px; }
     <div class="pagina" id="pagCal">
       <div class="k-izq">
         <section class="w k-dia" id="kDia"></section>
-        <section class="w k-mini" id="kMini"></section>
+        <section class="w k-ag" id="kAg"></section>
       </div>
       <section class="w k-sem" id="kSem"></section>
     </div>
@@ -623,15 +625,12 @@ function rejilla() {
 var MESES3 = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 var FLECHA_I = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>';
 var FLECHA_D = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
-var K = { sel: null, ini: null, mes: null };   // día elegido (ISO), lunes de la 1ª fila, primer día del mes pequeño
+var K = { sel: null, mes: null };   // día elegido (ISO) y primer día del mes que se ve
 function deISO(t) { var p = t.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
 function lunes(d) { return masDias(d, -((d.getDay() + 6) % 7)); }
 function hoyD() { var d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
 function conDatos(iso) { return !RANGO.hasta || (iso >= RANGO.desde && iso < RANGO.hasta); }
-// Último lunes posible para la 1ª fila: que la última fila aún tenga días con datos
-function maxIni() { return masDias(lunes(masDias(RANGO.hasta ? deISO(RANGO.hasta) : masDias(hoyD(), 92), -1)), -28); }
-function encajarIni() { var a = lunes(hoyD()), b = maxIni(); if (K.ini > b) K.ini = b; if (K.ini < a) K.ini = a; }
-function volverHoy() { var h = hoyD(); K.sel = diaISO(h); K.ini = lunes(h); K.mes = new Date(h.getFullYear(), h.getMonth(), 1); }
+function volverHoy() { var h = hoyD(); K.sel = diaISO(h); K.mes = new Date(h.getFullYear(), h.getMonth(), 1); }
 volverHoy();
 
 function eventosDe(iso) {
@@ -662,9 +661,7 @@ function htmlDia() {
 
 function htmlMini(conPuntos) {
   var m = K.mes, hoy = diaISO(hoyD()), h, f, c;
-  var minMes = new Date(hoyD().getFullYear(), hoyD().getMonth(), 1);
-  var maxMes = masDias(RANGO.hasta ? deISO(RANGO.hasta) : masDias(hoyD(), 92), -1); maxMes = new Date(maxMes.getFullYear(), maxMes.getMonth(), 1);
-  var puedeAtras = m > minMes, puedeAdelante = m < maxMes;
+  var puedeAtras = m > mesMin(), puedeAdelante = m < mesMax();
   h = '<div class="k-mini-cab"><b>' + MESES[m.getMonth()] + ' ' + m.getFullYear() + '</b><div class="flechas">' +
     '<a data-acc="mes-" class="' + (puedeAtras ? '' : 'off') + '" aria-label="Mes anterior">' + FLECHA_I + '</a>' +
     '<a data-acc="mes+" class="' + (puedeAdelante ? '' : 'off') + '" aria-label="Mes siguiente">' + FLECHA_D + '</a></div></div>';
@@ -691,26 +688,34 @@ function htmlMini(conPuntos) {
   return h + '</table>';
 }
 
-function htmlSemanas() {
-  var hoy = diaISO(hoyD()), ini = K.ini, fin = masDias(ini, 34), h, s, k, i;
-  var movido = diaISO(ini) !== diaISO(lunes(hoyD())) || K.sel !== hoy;
-  var puedeAtras = ini > lunes(hoyD()), puedeAdelante = ini < maxIni();
-  h = '<div class="k-sem-cab"><h1>Próximas semanas<span class="rango">' + ini.getDate() + ' ' + MESES3[ini.getMonth()] + ' – ' + fin.getDate() + ' ' + MESES3[fin.getMonth()] + '</span></h1>' +
+// Límites de navegación: del mes actual al mes del último día con datos
+function mesMin() { var h = hoyD(); return new Date(h.getFullYear(), h.getMonth(), 1); }
+function mesMax() { var u = masDias(RANGO.hasta ? deISO(RANGO.hasta) : masDias(hoyD(), 92), -1); return new Date(u.getFullYear(), u.getMonth(), 1); }
+
+// Derecha (iPad): el mes natural, con los eventos de cada día
+function htmlMes() {
+  var hoy = diaISO(hoyD()), m = K.mes, h, s, k, i;
+  var movido = m.getTime() !== mesMin().getTime() || K.sel !== hoy;
+  var ini = lunes(m), ultimo = new Date(m.getFullYear(), m.getMonth() + 1, 0);
+  var filas = Math.ceil((((m.getDay() + 6) % 7) + ultimo.getDate()) / 7);
+  h = '<div class="k-sem-cab"><h1>' + cap(MESES[m.getMonth()]) + ' ' + m.getFullYear() + '</h1>' +
     '<div class="dcha">' + (movido ? '<a class="volver" data-acc="hoy">volver a hoy</a>' : '') + '<div class="flechas">' +
-    '<a data-acc="sem-" class="' + (puedeAtras ? '' : 'off') + '" aria-label="Semana anterior">' + FLECHA_I + '</a>' +
-    '<a data-acc="sem+" class="' + (puedeAdelante ? '' : 'off') + '" aria-label="Semana siguiente">' + FLECHA_D + '</a></div></div></div>';
+    '<a data-acc="mes-" class="' + (m > mesMin() ? '' : 'off') + '" aria-label="Mes anterior">' + FLECHA_I + '</a>' +
+    '<a data-acc="mes+" class="' + (m < mesMax() ? '' : 'off') + '" aria-label="Mes siguiente">' + FLECHA_D + '</a></div></div></div>';
   h += '<div class="k-dias"><span>lun</span><span>mar</span><span>mié</span><span>jue</span><span>vie</span><span>sáb</span><span>dom</span></div><div class="k-rej">';
-  for (s = 0; s < 5; s++) {
+  for (s = 0; s < filas; s++) {
     h += '<div class="k-fila">';
     for (k = 0; k < 7; k++) {
       var d = masDias(ini, s * 7 + k), iso = diaISO(d), x = eventosDe(iso), cls = 'k-c', datos = conDatos(iso);
       if (k >= 5) cls += ' finde';
+      if (d.getMonth() !== m.getMonth()) cls += ' fuera';
       if (iso === hoy) cls += ' khoy'; else if (iso < hoy) cls += ' pasado';
       if (iso === K.sel && iso !== hoy) cls += ' sel';
       if (!datos) cls += ' sindatos';
-      var etiqueta = (d.getDate() === 1 || (s === 0 && k === 0)) ? '<i>' + MESES3[d.getMonth()] + '</i>' : '';
-      h += '<div class="' + cls + '"' + (datos ? ' data-dia="' + iso + '"' : '') + '><span class="k-n"><span>' + d.getDate() + etiqueta + '</span>' + (x.fest ? '<em>[F]</em>' : '') + '</span>';
-      var cab = x.fest ? 3 : 4, vis = x.lista.length > cab ? cab - 1 : x.lista.length;
+      h += '<div class="' + cls + '"' + (datos ? ' data-dia="' + iso + '"' : '') + '><span class="k-n"><span>' + d.getDate() + '</span>' + (x.fest ? '<em>[F]</em>' : '') + '</span>';
+      // líneas que caben bajo el número: 4 con 6 filas, 5 con 5 filas (el festivo ocupa una)
+      var cab = (filas > 5 ? 4 : 5) - (x.fest ? 1 : 0);
+      var vis = x.lista.length > cab ? cab - 1 : x.lista.length;
       if (x.fest) h += '<span class="k-it fest">' + esc(x.fest.titulo) + '</span>';
       for (i = 0; i < vis; i++) h += '<span class="k-it">' + puntos(x.lista[i].quienes) + esc(x.lista[i].titulo) + '</span>';
       if (x.lista.length > vis) h += '<span class="k-mas">+' + (x.lista.length - vis) + ' más</span>';
@@ -721,7 +726,7 @@ function htmlSemanas() {
   return h + '</div>';
 }
 
-// Móvil: agenda de los 13 días siguientes al elegido, con todos sus eventos
+// Agenda de los 13 días siguientes al elegido, con todos sus eventos (iPad y móvil)
 function htmlAgenda() {
   var base = deISO(K.sel), h = '<div class="k-ag-tit">Siguientes días</div>', n, i;
   for (n = 1; n <= 13; n++) {
@@ -741,12 +746,12 @@ function htmlAgenda() {
 }
 
 function pintarPagCal() {
-  var dia = htmlDia(), mini = htmlMini();
+  var dia = htmlDia(), ag = htmlAgenda();
   $('kDia').className = dia.cls; $('kDia').innerHTML = dia.html;
   $('kDiaM').className = dia.cls; $('kDiaM').innerHTML = dia.html;
-  $('kMini').innerHTML = mini; $('kMiniM').innerHTML = htmlMini(true);
-  $('kAgM').innerHTML = htmlAgenda();
-  $('kSem').innerHTML = htmlSemanas();
+  $('kMiniM').innerHTML = htmlMini(true);
+  $('kAg').innerHTML = ag; $('kAg').scrollTop = 0; $('kAgM').innerHTML = ag;
+  $('kSem').innerHTML = htmlMes();
 }
 
 // Toques en la página (un solo escuchador para todo)
@@ -759,18 +764,12 @@ function tocarCal(ev) {
   }
   if (!acc && !dia) return;
   ev.preventDefault();
-  var lunesHoy = lunes(hoyD());
   if (dia) {
-    K.sel = dia; var d = deISO(dia);
-    K.mes = new Date(d.getFullYear(), d.getMonth(), 1);
-    if (d < K.ini || d >= masDias(K.ini, 35)) { K.ini = lunes(d); encajarIni(); }
+    K.sel = dia; var d = deISO(dia), nm = new Date(d.getFullYear(), d.getMonth(), 1);
+    if (nm >= mesMin() && nm <= mesMax()) K.mes = nm;
   } else if (acc === 'hoy') volverHoy();
   else if (acc === 'mes-' || acc === 'mes+') {
     K.mes = new Date(K.mes.getFullYear(), K.mes.getMonth() + (acc === 'mes+' ? 1 : -1), 1);
-    K.ini = lunes(K.mes); encajarIni();
-  } else if (acc === 'sem-' || acc === 'sem+') {
-    K.ini = masDias(K.ini, acc === 'sem+' ? 7 : -7); encajarIni();
-    var dom = masDias(K.ini, 6); K.mes = new Date(dom.getFullYear(), dom.getMonth(), 1);
   }
   pintarPagCal();
   // En el móvil, al tocar un día de la agenda se sube a su tarjeta
