@@ -37,6 +37,7 @@ a { color: inherit; text-decoration: none; }
 .rail > * + * { margin-top: 4px; }
 .logo { font-size: 28px; font-weight: 600; letter-spacing: -1px; height: 40px; margin-top: 4px; display: flex; align-items: center; }
 .logo span { color: var(--bruno); }
+.rail .logo, .m-top .logo { cursor: pointer; }
 .rail .esp { flex-grow: 1; }
 .nav { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; }
 .nav.activo { background: var(--tinta); color: var(--widget); }
@@ -45,7 +46,7 @@ a { color: inherit; text-decoration: none; }
 /* Contenido */
 .content { flex-grow: 1; min-width: 0; padding: 0 16px 16px 0; display: flex; flex-direction: column; }
 .content > * + * { margin-top: 8px; }
-.topbar { height: 40px; padding-top: 4px; display: flex; align-items: center; justify-content: space-between; }
+.topbar { height: 40px; flex-shrink: 0; padding-top: 4px; display: flex; align-items: center; justify-content: space-between; }
 .cuando { display: flex; align-items: baseline; }
 .cuando > * + * { margin-left: 12px; }
 #hora { font-size: 26px; font-weight: 300; letter-spacing: -1px; }
@@ -183,13 +184,14 @@ body.movil #movil { display: block; padding: 16px 16px 96px; }
 .m-fecha { font-size: 13px; color: var(--sec); margin-top: 2px; }
 #estadoM { font-family: var(--mono); font-size: 10px; color: var(--aviso); margin-top: 4px; }
 #estadoM:empty { display: none; }
-#movil .w + .w, #movil .m-fila, #movil .m-fila + .w { margin-top: 12px; }
+#movil .w + .w, #movil .m-fila, #movil .m-fila + .w { margin-top: 16px; }
+#movil .m-fila > .w + .w { margin-top: 0; }
 .m-g, .m-p, .m-m { overflow: hidden; }
 .m-cal { display: flex; flex-direction: column; }
 .m-hoy { flex-shrink: 0; }
-.m-dias { flex: 1 1 0; min-height: 0; overflow: hidden; }
-.m-cal { padding: 0 0 8px; }
-.m-hoy { background: var(--acento); border-radius: 20px; padding: 16px; }
+.m-dias { flex: 1 1 0; min-height: 0; overflow: hidden; margin-top: -40px; display: flex; flex-direction: column; }
+.m-cal { padding: 0; background: transparent; }
+.m-hoy { position: relative; z-index: 10; background: var(--acento); border-radius: 20px; padding: 16px; }
 .m-hoy-cab { display: flex; justify-content: space-between; align-items: baseline; }
 .m-hoy-cab .n { display: flex; align-items: baseline; }
 .m-hoy-cab b { font-size: 44px; font-weight: 300; line-height: 0.9; letter-spacing: -1.5px; }
@@ -199,9 +201,10 @@ body.movil #movil { display: block; padding: 16px 16px 96px; }
 .m-hoy .hoy-lista { margin-top: 12px; }
 .m-hoy .ev .t { font-size: 14px; }
 .m-hoy .ev .h { width: 40px; }
-.m-dia { display: flex; align-items: baseline; padding: 8px 16px; border-bottom: 1px solid var(--sep); }
-.m-dia:last-child { border-bottom: 0; }
-.m-dia.finde { background: var(--finde); border-bottom-color: var(--sep-finde); }
+.m-dia { position: relative; flex-shrink: 0; display: flex; align-items: baseline; padding: 48px 16px 8px; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
+.m-dia + .m-dia { margin-top: -40px; }
+.m-dia.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-finde); }
+.m-dia.ultima { flex-grow: 1; box-shadow: none; }
 .m-dia .rot { width: 34px; flex-shrink: 0; font-size: 11px; }
 .m-dia .num { font-size: 18px; font-weight: 300; width: 22px; flex-shrink: 0; margin-left: 12px; }
 .m-dia .t { font-size: 13px; flex-grow: 1; min-width: 0; margin-left: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -210,8 +213,8 @@ body.movil #movil { display: block; padding: 16px 16px 96px; }
 .m-dia .t.nada { color: var(--ter); }
 .m-dia .mas { margin-left: 12px; flex-shrink: 0; }
 .m-fila { display: flex; align-items: stretch; }
-.m-fila > * { flex: 0 0 auto; width: calc((100% - 12px) / 2); min-width: 0; }
-.m-fila > * + * { margin-left: 12px; }
+.m-fila > * { flex: 0 0 auto; width: calc((100% - 16px) / 2); min-width: 0; }
+.m-fila > * + * { margin-left: 16px; }
 .m-tiempo { padding: 0; background: transparent; }
 .m-tiempo .t-hoy { padding: 16px; }
 .m-tiempo .t-hoy > * + * { margin-top: 0; }
@@ -219,8 +222,13 @@ body.movil #movil { display: block; padding: 16px 16px 96px; }
 .m-tiempo .rot { font-size: 10px; }
 .m-tiempo b { font-size: 36px; font-weight: 300; line-height: 1; letter-spacing: -1px; margin-top: 8px; }
 .m-tiempo .t12 { margin-top: 8px; }
-.m-tiempo .sig { position: relative; z-index: 2; flex-shrink: 0; height: 72px; margin-top: -40px; padding: 40px 16px 0; background: var(--widget); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-.m-tiempo .sig.finde { background: var(--finde); }
+.m-tiempo .ico-hoy { position: absolute; top: 8px; right: 12px; }
+.m-tiempo .t-hoy { position: relative; }
+.m-tiempo .sig { position: relative; z-index: 2; flex-shrink: 0; height: 68px; margin-top: -40px; padding: 40px 16px 0; background: var(--widget); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.m-tiempo .sig.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-finde); }
+.m-tiempo .sig.sig1 { z-index: 2; box-shadow: inset 0 -1px 0 var(--sep); }
+.m-tiempo .sig.sig2 { z-index: 1; }
+.m-tiempo .sig + .sig { margin-top: -40px; }
 #movil .pend { padding: 12px; }
 .m-nav { position: fixed; left: 0; right: 0; bottom: 0; background: var(--widget); border-top: 1px solid #dcd9d1; padding: 8px 16px 24px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); display: flex; z-index: 20; }
 .m-nav a { flex: 1 1 0; height: 44px; display: flex; align-items: center; justify-content: center; }
@@ -231,8 +239,8 @@ body.movil #movil { display: block; padding: 16px 16px 96px; }
 .pagina { display: none; }
 body.p-cal .filas, body.p-cal .dots { display: none; }
 body.p-cal #pagCal { display: flex; }
-#pagCal { flex-grow: 1; min-height: 0; }
-.k-izq { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; }
+#pagCal { flex-grow: 1; min-height: 0; overflow: hidden; }
+.k-izq { width: 300px; flex-shrink: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 .k-izq > * + * { margin-top: 16px; }
 .k-dia { flex-grow: 1; min-height: 0; padding: 16px 16px 24px; display: flex; flex-direction: column; background: var(--acento); overflow: hidden; }
 .k-dia.otro { background: var(--widget); }
@@ -294,7 +302,7 @@ body.p-cal #pagCal { display: flex; }
 /* Móvil: día + mes pequeño (las semanas no caben) */
 body.movil.p-cal #mInicio { display: none; }
 #mCal { display: none; }
-body.movil.p-cal #mCal { display: block; margin-top: 12px; }
+body.movil.p-cal #mCal { display: block; margin-top: 16px; }
 #mCal .k-mini { width: auto; height: auto; padding-bottom: 8px; }
 #mCal .k-mini table { margin-top: 4px; }
 #mCal .k-mini td { height: 42px; vertical-align: top; padding-top: 4px; }
@@ -303,15 +311,15 @@ body.movil.p-cal #mCal { display: block; margin-top: 12px; }
 .k-pts .pto { margin: 0 2px; width: 5px; height: 5px; vertical-align: top; }
 .k-pts .pto + .pto { margin-left: 0; }
 #mCal .k-mini td.fuera .k-pts, #mCal .k-mini td.sindatos .k-pts { display: none; }
-#mCal .k-dia { margin-top: 12px; padding-bottom: 20px; }
+#mCal .k-dia { margin-top: 16px; padding-bottom: 20px; }
 #mCal .k-dia .crece { min-height: 18px; }
 #mCal .k-dia .ev .t { font-size: 14px; }
 .k-dia { position: relative; z-index: 5; }
 .k-dia.otro { box-shadow: inset 0 -1px 0 var(--sep); }
 /* Baraja: los días siguientes se meten 40 px bajo la tarjeta de arriba */
 .k-ag { position: relative; z-index: 1; margin-top: -40px !important; padding: 0; background: transparent; border-radius: 0; display: flex; flex-direction: column; overflow: hidden; }
-/* iPad: la destacada mide lo que su contenido (mínimo 240 px); debajo, todos los días desplegados y un degradado al final */
-.k-izq .k-dia { flex: 0 0 auto; min-height: 240px; }
+/* iPad: la destacada mide lo que su contenido (mínimo 300 px); debajo, todos los días desplegados y un degradado al final */
+.k-izq .k-dia { flex: 0 0 auto; min-height: 300px; }   /* como mínimo cuadrada (300 × 300) */
 .k-izq .k-ag { flex: 1 1 0; min-height: 0; }
 .k-izq .k-ag:after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 96px; z-index: 30; pointer-events: none;
   background: -webkit-linear-gradient(top, rgba(228,225,217,0), #e4e1d9 85%); background: linear-gradient(rgba(228,225,217,0), #e4e1d9 85%); }
@@ -414,7 +422,7 @@ body.movil.p-cal #mCal { display: block; margin-top: 12px; }
   </header>
   <!-- Rejilla de 2 columnas: grande 2x2 (cuadrado), mediano 2x1 (rectángulo), pequeño 1x1 (cuadrado) -->
   <div id="mInicio">
-  <a href="#calendario" class="w m-cal m-g" id="calM" style="margin-top:12px"></a>
+  <a href="#calendario" class="w m-cal m-g" id="calM" style="margin-top:16px"></a>
   <div class="m-fila">
     <a href="#" class="w m-tiempo m-p" id="tiempoM"><div class="t-hoy"><span class="rot">hoy · marratxí</span><span class="t12">Cargando…</span></div></a>
     <div class="w pend m-p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg><h2 class="w-tit">Comer fuera</h2><span class="t12">Pendiente</span></div>
@@ -608,8 +616,8 @@ function pintarCal() {
     nor = agrupar(nor);
     var dow = d.getDay(), pri = FILAS2 ? (n === 1 || n === 4) : n === 1, ult = FILAS2 ? (n === 3 || n === 6) : n === 6;
     var clases = 'dia' + (pri ? ' primero' : '') + (dow === 0 || dow === 6 ? ' finde' : '') + (ult ? ' ultimo' : '');
-    var zi = ' style="z-index:' + (10 - n) + '"';
-    if (FILAS2) html += '<div class="' + clases + '"><div class="cabn"><span class="izq"><span class="num">' + d.getDate() + '</span><span class="rot">' + DIAS3[dow] + '</span></span>' + (f ? '<span class="rot">[F]</span>' : '') + '</div>';
+    var zi = ' style="z-index:' + (10 - n) + '" data-dia="' + iso + '"';
+    if (FILAS2) html += '<div class="' + clases + '" data-dia="' + iso + '"><div class="cabn"><span class="izq"><span class="num">' + d.getDate() + '</span><span class="rot">' + DIAS3[dow] + '</span></span>' + (f ? '<span class="rot">[F]</span>' : '') + '</div>';
     else html += '<div class="' + clases + '"' + zi + '><span class="rot cab"><span>' + DIAS3[dow] + '</span>' + (f ? '<span>[F]</span>' : '') + '</span><span class="num">' + d.getDate() + '</span>';
     if (f) html += '<span class="fest">' + esc(f.titulo) + '</span>';
     var cab = nor.length > MAX_DIA ? MAX_DIA : nor.length;
@@ -645,7 +653,7 @@ function pintarCalMovil(porDia, hoy, fest, normales) {
     for (k = 0; k < l.length; k++) { if (l[k].festivo) f = f || l[k]; else nor.push(l[k]); }
     nor = agrupar(nor);
     var dow = d.getDay();
-    h += '<div class="m-dia' + (dow === 0 || dow === 6 ? ' finde' : '') + '"><span class="rot">' + DIAS3[dow] + '</span><span class="num">' + d.getDate() + '</span>';
+    h += '<div class="m-dia' + (dow === 0 || dow === 6 ? ' finde' : '') + '" data-dia="' + diaISO(d) + '" style="z-index:' + (10 - n) + '"><span class="rot">' + DIAS3[dow] + '</span><span class="num">' + d.getDate() + '</span>';
     var resto = nor.length;
     if (f) h += '<span class="t fest">[F] ' + esc(f.titulo) + '</span>';
     else if (nor.length) { e = nor[0]; resto--; h += '<span class="t">' + (e.todoElDia ? '' : '<span class="h">' + e.hora + '</span>') + puntos(e.quienes) + esc(e.titulo) + '</span>'; }
@@ -662,11 +670,16 @@ function recortarDias() {
   var filas = c.childNodes, k;
   for (k = 0; k < filas.length; k++) filas[k].style.display = '';
   var lim = c.getBoundingClientRect().bottom;
-  for (k = 0; k < filas.length; k++) if (filas[k].getBoundingClientRect().bottom > lim + 0.5) filas[k].style.display = 'none';
+  var ult = null;
+  for (k = 0; k < filas.length; k++) { filas[k].className = filas[k].className.replace(/\s*ultima/g, ''); }
+  for (k = 0; k < filas.length; k++) {
+    if (filas[k].getBoundingClientRect().bottom > lim + 0.5) filas[k].style.display = 'none'; else ult = filas[k];
+  }
+  if (ult) ult.className += ' ultima';   // la última se estira hasta el borde
 }
 function rejilla() {
   if (!MOVIL) return;
-  var W = $('movil').clientWidth - 28, c = Math.floor((W - 12) / 2), k, l;
+  var W = $('movil').clientWidth - 32, c = Math.floor((W - 16) / 2), k, l;
   l = document.querySelectorAll('.m-p'); for (k = 0; k < l.length; k++) l[k].style.height = c + 'px';
   l = document.querySelectorAll('.m-m'); for (k = 0; k < l.length; k++) l[k].style.height = c + 'px';
   $('calM').style.height = W + 'px';
@@ -832,6 +845,25 @@ function tocarCal(ev) {
 $('pagCal').addEventListener('click', tocarCal);
 $('mCal').addEventListener('click', tocarCal);
 
+/* ---------- Widget del calendario: tocar un día lo abre en la página ---------- */
+function abrirDia(ev) {
+  var t = ev.target, dia = null;
+  while (t && t !== this) { if (t.getAttribute && t.getAttribute('data-dia')) { dia = t.getAttribute('data-dia'); break; } t = t.parentNode; }
+  volverHoy();
+  if (dia) { K.sel = dia; var d = deISO(dia), nm = new Date(d.getFullYear(), d.getMonth(), 1); if (nm <= mesMax()) K.mes = nm; }
+  if (location.hash === '#calendario') pintarPagCal();   // si ya estábamos, el enlace no dispara el cambio
+}
+$('cal').addEventListener('click', abrirDia);
+$('calM').addEventListener('click', abrirDia);
+
+/* ---------- Tocar el logo: recargar saltándose la caché ---------- */
+function recargar() {
+  var q = location.search.replace(/[?&]v=\d+/, '').replace(/^\?/, '');
+  location.replace(location.pathname + '?' + (q ? q + '&' : '') + 'v=' + Date.now() + location.hash);
+}
+var logos = document.querySelectorAll('.rail .logo, .m-top .logo');
+for (var li = 0; li < logos.length; li++) logos[li].addEventListener('click', recargar);
+
 /* ---------- Navegación entre páginas (#calendario) ---------- */
 function irPagina() {
   var cal = location.hash === '#calendario';
@@ -895,10 +927,14 @@ function cargarTiempo() {
     }
     $('tiempo').innerHTML = h;
     var p1 = dl.time[1].split('-'), f1 = new Date(+p1[0], +p1[1] - 1, +p1[2]);
-    $('tiempoM').innerHTML = '<div class="t-hoy"><div class="w-cab"><span class="rot">hoy · marratxí</span>' + icono(cod, 18) + '</div>' +
-      '<b>' + ahora + '°</b><span class="t12">' + Math.round(dl.temperature_2m_min[0]) + '° / ' + Math.round(dl.temperature_2m_max[0]) + '° · lluvia ' + dl.precipitation_probability_max[0] + '%</span>' +
-      '</div><div class="sig' + (f1.getDay() === 0 || f1.getDay() === 6 ? ' finde' : '') + '"><span class="rot">' + DIAS3[f1.getDay()] + '</span>' + icono(dl.weather_code[1], 16) +
-      '<span>' + Math.round(dl.temperature_2m_max[1]) + '° · ' + dl.precipitation_probability_max[1] + '%</span></div>';
+    var hm = '<div class="t-hoy"><div class="w-cab"><span class="rot">hoy · marratxí</span></div>' + icono(cod, 30, 'ico-hoy', 1) +
+      '<b>' + ahora + '°</b><span class="t12">' + Math.round(dl.temperature_2m_min[0]) + '° / ' + Math.round(dl.temperature_2m_max[0]) + '° · ' + dl.precipitation_probability_max[0] + '%</span></div>';
+    for (k = 1; k <= 2; k++) {
+      var pk = dl.time[k].split('-'), fk = new Date(+pk[0], +pk[1] - 1, +pk[2]);
+      hm += '<div class="sig sig' + k + (fk.getDay() === 0 || fk.getDay() === 6 ? ' finde' : '') + '"><span class="rot">' + DIAS3[fk.getDay()] + '</span>' + icono(dl.weather_code[k], 16) +
+        '<span>' + Math.round(dl.temperature_2m_max[k]) + '° · ' + dl.precipitation_probability_max[k] + '%</span></div>';
+    }
+    $('tiempoM').innerHTML = hm;
   });
 }
 
