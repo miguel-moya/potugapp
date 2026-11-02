@@ -1247,7 +1247,12 @@ function tocarCompra(e) {
   if (acc !== 'terminar' && CV.fin) CV.fin = false;
   if (acc === 'grupo') CV.abierto = CV.abierto === gid ? -1 : gid;
   else if (acc === 'editar') CV.editar = !CV.editar;
-  else if (acc === 'pill') { if (CV.editar) { abrirHoja('basico', bid); return; } anadirBasico(bid); return; }
+  else if (acc === 'pill') {
+    if (CV.editar) { abrirHoja('basico', bid); return; }
+    var ya = pendienteDeBasico(bid);   // si ya está en la lista (sin tachar), el segundo toque lo quita
+    if (ya) accion({ tipo: 'quitar', id: ya.id }); else anadirBasico(bid);
+    return;
+  }
   else if (acc === 'pill-mas') { abrirHoja('basico-nuevo', gid); return; }
   else if (acc === 'grupo-nuevo') { abrirHoja('grupo-nuevo'); return; }
   else if (acc === 'item') { var it = itemDe(t.getAttribute('data-id')); if (it) accion({ tipo: 'tachar', id: it.id, hecho: !it.hecho }); return; }
