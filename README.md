@@ -42,6 +42,11 @@ Supabase → **Edge Functions → Deploy a new function → Via Editor**
 ### 3. Probar
 Abrir la app: pedirá la clave familiar una vez y mostrará el calendario.
 
+## Compra: puesta en marcha (una sola vez)
+1. SQL Editor → pegar y ejecutar `supabase/sql/03_compra.sql` (crea grupos, básicos y lista; cierra la tabla `items` de la fase 1).
+2. Edge Functions → Deploy a new function → Via Editor → nombre `compra` → pegar `supabase/functions/compra/index.ts` → Deploy → desactivar **Verify JWT**.
+3. Usa el mismo secreto `FAMILY_KEY` que el calendario.
+
 ## Identidad por dirección
 - `?cocina` → iPad de la cocina (modo reposo a los 2 min).
 - `?lidia`, `?miguel` → móviles (vistas personales en fases siguientes).
