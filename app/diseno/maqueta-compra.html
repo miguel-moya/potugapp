@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<title>Maqueta · Compra</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Space+Mono&amp;display=swap">
+<!--
+  Maqueta de la página Compra. Datos inventados.
+  ?vista=ipad (1024×768) · ?vista=movil (lista) · ?vista=movil-despensa · ?vista=movil-buscar
+  Reglas: escala 4/8, tarjetas en baraja (40 px de solape) cuando son partes de una misma cosa.
+-->
+<style>
+:root {
+  --fondo: #e4e1d9; --widget: #f4f3ef; --finde: #ecebe6; --tinta: #1d1d1b;
+  --sec: #5c5a54; --ter: #8a877f; --sep: #e3e0d9; --sep-fuerte: #d3cfc6; --sep-finde: #dbd8d0; --pista: #d6d3cb;
+  --aviso: #b04a30; --ok: #3f8a54; --acento: #c9b29b;
+  --lidia: #c98b8f; --miguel: #f0b95f; --bruno: #ef6c50; --familia: #9a826b;
+  --mono: 'Space Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--fondo); }
+body { font-family: Manrope, -apple-system, sans-serif; color: var(--tinta); }
+.rot { font-family: var(--mono); font-size: 10px; color: var(--sec); }
+.pto { display: inline-block; width: 6px; height: 6px; border-radius: 3px; }
+.L { background: var(--lidia); } .M { background: var(--miguel); } .B { background: var(--bruno); } .F { background: var(--familia); }
+svg { display: block; }
+
+/* ---------- iPad ---------- */
+.app { width: 1024px; height: 768px; display: flex; padding-top: 14px; }
+.rail { width: 72px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 0 0 16px; }
+.rail > * + * { margin-top: 4px; }
+.logo { font-size: 28px; font-weight: 600; letter-spacing: -1px; height: 40px; margin-top: 4px; display: flex; align-items: center; }
+.logo span { color: var(--bruno); }
+.esp { flex-grow: 1; }
+.nav { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; }
+.nav.activo { background: var(--tinta); color: var(--widget); }
+.nav svg { width: 22px; height: 22px; }
+.yo { width: 36px; height: 36px; border-radius: 18px; background: var(--lidia); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+.content { flex-grow: 1; min-width: 0; padding: 0 16px 16px 0; display: flex; flex-direction: column; }
+.topbar { height: 40px; flex-shrink: 0; padding-top: 4px; display: flex; align-items: center; }
+.topbar > * + * { margin-left: 12px; }
+.hora { font-size: 26px; font-weight: 300; letter-spacing: -1px; }
+.fecha { font-size: 14px; color: var(--sec); }
+.cuerpo { flex-grow: 1; min-height: 0; display: flex; margin-top: 8px; }
+.w { background: var(--widget); border-radius: 20px; }
+
+/* Cabeceras de bloque */
+.cab { display: flex; align-items: center; justify-content: space-between; height: 36px; }
+.cab h1 { margin: 0; font-size: 16px; font-weight: 600; }
+.cab .sub { font-size: 12px; color: var(--sec); font-weight: 400; margin-left: 8px; }
+.ico-btn { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+.ico-btn.borde { box-shadow: inset 0 0 0 1px var(--sep-fuerte); }
+
+/* Despensa */
+.desp { flex: 1 1 0; min-width: 0; padding: 16px; display: flex; flex-direction: column; overflow: hidden; }
+.grupos { margin-top: 8px; overflow: hidden; flex-grow: 1; }
+.grupo + .grupo { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--sep); }
+.grupo .rot { font-size: 11px; display: block; margin-bottom: 8px; }
+.pills { display: flex; flex-wrap: wrap; margin: -4px 0 0 -4px; }
+.pill { margin: 4px 0 0 4px; height: 36px; padding: 0 14px; border-radius: 18px; background: var(--finde); font-size: 13px; display: flex; align-items: center; white-space: nowrap; }
+.pill.en { background: var(--tinta); color: var(--widget); }
+.pill.en b { font-family: var(--mono); font-size: 10px; font-weight: 400; margin-left: 8px; opacity: 0.7; }
+.pill.mas { background: transparent; box-shadow: inset 0 0 0 1px var(--sep-fuerte); color: var(--sec); }
+
+/* Lista */
+.lista { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; }
+.lista-cab { padding: 16px 16px 0; }
+.anadir { display: flex; align-items: center; height: 48px; margin-top: 12px; padding: 0 6px 0 16px; border-radius: 24px; background: var(--finde); }
+.anadir span { flex-grow: 1; font-size: 14px; color: var(--ter); }
+.anadir span.escrito { color: var(--tinta); }
+.anadir .mas-btn { width: 36px; height: 36px; border-radius: 18px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; }
+
+/* Baraja de grupos en la lista */
+.baraja { position: relative; flex-grow: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.carta { position: relative; flex-shrink: 0; background: var(--widget); border-radius: 20px; padding: 52px 16px 12px; box-shadow: inset 0 -1px 0 var(--sep); }
+.carta + .carta { margin-top: -40px; }
+.carta.primera { padding-top: 12px; }
+.carta.carro { background: var(--finde); box-shadow: none; flex-grow: 1; }
+.carta .rot { display: flex; justify-content: space-between; font-size: 10px; }
+.item { display: flex; align-items: center; min-height: 44px; }
+.item + .item { border-top: 1px solid var(--sep); }
+.check { width: 24px; height: 24px; border-radius: 12px; box-shadow: inset 0 0 0 1.3px #b9b6ae; flex-shrink: 0; }
+.check.ok { background: var(--tinta); box-shadow: none; display: flex; align-items: center; justify-content: center; }
+.item .nom { flex-grow: 1; min-width: 0; margin-left: 12px; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item .nom .pto { margin-left: 6px; vertical-align: 2px; }
+.item .nom em { font-style: normal; font-family: var(--mono); font-size: 9px; color: var(--ter); margin-left: 6px; }
+.cant { display: flex; align-items: center; flex-shrink: 0; margin-left: 8px; }
+.cant a { width: 28px; height: 28px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--sep-fuerte); display: flex; align-items: center; justify-content: center; color: var(--sec); }
+.cant span { font-family: var(--mono); font-size: 11px; min-width: 56px; text-align: center; }
+.carro .item .nom { color: var(--ter); text-decoration: line-through; }
+.carro .item + .item { border-top-color: var(--sep-finde); }
+.terminar { margin-top: 12px; height: 44px; border-radius: 22px; box-shadow: inset 0 0 0 1px var(--tinta); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+
+/* ---------- Móvil ---------- */
+.movil { width: 390px; min-height: 844px; padding: 0 16px 112px; position: relative; }
+.m-top { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px 0; }
+.m-top .logo { font-size: 22px; height: auto; margin: 0; }
+.m-fecha { font-size: 13px; color: var(--sec); margin-top: 2px; }
+.m-yo { width: 36px; height: 36px; border-radius: 18px; background: var(--lidia); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+.seg { display: flex; margin-top: 16px; height: 44px; padding: 4px; border-radius: 22px; background: var(--widget); box-shadow: inset 0 0 0 1px var(--sep); }
+.seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 18px; }
+.seg span.on { background: var(--tinta); color: var(--widget); }
+.seg span b { font-family: var(--mono); font-weight: 400; font-size: 10px; margin-left: 6px; opacity: 0.7; }
+.movil .anadir { margin-top: 16px; background: var(--widget); box-shadow: inset 0 0 0 1px var(--sep); }
+.movil .baraja { margin-top: 16px; overflow: visible; }
+.movil .carta.primera { padding-top: 16px; }
+.movil .desp { padding: 16px; margin-top: 16px; }
+.sugs { margin-top: 8px; background: var(--widget); border-radius: 20px; padding: 8px 16px; box-shadow: 0 4px 16px rgba(29,29,27,0.08); }
+.sug { display: flex; align-items: center; min-height: 44px; font-size: 14px; }
+.sug + .sug { border-top: 1px solid var(--sep); }
+.sug .rot { margin-left: auto; }
+.sug b { font-weight: 600; }
+.nuevo { display: flex; align-items: center; margin-top: 12px; padding: 12px 16px; border-radius: 20px; background: var(--finde); font-size: 13px; color: var(--sec); }
+.nuevo .chip { margin-left: auto; height: 32px; padding: 0 12px; border-radius: 16px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.teclado { position: absolute; left: 0; right: 0; bottom: 0; height: 280px; background: #d1d3d9; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: #7a7d85; }
+.m-nav { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 7px; background: var(--widget); border: 1px solid var(--sep); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 16px rgba(29,29,27,0.08); }
+.m-nav a { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+.m-nav svg { width: 22px; height: 22px; }
+.m-nav .on { width: 48px; height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+<div id="raiz"></div>
+<script>
+var I = {
+  inicio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>',
+  cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg>',
+  compra: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg>',
+  tareas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  comer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg>',
+  fotos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg>',
+  mas3: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/></svg>',
+  lapiz: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
+  mas: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  menos: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg>',
+  masp: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f4f3ef" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>'
+};
+
+// Despensa: grupos en el orden del recorrido del súper
+var DESP = [
+  ['Fruta', ['Fruta', 'Plátanos', 'Manzanas', 'Kiwis', 'Mandarinas', 'Fresas']],
+  ['Verdura', ['Tomates', 'Lechuga', 'Cebollas', 'Patatas', 'Zanahorias', 'Calabacín']],
+  ['Carne', ['Carne', 'Pechugas', 'Carne picada ternera', 'Alitas congeladas', 'Hamburguesas']],
+  ['Pescado', ['Salmón', 'Merluza', 'Atún en lata']],
+  ['Lácteos y huevos', ['Leche', 'Huevos', 'Queso rallado', 'Mantequilla']],
+  ['Postres', ['Yogur griego', 'Flanes proteicos', 'Yogures sabores']],
+  ['Despensa', ['Pasta', 'Arroz', 'Aceite', 'Pan de molde', 'Café', 'Galletas']],
+  ['Limpieza', ['Friegasuelos', 'Oxiaction', 'Recambio fregona', 'Amoníaco', 'Lejía', 'Lavavajillas']],
+  ['Higiene', ['Papel WC', 'Gel', 'Champú', 'Pasta de dientes']]
+];
+// Lista: [artículo, cantidad, quién, en el carro?, fuera de básicos?]
+var LISTA = {
+  'Fruta': [['Plátanos', '1 u.', 'L'], ['Fresas', '1 u.', 'M']],
+  'Verdura': [['Tomates', '1 u.', 'L']],
+  'Carne': [['Pechugas', '2 u.', 'L'], ['Carne picada ternera', '1 u.', 'M']],
+  'Lácteos y huevos': [['Huevos', '2 doc.', 'L'], ['Leche', '6 u.', 'L']],
+  'Postres': [['Yogur griego', '4 u.', 'M']],
+  'Otros': [['Piñones', '1 u.', 'L', false, true]],
+  'Limpieza': [['Friegasuelos', '1 u.', 'L'], ['Lejía', '1 u.', 'M']]
+};
+var CARRO = [['Pan de molde', '1 u.', 'M'], ['Café', '2 u.', 'L']];
+var ORDEN = ['Fruta', 'Verdura', 'Carne', 'Pescado', 'Lácteos y huevos', 'Postres', 'Despensa', 'Otros', 'Limpieza', 'Higiene'];
+
+function enLista(nom) { for (var g in LISTA) for (var k = 0; k < LISTA[g].length; k++) if (LISTA[g][k][0] === nom) return LISTA[g][k][1]; return null; }
+function cuenta() { var n = 0; for (var g in LISTA) n += LISTA[g].length; return n; }
+
+function htmlDespensa(movil) {
+  var h = '<section class="w desp"><div class="cab"><h1>Básicos<span class="sub">toca para añadir a la lista</span></h1><a class="ico-btn borde" aria-label="Editar">' + I.lapiz + '</a></div><div class="grupos">';
+  for (var g = 0; g < DESP.length; g++) {
+    h += '<div class="grupo"><span class="rot">' + DESP[g][0].toLowerCase() + '</span><div class="pills">';
+    for (var k = 0; k < DESP[g][1].length; k++) {
+      var n = DESP[g][1][k], c = enLista(n);
+      h += '<span class="pill' + (c ? ' en' : '') + '">' + n + (c ? '<b>' + c + '</b>' : '') + '</span>';
+    }
+    h += '</div></div>';
+  }
+  return h + '</div></section>';
+}
+
+function htmlLista(movil) {
+  var h = '<div class="baraja">', z = 30, primera = true;
+  for (var o = 0; o < ORDEN.length; o++) {
+    var g = ORDEN[o], l = LISTA[g]; if (!l) continue;
+    h += '<div class="carta' + (primera ? ' primera' : '') + '" style="z-index:' + (z--) + '"><span class="rot"><span>' + g.toLowerCase() + '</span><span>' + l.length + '</span></span>';
+    for (var k = 0; k < l.length; k++) {
+      var it = l[k];
+      h += '<div class="item"><span class="check"></span><span class="nom">' + it[0] + '<span class="pto ' + it[2] + '"></span>' + (it[4] ? '<em>nuevo</em>' : '') + '</span>' +
+        '<span class="cant"><a>' + I.menos + '</a><span>' + it[1] + '</span><a>' + I.masp + '</a></span></div>';
+    }
+    h += '</div>'; primera = false;
+  }
+  h += '<div class="carta carro" style="z-index:1"><span class="rot"><span>en el carro</span><span>' + CARRO.length + '</span></span>';
+  for (var c = 0; c < CARRO.length; c++) h += '<div class="item"><span class="check ok">' + I.tick + '</span><span class="nom">' + CARRO[c][0] + '</span><span class="cant"><span>' + CARRO[c][1] + '</span></span></div>';
+  h += '<div class="terminar">Terminar compra</div></div>';
+  return h + '</div>';
+}
+
+function ipad() {
+  return '<div class="app"><nav class="rail"><div class="logo">P<span>.</span></div><div class="esp"></div>' +
+    '<a class="nav">' + I.inicio + '</a><a class="nav">' + I.cal + '</a><a class="nav activo">' + I.compra + '</a><a class="nav">' + I.tareas + '</a><a class="nav">' + I.comer + '</a><a class="nav">' + I.fotos + '</a>' +
+    '<div class="esp"></div><span class="yo">L</span></nav><main class="content"><header class="topbar"><span class="hora">17:40</span><span class="fecha">Domingo, 1 de noviembre</span></header>' +
+    '<div class="cuerpo">' + htmlDespensa() +
+    '<section class="w lista"><div class="lista-cab"><div class="cab"><h1>Lista<span class="sub">' + cuenta() + ' por comprar</span></h1></div>' +
+    '<div class="anadir"><span>Añadir algo…</span><a class="mas-btn">' + I.mas + '</a></div></div><div style="height:12px"></div>' + htmlLista() + '</section>' +
+    '</div></main></div>';
+}
+
+function movil(pest, buscar) {
+  var h = '<div class="movil"><div class="m-top"><div><div class="logo">P<span>.</span></div><div class="m-fecha">Domingo, 1 de noviembre</div></div><span class="m-yo">L</span></div>' +
+    '<div class="seg"><span class="' + (pest === 'lista' ? 'on' : '') + '">Lista<b>' + cuenta() + '</b></span><span class="' + (pest === 'desp' ? 'on' : '') + '">Básicos</span></div>';
+  if (pest === 'lista') {
+    if (buscar) {
+      h += '<div class="anadir"><span class="escrito">piñones|</span><a class="mas-btn">' + I.mas + '</a></div>' +
+        '<div class="sugs"><div class="sug"><span>Añadir <b>«Piñones»</b> a la lista</span></div>' +
+        '<div class="sug"><span>Añadir y guardar en básicos…</span><span class="rot">elegir grupo</span></div></div>' +
+        '<div class="nuevo"><span>No está en tus básicos. Si lo compras a menudo, guárdalo.</span></div>' +
+        '<div class="teclado">teclado</div>';
+      return h + '</div>';
+    }
+    h += '<div class="anadir"><span>Añadir algo…</span><a class="mas-btn">' + I.mas + '</a></div>' + htmlLista(true);
+  } else h += htmlDespensa(true);
+  h += '<nav class="m-nav"><a>' + I.inicio + '</a><a>' + I.cal + '</a><a><span class="on">' + I.compra + '</span></a><a>' + I.tareas + '</a><a>' + I.mas3 + '</a></nav>';
+  return h + '</div>';
+}
+
+var v = (location.search.match(/vista=([\w-]+)/) || [])[1] || 'ipad';
+document.getElementById('raiz').innerHTML = v === 'ipad' ? ipad() : v === 'movil-despensa' ? movil('desp') : v === 'movil-buscar' ? movil('lista', true) : movil('lista');
+</script>
+</body>
+</html>
