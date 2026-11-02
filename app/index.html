@@ -83,8 +83,9 @@ a { color: inherit; text-decoration: none; }
 .bur.L { background: var(--lidia); } .bur.M { background: var(--miguel); } .bur.B { background: var(--bruno); } .bur.F { background: var(--familia); }
 
 /* Calendario */
-.cal { padding: 10px; flex-direction: row; }
-.hoy { flex: 2.2 1 0; min-width: 0; background: var(--acento); border-radius: 14px; padding: 14px 14px 20px; display: flex; flex-direction: column; }
+.cal { padding: 0; flex-direction: row; }
+/* Hoy a sangre: sin margen arriba, abajo ni a la izquierda; el texto queda a 16 px, alineado con el widget del tiempo */
+.hoy { flex: 2.2 1 0; min-width: 0; background: var(--acento); padding: 24px 16px 30px 16px; display: flex; flex-direction: column; }
 .hoy-cab { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 11px; }
 .hoy-num { display: flex; align-items: baseline; margin-top: 8px; }
 .hoy-num b { font-size: 60px; font-weight: 300; line-height: 0.9; letter-spacing: -2px; }
@@ -98,11 +99,23 @@ a { color: inherit; text-decoration: none; }
 .ev .td .rot { color: var(--tinta); }
 .hoy .mas { color: #4a4640; padding-left: 46px; }
 .vacio-hoy { font-size: 13px; color: #4a4640; }
-.dia { flex: 1 1 0; min-width: 0; padding: 12px 9px; display: flex; flex-direction: column; border-left: 1px solid var(--sep); }
-.dia.primero { margin-left: 8px; border-left: 0; }
+.dia { flex: 1 1 0; min-width: 0; padding: 24px 9px 12px; display: flex; flex-direction: column; border-left: 1px solid var(--sep); }
+.dia.primero { padding-left: 14px; border-left: 0; }
 .dia.finde { background: var(--finde); }
 .dia.finde + .dia.finde { border-left-color: var(--sep-fuerte); }
-.dia.ultimo { border-radius: 0 12px 12px 0; }
+.dia.ultimo { padding-right: 14px; }
+/* Variante en dos filas de tres días (?filas2) */
+.dias6 { flex: 6 1 0; min-width: 0; display: flex; flex-direction: column; }
+.dias-fila { flex: 1 1 0; min-height: 0; display: flex; }
+.dias-fila + .dias-fila { border-top: 1px solid var(--sep); }
+.dias6 .dia { padding: 16px 14px 10px; overflow: hidden; }
+.dias6 .dia.ultimo { padding-right: 14px; }
+.dias6 .dia .cabn { display: flex; align-items: baseline; justify-content: space-between; }
+.dias6 .dia .cabn .num { font-size: 22px; }
+.dias6 .dia .cabn .rot { margin-left: 8px; }
+.dias6 .dia .cabn .izq { display: flex; align-items: baseline; }
+.dias6 .dia .it .t { -webkit-line-clamp: 1; white-space: nowrap; text-overflow: ellipsis; display: block; }
+.dias6 .dia > * + * { margin-top: 6px; }
 .dia > * + * { margin-top: 8px; }
 .dia .rot { font-size: 11px; }
 .dia .num { font-size: 26px; font-weight: 300; line-height: 1; }
@@ -162,8 +175,8 @@ body.movil #movil { display: block; padding: 14px 14px 96px; }
 .m-cal { display: flex; flex-direction: column; }
 .m-hoy { flex-shrink: 0; }
 .m-dias { flex: 1 1 0; min-height: 0; overflow: hidden; }
-.m-cal { padding: 8px; }
-.m-hoy { background: var(--acento); border-radius: 14px; padding: 14px; }
+.m-cal { padding: 0 0 6px; }
+.m-hoy { background: var(--acento); padding: 16px; }
 .m-hoy-cab { display: flex; justify-content: space-between; align-items: baseline; }
 .m-hoy-cab .n { display: flex; align-items: baseline; }
 .m-hoy-cab b { font-size: 44px; font-weight: 300; line-height: 0.9; letter-spacing: -1.5px; }
@@ -173,7 +186,7 @@ body.movil #movil { display: block; padding: 14px 14px 96px; }
 .m-hoy .hoy-lista { margin-top: 12px; }
 .m-hoy .ev .t { font-size: 14px; }
 .m-hoy .ev .h { width: 40px; }
-.m-dia { display: flex; align-items: baseline; padding: 8px 8px; border-bottom: 1px solid var(--sep); }
+.m-dia { display: flex; align-items: baseline; padding: 8px 16px; border-bottom: 1px solid var(--sep); }
 .m-dia:last-child { border-bottom: 0; }
 .m-dia.finde { background: var(--finde); border-bottom-color: var(--sep-fuerte); }
 .m-dia .rot { width: 34px; flex-shrink: 0; font-size: 11px; }
@@ -417,6 +430,10 @@ var DIAS3 = ['dom','lun','mar','mié','jue','vie','sáb'];
 var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 var Q = location.search.toLowerCase();
 var COCINA = Q.indexOf('cocina') !== -1;
+// Prueba de diseño: ?filas2 pone los 6 días del widget en dos filas de tres (se recuerda; ?filas1 lo quita)
+if (/filas2/.test(Q)) { try { localStorage.setItem('potugapp.filas', '2'); } catch (e) {} }
+if (/filas1/.test(Q)) { try { localStorage.removeItem('potugapp.filas'); } catch (e) {} }
+var FILAS2 = false; try { FILAS2 = localStorage.getItem('potugapp.filas') === '2'; } catch (e) {}
 // Quién usa este aparato: ?lidia / ?miguel. Se recuerda para cuando se abra sin el parámetro.
 var YO = /lidia/.test(Q) ? 'L' : /miguel/.test(Q) ? 'M' : null;
 var NOMBRES = { L: 'Lidia', M: 'Miguel' };
@@ -555,12 +572,16 @@ function pintarCal() {
   html += '</div></div>';
 
   // --- Próximos 6 días ---
+  if (FILAS2) html += '<div class="dias6"><div class="dias-fila">';
   for (var n = 1; n <= 6; n++) {
+    if (FILAS2 && n === 4) html += '</div><div class="dias-fila">';
     var d = masDias(hoy, n), iso = diaISO(d), l = porDia[iso] || [], f = null, nor = [];
     for (i = 0; i < l.length; i++) { if (l[i].festivo) f = f || l[i]; else nor.push(l[i]); }
     nor = agrupar(nor);
-    var dow = d.getDay(), clases = 'dia' + (n === 1 ? ' primero' : '') + (dow === 0 || dow === 6 ? ' finde' : '') + (n === 6 ? ' ultimo' : '');
-    html += '<div class="' + clases + '"><span class="rot cab"><span>' + DIAS3[dow] + '</span>' + (f ? '<span>[F]</span>' : '') + '</span><span class="num">' + d.getDate() + '</span>';
+    var dow = d.getDay(), pri = FILAS2 ? (n === 1 || n === 4) : n === 1, ult = FILAS2 ? (n === 3 || n === 6) : n === 6;
+    var clases = 'dia' + (pri ? ' primero' : '') + (dow === 0 || dow === 6 ? ' finde' : '') + (ult ? ' ultimo' : '');
+    if (FILAS2) html += '<div class="' + clases + '"><div class="cabn"><span class="izq"><span class="num">' + d.getDate() + '</span><span class="rot">' + DIAS3[dow] + '</span></span>' + (f ? '<span class="rot">[F]</span>' : '') + '</div>';
+    else html += '<div class="' + clases + '"><span class="rot cab"><span>' + DIAS3[dow] + '</span>' + (f ? '<span>[F]</span>' : '') + '</span><span class="num">' + d.getDate() + '</span>';
     if (f) html += '<span class="fest">' + esc(f.titulo) + '</span>';
     var cab = nor.length > MAX_DIA ? MAX_DIA : nor.length;
     for (i = 0; i < cab; i++) {
@@ -571,6 +592,7 @@ function pintarCal() {
     if (!nor.length && !f) html += '<span class="nada">—</span>';
     html += '</div>';
   }
+  if (FILAS2) html += '</div></div>';
   $('cal').innerHTML = html;
   pintarCalMovil(porDia, hoy, fest, normales);
 }
