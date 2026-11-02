@@ -17,7 +17,7 @@
 <style>
 :root {
   --fondo: #e4e1d9; --widget: #f4f3ef; --finde: #ecebe6; --tinta: #1d1d1b;
-  --sec: #5c5a54; --ter: #8a877f; --sep: #e3e0d9; --sep-fuerte: #d3cfc6; --pista: #d6d3cb;
+  --sec: #5c5a54; --ter: #8a877f; --sep: #e3e0d9; --sep-fuerte: #d3cfc6; --sep-finde: #dbd8d0; --pista: #d6d3cb;
   --aviso: #b04a30; --ok: #3f8a54; --acento: #c9b29b;
   --lidia: #c98b8f; --miguel: #f0b95f; --bruno: #ef6c50; --familia: #9a826b;
   --mono: 'Space Mono', ui-monospace, monospace;
@@ -103,13 +103,13 @@ a { color: inherit; text-decoration: none; }
 .dia { flex: 1 1 0; min-width: 0; padding: 16px 12px; display: flex; flex-direction: column; border-left: 1px solid var(--sep); }
 .dia.primero { padding-left: 16px; border-left: 0; }
 .dia.finde { background: var(--finde); }
-.dia.finde + .dia.finde { border-left-color: var(--sep-fuerte); }
+.dia.finde + .dia.finde { border-left-color: var(--sep-finde); }
 .dia.ultimo { padding-right: 16px; }
 /* Tarjetas apiladas (una fila): cada día se mete 40 px (dos veces el radio) bajo la anterior, para que no asome su curva */
 .cal.apil { background: transparent; }
 .cal.apil .hoy { position: relative; }
 .cal.apil .dia { position: relative; background: var(--widget); border-radius: 20px; margin-left: -40px; padding-left: 52px; border: 0; box-shadow: inset -1px 0 0 var(--sep); }
-.cal.apil .dia.finde { background: var(--finde); box-shadow: inset -1px 0 0 var(--sep-fuerte); }
+.cal.apil .dia.finde { background: var(--finde); box-shadow: inset -1px 0 0 var(--sep-finde); }
 .cal.apil .dia.ultimo { box-shadow: none; }
 /* Variante en dos filas de tres días (?filas2) */
 .cal.f2 .hoy { flex: 1 1 0; }        /* dos filas: hoy 25 %, días 75 % */
@@ -154,7 +154,7 @@ a { color: inherit; text-decoration: none; }
 .dos > div { flex: 1 1 0; display: flex; flex-direction: column; }
 .dos .v { font-size: 13px; margin-top: 2px; }
 .prev { position: relative; display: flex; align-items: center; flex-shrink: 0; height: 84px; margin-top: -40px; padding: 40px 16px 0; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
-.prev.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-fuerte); }
+.prev.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-finde); }
 .prev.ultima { box-shadow: none; }
 .prev .rot { width: 58px; }
 .prev .tt { font-size: 14px; font-weight: 300; margin-left: 8px; flex-grow: 1; }
@@ -201,7 +201,7 @@ body.movil #movil { display: block; padding: 16px 16px 96px; }
 .m-hoy .ev .h { width: 40px; }
 .m-dia { display: flex; align-items: baseline; padding: 8px 16px; border-bottom: 1px solid var(--sep); }
 .m-dia:last-child { border-bottom: 0; }
-.m-dia.finde { background: var(--finde); border-bottom-color: var(--sep-fuerte); }
+.m-dia.finde { background: var(--finde); border-bottom-color: var(--sep-finde); }
 .m-dia .rot { width: 34px; flex-shrink: 0; font-size: 11px; }
 .m-dia .num { font-size: 18px; font-weight: 300; width: 22px; flex-shrink: 0; margin-left: 12px; }
 .m-dia .t { font-size: 13px; flex-grow: 1; min-width: 0; margin-left: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -252,7 +252,7 @@ body.p-cal #pagCal { display: flex; }
 .k-mini-cab { display: flex; align-items: center; justify-content: space-between; }
 .k-mini-cab b { font-size: 13px; font-weight: 600; }
 .flechas { display: flex; margin-right: -8px; }
-.flechas a { width: 30px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.flechas a { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .flechas a + a { margin-left: 2px; }
 .flechas a.off { opacity: 0.25; }
 .k-mini table { width: 100%; width: calc(100% + 16px); margin: 8px -8px 0; border-collapse: collapse; flex-grow: 1; table-layout: fixed; }
@@ -263,14 +263,17 @@ body.p-cal #pagCal { display: flex; }
 .k-mini td.sel > span { box-shadow: inset 0 0 0 1.3px var(--tinta); }
 .k-mini td.fuera { color: #c3bfb6; }
 .k-mini td.sindatos { color: #c3bfb6; cursor: default; }
-.k-sem { flex-grow: 1; min-width: 0; margin-left: 16px; padding: 16px 16px 12px; display: flex; flex-direction: column; }
-.k-sem-cab { display: flex; justify-content: space-between; align-items: center; height: 30px; }
-.k-sem-cab h1 { margin: 0; font-size: 13px; font-weight: 600; }
+/* Mes a sangre: solo la cabecera lleva relleno */
+.k-sem { flex-grow: 1; min-width: 0; margin-left: 16px; padding: 0; display: flex; flex-direction: column; }
+.k-sem-cab { display: flex; justify-content: space-between; align-items: center; height: 36px; margin: 16px 16px 0; }
+.k-sem-cab h1 { margin: 0; font-size: 16px; font-weight: 600; }
+.k-mini-cab b { font-size: 16px !important; }
 .k-sem-cab .rango { font-size: 12px; color: var(--sec); margin-left: 8px; font-weight: 400; }
 .k-sem-cab .dcha { display: flex; align-items: center; }
 .k-sem-cab .volver { margin-right: 8px; }
 .k-dias { display: flex; margin-top: 12px; }
 .k-dias span { flex: 1 1 0; font-family: var(--mono); font-size: 10px; color: var(--ter); padding: 0 0 8px 8px; }
+.k-dias span:first-child, .k-c:first-child { padding-left: 16px; }
 .k-rej { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; border-top: 1px solid var(--sep); }
 .k-fila { flex: 1 1 0; min-height: 0; display: flex; border-bottom: 1px solid var(--sep); }
 .k-fila:last-child { border-bottom: 0; }
@@ -303,22 +306,28 @@ body.movil.p-cal #mCal { display: block; margin-top: 12px; }
 #mCal .k-dia { margin-top: 12px; padding-bottom: 20px; }
 #mCal .k-dia .crece { min-height: 18px; }
 #mCal .k-dia .ev .t { font-size: 14px; }
-.k-ag { margin-top: 12px; padding: 8px; }
-.k-izq .k-ag { height: 300px; flex-shrink: 0; margin-top: 16px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px; }
-.k-ag-dia { display: flex; padding: 12px 8px; border-bottom: 1px solid var(--sep); cursor: pointer; }
-.k-ag-dia:last-child { border-bottom: 0; }
-.k-ag-dia.finde { background: var(--finde); border-bottom-color: var(--sep-fuerte); }
+.k-dia { position: relative; z-index: 5; }
+.k-dia.otro { box-shadow: inset 0 -1px 0 var(--sep); }
+/* Baraja: los días siguientes se meten 40 px bajo la tarjeta de arriba */
+.k-ag { position: relative; z-index: 1; margin-top: -40px !important; padding: 0; background: transparent; border-radius: 0; display: flex; flex-direction: column; overflow: hidden; }
+.k-izq .k-dia { flex: 1 1 0; }
+.k-izq .k-ag { flex: 1 1 0; min-height: 0; }
+.k-bar { position: relative; flex-shrink: 0; display: flex; padding: 52px 16px 12px; background: var(--widget); border-radius: 20px; cursor: pointer; box-shadow: inset 0 -1px 0 var(--sep); }
+.k-bar + .k-bar { margin-top: -40px; }
+.k-bar.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-finde); }
+.k-bar.ultima { flex-grow: 1; box-shadow: none; }
 .k-ag-f { width: 44px; flex-shrink: 0; display: flex; flex-direction: column; }
 .k-ag-f .rot { font-size: 10px; }
 .k-ag-f b { font-size: 18px; font-weight: 300; line-height: 1.1; }
+.k-ag-f .k-mas { margin-top: 4px; }
 .k-ag-l { flex-grow: 1; min-width: 0; padding-top: 2px; }
 .k-ag-l > * + * { margin-top: 4px; }
-.k-ag-e { display: flex; align-items: baseline; font-size: 13px; }
+.k-ag-e { display: flex; align-items: baseline; font-size: 13px; line-height: 18px; }
 .k-ag-e .h { font-family: var(--mono); font-size: 10px; width: 40px; flex-shrink: 0; color: var(--sec); }
 .k-ag-e .t { min-width: 0; flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .k-ag-e.fest .t { color: var(--sec); }
 .k-ag-e.nada .t { color: var(--ter); }
-.k-ag-tit { font-size: 13px; font-weight: 600; padding: 8px 8px 4px; }
+#mCal .k-ag { overflow: visible; }
 
 /* Modo reposo (?cocina) */
 #standby { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: #000; z-index: 50; }
@@ -494,6 +503,7 @@ function encajar() {
   st.style.width = (vw / s) + 'px'; st.style.height = (vh / s) + 'px';
   var t = 'translate(0px,' + top + 'px) scale(' + s + ')';
   st.style.webkitTransform = t; st.style.transform = t;
+  if (/p-cal/.test(document.body.className) && $('kAg')) encajarBaraja($('kAg'));
 }
 window.addEventListener('resize', encajar);
 window.addEventListener('orientationchange', function () { setTimeout(encajar, 300); });
@@ -663,8 +673,8 @@ function rejilla() {
 
 /* ---------- Página Calendario ---------- */
 var MESES3 = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-var FLECHA_I = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>';
-var FLECHA_D = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+var FLECHA_I = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>';
+var FLECHA_D = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
 var K = { sel: null, mes: null };   // día elegido (ISO) y primer día del mes que se ve
 function deISO(t) { var p = t.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
 function lunes(d) { return masDias(d, -((d.getDay() + 6) % 7)); }
@@ -766,31 +776,48 @@ function htmlMes() {
   return h + '</div>';
 }
 
-// Agenda de los 13 días siguientes al elegido, con todos sus eventos (iPad y móvil)
-function htmlAgenda() {
-  var base = deISO(K.sel), h = '<div class="k-ag-tit">Siguientes días</div>', n, i;
+// Días siguientes al elegido como baraja de tarjetas. lineas: máximo de líneas por día (0 = todas)
+function htmlAgenda(lineas) {
+  var base = deISO(K.sel), h = '', n, i, tarjetas = [];
   for (n = 1; n <= 13; n++) {
     var d = masDias(base, n), iso = diaISO(d);
     if (!conDatos(iso)) break;
-    var x = eventosDe(iso), dow = d.getDay();
-    h += '<div class="k-ag-dia' + (dow === 0 || dow === 6 ? ' finde' : '') + '" data-dia="' + iso + '"><div class="k-ag-f"><span class="rot">' + DIAS3[dow] + '</span><b>' + d.getDate() + '</b></div><div class="k-ag-l">';
-    if (x.fest) h += '<div class="k-ag-e fest"><span class="h">[F]</span><span class="t">' + esc(x.fest.titulo) + '</span></div>';
+    var x = eventosDe(iso), dow = d.getDay(), l = [];
+    if (x.fest) l.push('<div class="k-ag-e fest"><span class="h">[F]</span><span class="t">' + esc(x.fest.titulo) + '</span></div>');
     for (i = 0; i < x.lista.length; i++) {
       var e = x.lista[i];
-      h += '<div class="k-ag-e"><span class="h">' + (e.todoElDia ? 'día' : e.hora) + '</span><span class="t">' + puntos(e.quienes) + esc(e.titulo) + '</span></div>';
+      l.push('<div class="k-ag-e"><span class="h">' + (e.todoElDia ? 'día' : e.hora) + '</span><span class="t">' + puntos(e.quienes) + esc(e.titulo) + '</span></div>');
     }
-    if (!x.fest && !x.lista.length) h += '<div class="k-ag-e nada"><span class="t">—</span></div>';
-    h += '</div></div>';
+    if (!l.length) l.push('<div class="k-ag-e nada"><span class="t">—</span></div>');
+    var vis = lineas && l.length > lineas ? lineas : l.length;
+    tarjetas.push('<div class="k-bar' + (dow === 0 || dow === 6 ? ' finde' : '') + '" data-dia="' + iso + '" style="z-index:' + (20 - n) + '">' +
+      '<div class="k-ag-f"><span class="rot">' + DIAS3[dow] + '</span><b>' + d.getDate() + '</b>' + (l.length > vis ? '<span class="k-mas">+' + (l.length - vis) + ' más</span>' : '') + '</div>' +
+      '<div class="k-ag-l">' + l.slice(0, vis).join('') + '</div></div>');
   }
-  return h;
+  return tarjetas.join('');
+}
+// iPad: deja solo las tarjetas que caben enteras; la última se estira hasta abajo
+function encajarBaraja(c) {
+  var t = c.childNodes, k, lim = c.getBoundingClientRect().bottom, ult = null;
+  for (k = 0; k < t.length; k++) {
+    t[k].className = t[k].className.replace(/\s*ultima/g, '');
+    t[k].style.display = '';
+  }
+  for (k = 0; k < t.length; k++) {
+    if (t[k].getBoundingClientRect().bottom > lim + 0.5) { for (var j = k; j < t.length; j++) t[j].style.display = 'none'; break; }
+    ult = t[k];
+  }
+  if (ult) ult.className += ' ultima';
 }
 
 function pintarPagCal() {
-  var dia = htmlDia(), ag = htmlAgenda();
+  var dia = htmlDia();
   $('kDia').className = dia.cls; $('kDia').innerHTML = dia.html;
   $('kDiaM').className = dia.cls; $('kDiaM').innerHTML = dia.html;
   $('kMiniM').innerHTML = htmlMini(true);
-  $('kAg').innerHTML = ag; $('kAg').scrollTop = 0; $('kAgM').innerHTML = ag;
+  $('kAg').innerHTML = htmlAgenda(3); $('kAgM').innerHTML = htmlAgenda(0);
+  if (!MOVIL && /p-cal/.test(document.body.className)) encajarBaraja($('kAg'));
+  else { var lm = $('kAgM').lastChild; if (lm) lm.className += ' ultima'; }
   $('kSem').innerHTML = htmlMes();
 }
 
@@ -813,7 +840,7 @@ function tocarCal(ev) {
   }
   pintarPagCal();
   // En el móvil, al tocar un día de la agenda se sube a su tarjeta
-  if (MOVIL && dia && /k-ag-dia/.test(t.className)) { var y = $('kDiaM').getBoundingClientRect().top + (window.pageYOffset || 0) - 12; window.scrollTo(0, y); }
+  if (MOVIL && dia && /k-bar/.test(t.className)) { var y = $('kDiaM').getBoundingClientRect().top + (window.pageYOffset || 0) - 12; window.scrollTo(0, y); }
 }
 $('pagCal').addEventListener('click', tocarCal);
 $('mCal').addEventListener('click', tocarCal);
