@@ -99,11 +99,17 @@ a { color: inherit; text-decoration: none; }
 .ev .td .rot { color: var(--tinta); }
 .hoy .mas { color: #4a4640; padding-left: 48px; }
 .vacio-hoy { font-size: 13px; color: #4a4640; }
-.dia { flex: 1 1 0; min-width: 0; padding: 16px 10px; display: flex; flex-direction: column; border-left: 1px solid var(--sep); }
+.dia { flex: 1 1 0; min-width: 0; padding: 16px 12px; display: flex; flex-direction: column; border-left: 1px solid var(--sep); }
 .dia.primero { padding-left: 16px; border-left: 0; }
 .dia.finde { background: var(--finde); }
 .dia.finde + .dia.finde { border-left-color: var(--sep-fuerte); }
 .dia.ultimo { padding-right: 16px; }
+/* Tarjetas apiladas (una fila): cada día es una cartulina que se mete 20 px bajo la anterior */
+.cal.apil { background: transparent; }
+.cal.apil .hoy { position: relative; }
+.cal.apil .dia { position: relative; background: var(--widget); border-radius: 20px; margin-left: -20px; padding-left: 32px; border: 0; box-shadow: inset -1px 0 0 var(--sep); }
+.cal.apil .dia.finde { background: var(--finde); box-shadow: inset -1px 0 0 var(--sep-fuerte); }
+.cal.apil .dia.ultimo { box-shadow: none; }
 /* Variante en dos filas de tres días (?filas2) */
 .cal.f2 .hoy { flex: 1 1 0; }        /* dos filas: hoy 25 %, días 75 % */
 .dias6 { flex: 3 1 0; min-width: 0; display: flex; flex-direction: column; }
@@ -560,7 +566,7 @@ function pintarCal() {
   normales = agrupar(normales);
 
   // --- Hoy ---
-  html += '<div class="hoy"><div class="hoy-cab"><span>hoy</span>' + (fest ? '<span>[F]</span>' : '') + '</div>';
+  html += '<div class="hoy" style="z-index:10"><div class="hoy-cab"><span>hoy</span>' + (fest ? '<span>[F]</span>' : '') + '</div>';
   html += '<div class="hoy-num"><b>' + hoy.getDate() + '</b><span>' + DIAS[hoy.getDay()] + '</span></div>';
   if (fest) html += '<div class="hoy-fest">' + esc(fest.titulo) + '</div>';
   html += '<div class="crece"></div><div class="hoy-lista">';
@@ -568,7 +574,7 @@ function pintarCal() {
   if (!normales.length) html += '<div class="vacio-hoy">Nada previsto :)</div>';
   for (i = 0; i < visibles; i++) {
     e = normales[i];
-    if (e.todoElDia) html += '<div class="ev"><div class="td"><span class="rot">todo el día</span><span class="t">' + esc(e.titulo) + '</span></div>' + burbujas(e.quienes) + '</div>';
+    if (e.todoElDia) html += '<div class="ev"><div class="td"><span class="rot">día</span><span class="t">' + esc(e.titulo) + '</span></div>' + burbujas(e.quienes) + '</div>';
     else html += '<div class="ev"><span class="h">' + e.hora + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
   }
   if (normales.length > visibles) html += '<div class="mas">+' + (normales.length - visibles) + ' más</div>';
@@ -583,13 +589,14 @@ function pintarCal() {
     nor = agrupar(nor);
     var dow = d.getDay(), pri = FILAS2 ? (n === 1 || n === 4) : n === 1, ult = FILAS2 ? (n === 3 || n === 6) : n === 6;
     var clases = 'dia' + (pri ? ' primero' : '') + (dow === 0 || dow === 6 ? ' finde' : '') + (ult ? ' ultimo' : '');
+    var zi = ' style="z-index:' + (10 - n) + '"';
     if (FILAS2) html += '<div class="' + clases + '"><div class="cabn"><span class="izq"><span class="num">' + d.getDate() + '</span><span class="rot">' + DIAS3[dow] + '</span></span>' + (f ? '<span class="rot">[F]</span>' : '') + '</div>';
-    else html += '<div class="' + clases + '"><span class="rot cab"><span>' + DIAS3[dow] + '</span>' + (f ? '<span>[F]</span>' : '') + '</span><span class="num">' + d.getDate() + '</span>';
+    else html += '<div class="' + clases + '"' + zi + '><span class="rot cab"><span>' + DIAS3[dow] + '</span>' + (f ? '<span>[F]</span>' : '') + '</span><span class="num">' + d.getDate() + '</span>';
     if (f) html += '<span class="fest">' + esc(f.titulo) + '</span>';
     var cab = nor.length > MAX_DIA ? MAX_DIA : nor.length;
     for (i = 0; i < cab; i++) {
       e = nor[i];
-      html += '<div class="it"><span class="rot">' + (e.todoElDia ? 'todo el día' : e.hora) + '</span><span class="t">' + puntos(e.quienes) + esc(e.titulo) + '</span></div>';
+      html += '<div class="it"><span class="rot">' + (e.todoElDia ? 'día' : e.hora) + '</span><span class="t">' + puntos(e.quienes) + esc(e.titulo) + '</span></div>';
     }
     if (nor.length > cab) html += '<span class="mas">+' + (nor.length - cab) + ' más</span>';
     if (!nor.length && !f) html += '<span class="nada">—</span>';
@@ -597,7 +604,7 @@ function pintarCal() {
   }
   if (FILAS2) html += '</div></div>';
   $('cal').innerHTML = html;
-  $('cal').className = 'w cal' + (FILAS2 ? ' f2' : '');
+  $('cal').className = 'w cal' + (FILAS2 ? ' f2' : ' apil');
   pintarCalMovil(porDia, hoy, fest, normales);
 }
 
@@ -679,7 +686,7 @@ function htmlDia() {
   for (i = 0; i < x.lista.length; i++) {
     e = x.lista[i];
     var pas = esHoy && !e.todoElDia && (e.fin || e.hora) <= hhmm;
-    h += '<div class="ev' + (pas ? ' pasado' : '') + '">' + (e.todoElDia ? '<span class="td">todo el día</span>' : '<span class="h">' + e.hora + '</span>') +
+    h += '<div class="ev' + (pas ? ' pasado' : '') + '">' + (e.todoElDia ? '<span class="td">día</span>' : '<span class="h">' + e.hora + '</span>') +
       '<span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
   }
   return { cls: 'w k-dia' + (esHoy ? '' : ' otro'), html: h + '</div>' };

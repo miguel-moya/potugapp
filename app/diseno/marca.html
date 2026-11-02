@@ -140,10 +140,27 @@ body{margin:0}
 <section style="display: flex; flex-direction: column; margin-top: 40px">
 <h2 style="margin: 0; font-size: 13px; font-weight: 600">6 · Medidas</h2>
 <div style="background: #f4f3ef; border-radius: 20px; padding: 20px 24px; display: flex; margin-top: 16px; flex-wrap: wrap; align-items: flex-start">
-<div style="display: flex; flex-direction: column; width: calc((100% - 48px) / 4); box-sizing: border-box"><span style="font-family: 'Space Mono', monospace; font-size: 10px; color: #5c5a54">entre widgets</span><span style="font-size: 20px; font-weight: 300; margin-top: 4px">14 px</span></div>
+<div style="display: flex; flex-direction: column; width: calc((100% - 48px) / 4); box-sizing: border-box"><span style="font-family: 'Space Mono', monospace; font-size: 10px; color: #5c5a54">entre widgets</span><span style="font-size: 20px; font-weight: 300; margin-top: 4px">16 px</span></div>
 <div style="display: flex; flex-direction: column; width: calc((100% - 48px) / 4); box-sizing: border-box; margin-left: 16px"><span style="font-family: 'Space Mono', monospace; font-size: 10px; color: #5c5a54">interior widget</span><span style="font-size: 20px; font-weight: 300; margin-top: 4px">16 px</span></div>
-<div style="display: flex; flex-direction: column; width: calc((100% - 48px) / 4); box-sizing: border-box; margin-left: 16px"><span style="font-family: 'Space Mono', monospace; font-size: 10px; color: #5c5a54">radio widget · interior</span><span style="font-size: 20px; font-weight: 300; margin-top: 4px">20 · 14 px</span></div>
+<div style="display: flex; flex-direction: column; width: calc((100% - 48px) / 4); box-sizing: border-box; margin-left: 16px"><span style="font-family: 'Space Mono', monospace; font-size: 10px; color: #5c5a54">radio widget y tarjetas</span><span style="font-size: 20px; font-weight: 300; margin-top: 4px">20 px</span></div>
 <div style="display: flex; flex-direction: column; width: calc((100% - 48px) / 4); box-sizing: border-box; margin-left: 16px"><span style="font-family: 'Space Mono', monospace; font-size: 10px; color: #5c5a54">menú lateral</span><span style="font-size: 20px; font-weight: 300; margin-top: 4px">72 px</span></div>
+</div>
+<div style="background: #f4f3ef; border-radius: 20px; padding: 20px 24px; display: flex; flex-direction: column; margin-top: 12px">
+<span style="font-family: 'Space Mono', monospace; font-size: 10px; color: #5c5a54">escala de espaciados (márgenes y rellenos)</span>
+<span style="font-size: 20px; font-weight: 300; margin-top: 4px">4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 48 · 64 px</span>
+<span style="font-size: 12px; color: #5c5a54; margin-top: 8px">Siempre pares. Hasta 24, de 4 en 4; a partir de 24, múltiplos de 8.</span>
+</div>
+</section>
+<!-- 7. Tarjetas apiladas -->
+<section style="display: flex; flex-direction: column; margin-top: 40px">
+<h2 style="margin: 0; font-size: 13px; font-weight: 600">7 · Tarjetas apiladas</h2>
+<div style="background: #f4f3ef; border-radius: 20px; padding: 20px 24px; display: flex; flex-direction: column; margin-top: 16px">
+<div style="display: flex; height: 120px">
+<div style="position: relative; z-index: 3; width: 140px; background: #c9b29b; border-radius: 20px"></div>
+<div style="position: relative; z-index: 2; width: 140px; margin-left: -20px; background: #f4f3ef; border-radius: 20px; border: 1px solid #e3e0d9"></div>
+<div style="position: relative; z-index: 1; width: 140px; margin-left: -20px; background: #ecebe6; border-radius: 20px; border: 1px solid #d3cfc6"></div>
+</div>
+<span style="font-size: 12px; color: #5c5a54; margin-top: 12px">Cuando varias tarjetas forman una misma cosa (los días del calendario), se apilan como cartulinas: cada una se mete 20 px por debajo de la anterior y la de la izquierda queda encima. Radio 20 px y una línea fina en el borde. No se apilan widgets independientes (tiempo, compra, tareas): esos van separados 16 px.</span>
 </div>
 </section>
 </div>
