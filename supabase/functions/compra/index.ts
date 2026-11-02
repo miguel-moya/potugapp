@@ -8,7 +8,7 @@
 // Acciones (las manda la app; si no hay conexión las guarda y las envía después, por eso
 // cada artículo de la lista lleva un id generado en el aparato y repetir una acción no duplica nada):
 //   {tipo:"anadir", id, nombre, basico_id?, grupo_id?, quien?, guardar_basico?}
-//   {tipo:"tachar", id, hecho}
+//   {tipo:"tachar", id, hecho, quien?}
 //   {tipo:"nota", id, nota}
 //   {tipo:"quitar", id}
 //   {tipo:"terminar"}                          → borra lo tachado (y sus notas)
@@ -42,8 +42,8 @@ const ahora = () => new Date().toISOString();
 async function estado() {
   const [grupos, basicos, lista] = await Promise.all([
     rest("GET", "compra_grupos?select=id,nombre,orden&order=orden,id"),
-    rest("GET", "compra_basicos?select=id,grupo_id,nombre,orden&order=orden,nombre"),
-    rest("GET", "compra_lista?select=id,nombre,basico_id,grupo_id,quien,nota,hecho,creado&order=creado"),
+    rest("GET", "compra_basicos?select=id,grupo_id,nombre,orden,veces&order=orden,nombre"),
+    rest("GET", "compra_lista?select=id,nombre,basico_id,grupo_id,quien,nota,hecho,tachado_por,creado&order=creado"),
   ]);
   return { grupos, basicos, lista, ahora: ahora() };
 }
@@ -73,12 +73,17 @@ async function aplicar(a: Record<string, unknown>) {
           grupo_id = b.length ? b[0].grupo_id : null;
         }
       }
-      await rest("POST", "compra_lista?on_conflict=id", [{ id, nombre, basico_id, grupo_id, quien: limpio(a.quien) || null, actualizado: ahora() }],
-        "resolution=ignore-duplicates,return=minimal");
+      const nuevo = await rest("POST", "compra_lista?on_conflict=id&select=id", [{ id, nombre, basico_id, grupo_id, quien: limpio(a.quien) || null, actualizado: ahora() }],
+        "resolution=ignore-duplicates,return=representation");
+      // Cuenta para los «habituales» (solo si de verdad se ha añadido ahora)
+      if (basico_id && nuevo && nuevo.length) {
+        const b = await rest("GET", `compra_basicos?select=veces&id=eq.${basico_id}`);
+        if (b.length) await rest("PATCH", `compra_basicos?id=eq.${basico_id}`, { veces: (b[0].veces || 0) + 1 }, "return=minimal");
+      }
       return;
     }
     case "tachar":
-      await rest("PATCH", `compra_lista?id=eq.${encodeURIComponent(id)}`, { hecho: !!a.hecho, actualizado: ahora() }, "return=minimal");
+      await rest("PATCH", `compra_lista?id=eq.${encodeURIComponent(id)}`, { hecho: !!a.hecho, tachado_por: a.hecho ? (limpio(a.quien) || null) : null, actualizado: ahora() }, "return=minimal");
       return;
     case "nota":
       await rest("PATCH", `compra_lista?id=eq.${encodeURIComponent(id)}`, { nota: String(a.nota ?? "").trim().slice(0, 300) || null, actualizado: ahora() }, "return=minimal");
