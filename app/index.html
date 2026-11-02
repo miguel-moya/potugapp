@@ -61,7 +61,8 @@ a { color: inherit; text-decoration: none; }
 .filas { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; }
 .filas > * + * { margin-top: 16px; }
 .fila { flex: 1 1 0; min-height: 0; display: flex; }
-.fila > * { flex: 1 1 0; min-width: 0; }
+.fila > * { flex: 0 0 auto; width: calc((100% - 32px) / 3); min-width: 0; }
+.fila > *:only-child { width: 100%; }
 .fila > * + * { margin-left: 16px; }
 .w { background: var(--widget); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; overflow: hidden; }
 .w-cab { display: flex; justify-content: space-between; align-items: baseline; }
@@ -135,8 +136,10 @@ a { color: inherit; text-decoration: none; }
 .dia .nada { font-size: 12px; color: var(--ter); }
 
 /* Tiempo */
-.tiempo { position: relative; }
-.tiempo > * + * { margin-top: 12px; }
+/* Tiempo como tarjetas apiladas hacia abajo: hoy encima, los días siguientes debajo */
+.tiempo { background: transparent; padding: 0; }
+.t-hoy { position: relative; z-index: 3; flex-grow: 1; min-height: 0; background: var(--widget); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; box-shadow: inset 0 -1px 0 var(--sep); }
+.t-hoy > * + * { margin-top: 12px; }
 .tiempo .w-cab { align-items: flex-start; }
 .tiempo .ico-hoy { position: absolute; top: 4px; right: 16px; }
 .dos > div + div { margin-left: 8px; }
@@ -150,13 +153,14 @@ a { color: inherit; text-decoration: none; }
 .dos { display: flex; margin-top: 20px !important; }
 .dos > div { flex: 1 1 0; display: flex; flex-direction: column; }
 .dos .v { font-size: 13px; margin-top: 2px; }
-.prev { display: flex; align-items: center; height: 38px; border-top: 1px solid var(--sep); }
+.prev { position: relative; display: flex; align-items: center; flex-shrink: 0; height: 64px; margin-top: -20px; padding: 20px 16px 0; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
+.prev.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-fuerte); }
+.prev.ultima { box-shadow: none; }
 .prev .rot { width: 58px; }
 .prev .tt { font-size: 14px; font-weight: 300; margin-left: 8px; flex-grow: 1; }
 .prev .pp { display: flex; align-items: center; font-size: 12px; line-height: 1; }
 .prev .pp .n { min-width: 26px; }
 .prev .pp svg { margin-right: 4px; display: block; }
-.tiempo .prevs { margin-top: 0; }
 
 /* Pendiente */
 .pend { background: transparent; border: 1.5px dashed #c3bfb6; align-items: center; justify-content: center; text-align: center; }
@@ -206,14 +210,17 @@ body.movil #movil { display: block; padding: 16px 16px 96px; }
 .m-dia .t.nada { color: var(--ter); }
 .m-dia .mas { margin-left: 12px; flex-shrink: 0; }
 .m-fila { display: flex; align-items: stretch; }
-.m-fila > * { flex: 1 1 0; min-width: 0; }
+.m-fila > * { flex: 0 0 auto; width: calc((100% - 12px) / 2); min-width: 0; }
 .m-fila > * + * { margin-left: 12px; }
-.m-tiempo { padding: 16px; }
+.m-tiempo { padding: 0; background: transparent; }
+.m-tiempo .t-hoy { padding: 16px; }
+.m-tiempo .t-hoy > * + * { margin-top: 0; }
 .m-tiempo .w-cab { align-items: center; }
 .m-tiempo .rot { font-size: 10px; }
 .m-tiempo b { font-size: 36px; font-weight: 300; line-height: 1; letter-spacing: -1px; margin-top: 8px; }
 .m-tiempo .t12 { margin-top: 8px; }
-.m-tiempo .sig { border-top: 1px solid var(--sep); padding-top: 8px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.m-tiempo .sig { position: relative; z-index: 2; flex-shrink: 0; height: 52px; margin-top: -20px; padding: 20px 16px 0; background: var(--widget); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+.m-tiempo .sig.finde { background: var(--finde); }
 #movil .pend { padding: 12px; }
 .m-nav { position: fixed; left: 0; right: 0; bottom: 0; background: var(--widget); border-top: 1px solid #dcd9d1; padding: 8px 16px 24px; padding-bottom: calc(8px + env(safe-area-inset-bottom)); display: flex; z-index: 20; }
 .m-nav a { flex: 1 1 0; height: 44px; display: flex; align-items: center; justify-content: center; }
@@ -364,7 +371,7 @@ body.movil.p-cal #mCal { display: block; margin-top: 12px; }
         </a>
       </div>
       <div class="fila">
-        <a href="#" class="w tiempo" id="tiempo"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div><span class="t12">Cargando…</span></a>
+        <a href="#" class="w tiempo" id="tiempo"><div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div><span class="t12">Cargando…</span></div></a>
         <div class="w pend">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg>
           <h2 class="w-tit">Compra</h2><span class="t12">Pendiente de desarrollo</span>
@@ -397,7 +404,7 @@ body.movil.p-cal #mCal { display: block; margin-top: 12px; }
   <div id="mInicio">
   <a href="#calendario" class="w m-cal m-g" id="calM" style="margin-top:12px"></a>
   <div class="m-fila">
-    <a href="#" class="w m-tiempo m-p" id="tiempoM"><span class="rot">hoy · marratxí</span><span class="t12">Cargando…</span></a>
+    <a href="#" class="w m-tiempo m-p" id="tiempoM"><div class="t-hoy"><span class="rot">hoy · marratxí</span><span class="t12">Cargando…</span></div></a>
     <div class="w pend m-p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg><h2 class="w-tit">Comer fuera</h2><span class="t12">Pendiente</span></div>
   </div>
   <div class="w pend m-m"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg><h2 class="w-tit">Compra</h2><span class="t12">Pendiente de desarrollo</span></div>
@@ -859,24 +866,24 @@ function cargarTiempo() {
     viento = Math.round(viento / Math.min(24, d.hourly.wind_speed_10m.length));
     var ahora = d.current ? Math.round(d.current.temperature_2m) : Math.round(dl.temperature_2m_max[0]);
     var cod = d.current ? d.current.weather_code : dl.weather_code[0];
-    var h = '<div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div>' + icono(cod, 34, 'ico-hoy', 1) +
+    var h = '<div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div>' + icono(cod, 34, 'ico-hoy', 1) +
       '<div class="gran"><b>' + ahora + '°</b><div><span style="font-size:13px">' + estadoCielo(cod) + '</span>' +
       '<span class="t12">' + Math.round(dl.temperature_2m_min[0]) + '° / ' + Math.round(dl.temperature_2m_max[0]) + '°</span></div></div>' +
       '<div class="dos"><div><span class="rot">viento</span><span class="v">' + viento + ' km/h</span></div>' +
       '<div><span class="rot">rachas</span><span class="v">' + (dl.wind_gusts_10m_max ? Math.round(dl.wind_gusts_10m_max[0]) + ' km/h' : '—') + '</span></div></div>' +
       '<div class="dos"><div><span class="rot">lluvia</span><span class="v">' + dl.precipitation_probability_max[0] + '%</span></div>' +
       '<div><span class="rot">humedad</span><span class="v">' + (d.current && d.current.relative_humidity_2m != null ? Math.round(d.current.relative_humidity_2m) + '%' : '—') + '</span></div></div>' +
-      '<div class="crece"></div><div class="prevs">';
+      '</div>';
     for (k = 1; k <= 2; k++) {
-      var p = dl.time[k].split('-'), fd = new Date(+p[0], +p[1] - 1, +p[2]);
-      h += '<div class="prev"><span class="rot">' + DIAS3[fd.getDay()] + '</span>' + icono(dl.weather_code[k], 20) +
+      var p = dl.time[k].split('-'), fd = new Date(+p[0], +p[1] - 1, +p[2]), fds = fd.getDay() === 0 || fd.getDay() === 6;
+      h += '<div class="prev' + (fds ? ' finde' : '') + (k === 2 ? ' ultima' : '') + '" style="z-index:' + (3 - k) + '"><span class="rot">' + DIAS3[fd.getDay()] + '</span>' + icono(dl.weather_code[k], 20) +
         '<span class="tt">' + Math.round(dl.temperature_2m_max[k]) + '°</span><span class="pp">' + GOTA + pct(dl.precipitation_probability_max[k]) + '</span></div>';
     }
-    $('tiempo').innerHTML = h + '</div>';
+    $('tiempo').innerHTML = h;
     var p1 = dl.time[1].split('-'), f1 = new Date(+p1[0], +p1[1] - 1, +p1[2]);
-    $('tiempoM').innerHTML = '<div class="w-cab"><span class="rot">hoy · marratxí</span>' + icono(cod, 18) + '</div>' +
+    $('tiempoM').innerHTML = '<div class="t-hoy"><div class="w-cab"><span class="rot">hoy · marratxí</span>' + icono(cod, 18) + '</div>' +
       '<b>' + ahora + '°</b><span class="t12">' + Math.round(dl.temperature_2m_min[0]) + '° / ' + Math.round(dl.temperature_2m_max[0]) + '° · lluvia ' + dl.precipitation_probability_max[0] + '%</span>' +
-      '<div class="crece"></div><div class="sig"><span class="rot">' + DIAS3[f1.getDay()] + '</span>' + icono(dl.weather_code[1], 16) +
+      '</div><div class="sig' + (f1.getDay() === 0 || f1.getDay() === 6 ? ' finde' : '') + '"><span class="rot">' + DIAS3[f1.getDay()] + '</span>' + icono(dl.weather_code[1], 16) +
       '<span>' + Math.round(dl.temperature_2m_max[1]) + '° · ' + dl.precipitation_probability_max[1] + '%</span></div>';
   });
 }
