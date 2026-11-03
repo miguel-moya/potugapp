@@ -477,7 +477,7 @@ body.p-comer #pagComer { display: flex; }
 .cf-mes { display: flex; align-items: center; justify-content: space-between; height: 36px; }
 .cf-mes .flechas a { width: 36px; height: 36px; }
 .cf-mes .flechas b { font-family: var(--mono); font-size: 11px; font-weight: 400; display: flex; align-items: center; padding: 0 4px; }
-.cf-cifra { display: flex; align-items: baseline; margin-top: 8px; }
+.cf-cifra { display: flex; align-items: baseline; margin-top: 12px; }
 .cf-cifra b { font-size: 64px; font-weight: 300; line-height: 0.9; letter-spacing: -2px; white-space: nowrap; }
 .cf-cifra .de { font-size: 14px; color: var(--sec); margin-left: 8px; display: flex; align-items: center; white-space: nowrap; cursor: pointer; }
 .cf-cifra .de svg { margin-left: 4px; color: var(--ter); }
@@ -489,17 +489,31 @@ body.p-comer #pagComer { display: flex; }
 .cf-estado { font-size: 13px; font-weight: 500; margin-top: 36px; }
 .cf-estado.sin-marca { margin-top: 16px; }
 .cf-estado.bien { color: var(--ok); } .cf-estado.rapido { color: var(--aviso); } .cf-estado.neutro { color: var(--sec); }
-.cf-datos { display: flex; margin-top: 16px; }
-.cf-datos > div { flex: 1 1 0; display: flex; flex-direction: column; }
-.cf-datos > div + div { margin-left: 12px; }
-.cf-datos .v { font-size: 14px; margin-top: 4px; }
+.cf-datos { display: flex; flex-wrap: wrap; margin-top: 24px; }
+.cf-datos > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding-right: 12px; }
+.cf-datos .v { font-size: 14px; margin-top: 4px; white-space: nowrap; }
+.cf-datos .v.rapido { color: var(--aviso); font-weight: 600; } .cf-datos .v.bien { color: var(--ok); font-weight: 600; }
+/* Móvil: los cuatro datos en 2 × 2 */
+#mComer .cf-datos > div { flex: 0 0 50%; }
+#mComer .cf-datos > div:nth-child(n+3) { margin-top: 16px; }
+/* Saldo */
+.cf-sal { display: flex; align-items: baseline; justify-content: space-between; margin-top: 12px; }
+.cf-sal .t { font-size: 14px; }
+.cf-sal b { font-size: 28px; font-weight: 300; letter-spacing: -1px; white-space: nowrap; margin-left: 12px; }
+.cf-carta .flechas a.off { cursor: default; }
+.cf-pill.off { opacity: 0.25; cursor: default; }
+/* Móvil: lista como en la compra (cabecera y lista en baraja) */
+.cf-mlis { margin-top: 16px; }
+#mComer .cp-lcarta { padding-bottom: 8px; }
+#mComer .cp-items { overflow: visible; }
+#mComer .cf-hist { margin-top: 16px; }
 .cf-sf { display: flex; align-items: center; margin-top: 12px; }
 .cf-sf .burs { display: flex; align-items: center; }
 .cf-sf .burs svg { margin: 0 4px; color: var(--sec); }
 .cf-sf .bur { width: 20px; height: 20px; border-radius: 10px; font-size: 10px; }
 .cf-sf .txt { margin-left: 12px; flex-grow: 1; min-width: 0; font-size: 13px; line-height: 1.3; }
 .cf-sf .txt b { font-weight: 600; }
-.cf-saldar { height: 40px; padding: 0 20px; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--tinta); display: flex; align-items: center; font-size: 13px; font-weight: 600; flex-shrink: 0; margin-left: 12px; cursor: pointer; white-space: nowrap; }
+.cf-saldar { height: 44px; margin-top: 16px; border-radius: 22px; box-shadow: inset 0 0 0 1px var(--tinta); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
 .cf-saldar.seguro { background: var(--tinta); color: var(--widget); }
 /* Meses */
 .cf-hist { margin-top: 16px; padding: 16px; display: flex; flex-direction: column; }
@@ -541,7 +555,8 @@ body.p-comer #pagComer { display: flex; }
 .cf-w .cf-barra i { border-radius: 3px; }
 .cf-w .cf-barra .marca { height: 14px; }
 .cf-w .cf-estado { font-size: 11px; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cf-w .cf-debe { display: flex; align-items: center; margin-top: 8px; font-family: var(--mono); font-size: 11px; }
+.cf-w .cf-debe { display: flex; align-items: center; margin-top: 8px; font-size: 12px; white-space: nowrap; }
+.cf-w .cf-debe .pto { margin-right: 6px; }
 .cf-w .cf-debe .bur { width: 16px; height: 16px; border-radius: 8px; font-size: 8px; }
 .cf-w .cf-debe svg { margin: 0 2px; color: var(--sec); }
 .cf-w .cf-debe span.n { margin-left: 6px; }
@@ -553,10 +568,7 @@ body.movil.p-comer #mComer { display: block; margin-top: 16px; }
 #mComer .cf-barra { height: 8px; border-radius: 4px; margin-top: 20px; }
 #mComer .cf-barra i { border-radius: 4px; }
 #mComer .cf-barra .marca { height: 16px; }
-#mComer .cf-barra .eti { top: 20px; }
-#mComer .cf-estado { margin-top: 32px; }
-#mComer .cf-estado.sin-marca { margin-top: 16px; }
-#mComer .cp-in { margin-top: 16px; background: var(--widget); box-shadow: inset 0 0 0 1px var(--sep); }
+
 .cf-mlista { margin-top: 16px; padding: 0; overflow: hidden; }
 .cf-mlista .cf-items { overflow: visible; padding-bottom: 0; }
 /* Hoja: apuntar o corregir un gasto. Dos cartas en baraja: qué y dónde (arriba), quién y cuándo + botones (debajo) */
@@ -676,7 +688,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
     <!-- Página Comer fuera -->
     <div class="pagina" id="pagComer">
       <div class="cf-izq" id="cfIzq"></div>
-      <section class="w cf-lis"><div class="cf-lis-cab" id="cfCab"></div><div class="cf-items" id="cfItems"></div></section>
+      <section class="cp-lis"><div class="cp-carta cp-cab" id="cfCab"></div><div class="cp-carta cp-lcarta"><div class="cp-items" id="cfItems"></div></div></section>
     </div>
   </main>
 </div>
@@ -1550,7 +1562,11 @@ function gastosDe(m) {
   return l.sort(function (a, b) { return a.fecha < b.fecha ? 1 : a.fecha > b.fecha ? -1 : (a.creado < b.creado ? 1 : -1); });
 }
 function totalDe(m) { var t = 0, l = gastosDe(m); for (var k = 0; k < l.length; k++) t += +l[k].importe; return red(t); }
-function mesPrimero() { var m = mesHoy(); for (var k = 0; k < CF.gastos.length; k++) if (CF.gastos[k].fecha.slice(0, 7) < m) m = CF.gastos[k].fecha.slice(0, 7); return m; }
+// La herramienta empieza en noviembre de 2026: no se puede ir ni apuntar antes
+var CF_INICIO = '2026-11';
+// Totales de meses anteriores para la gráfica (provisionales: Lidia pasará los reales)
+var CF_HIST = { '2026-05': 365, '2026-06': 342, '2026-07': 398, '2026-08': 455, '2026-09': 371, '2026-10': 418 };
+function mesPrimero() { return CF_INICIO; }
 function saldoCF() {
   var v = 0, k;
   for (k = 0; k < CF.gastos.length; k++) { var g = CF.gastos[k]; if (g.paga === 'L') v += g.importe / 2; else if (g.paga === 'M') v -= g.importe / 2; }
@@ -1624,88 +1640,106 @@ function cfRitmo(m) {
   var esp = act ? tope * new Date().getDate() / diasDelMes(m) : null;
   return { m: m, total: total, tope: tope, esp: esp, rapido: total > tope || (esp !== null && total > esp) };
 }
-function cfEstado(r, corto) {
-  var cola = corto ? '' : ' del ritmo';
+// Estado corto (widget del móvil)
+function cfEstado(r) {
   if (r.total > r.tope) return { c: 'rapido', t: 'Tope superado en ' + eur(Math.round(r.total - r.tope)) };
-  if (r.esp === null) return r.m > mesHoy() ? { c: 'neutro', t: '' } : { c: 'bien', t: eur(Math.round(r.tope - r.total)) + ' por debajo del tope' };
-  return r.total > r.esp ? { c: 'rapido', t: eur(Math.round(r.total - r.esp)) + ' por encima' + cola } : { c: 'bien', t: eur(Math.round(r.esp - r.total)) + ' por debajo' + cola };
+  if (r.esp === null) return { c: 'bien', t: eur(Math.round(r.tope - r.total)) + ' bajo el tope' };
+  return r.total > r.esp ? { c: 'rapido', t: eur(Math.round(r.total - r.esp)) + ' por encima' } : { c: 'bien', t: eur(Math.round(r.esp - r.total)) + ' por debajo' };
 }
-function cfBarra(r, eti) {
+function cfBarra(r) {
   var p = Math.min(100, r.total / r.tope * 100), h = '<div class="cf-barra' + (r.rapido ? ' rapido' : '') + '"><i style="width:' + p + '%"></i>';
-  if (r.esp !== null) {
-    var m = Math.min(100, r.esp / r.tope * 100);
-    h += '<span class="marca" style="left:' + m + '%"></span>' + (eti ? '<span class="eti" style="left:' + Math.max(8, Math.min(92, m)) + '%">hoy · ' + eur(Math.round(r.esp)) + '</span>' : '');
-  }
+  if (r.esp !== null) h += '<span class="marca" style="left:' + Math.min(100, r.esp / r.tope * 100) + '%"></span>';
   return h + '</div>';
 }
 function cfDebe() { var v = saldoCF(); if (Math.abs(v) < 0.01) return null; return v > 0 ? { de: 'M', a: 'L', v: v } : { de: 'L', a: 'M', v: -v }; }
-function cfResumen() {
-  var m = CFV.mes, r = cfRitmo(m), act = m === mesHoy(), e = cfEstado(r), l = gastosDe(m), nd = 0, k;
+// Frase del saldo: personal desde el móvil de cada uno, genérica desde la cocina
+function cfFraseDebe(d) {
+  if (YO === d.a) return NOMBRE_PAGA[d.de] + ' te debe';
+  if (YO === d.de) return 'Le debes a ' + NOMBRE_PAGA[d.a];
+  return NOMBRE_PAGA[d.de] + ' debe a ' + NOMBRE_PAGA[d.a];
+}
+// Cuatro datos al mismo nivel: ritmo (o tope), quedan, días, veces
+function cfDatos(r) {
+  var act = r.m === mesHoy(), l = gastosDe(r.m), nd = 0, k, d = [];
   for (k = 0; k < l.length; k++) if (l[k].tipo === 'd') nd++;
-  var h = '<div class="cf-carta" style="z-index:2"><div class="cf-mes"><span class="rot">' + (act ? 'este mes' : 'gastado') + '</span><div class="flechas">' +
-    '<a data-cf="mes-" class="' + (m > mesPrimero() ? '' : 'off') + '" aria-label="Mes anterior">' + FLECHA_I + '</a><b>' + nombreMes(m) + '</b>' +
+  if (r.total > r.tope) d.push(['sobre el tope', eur(r.total - r.tope), 'rapido']);
+  else if (r.esp === null) d.push(['bajo el tope', eur(r.tope - r.total), 'bien']);
+  else if (r.total > r.esp) d.push(['sobre el ritmo', eur(Math.round(r.total - r.esp)), 'rapido']);
+  else d.push(['bajo el ritmo', eur(Math.round(r.esp - r.total)), 'bien']);
+  if (act) { d.push(['quedan', eur(Math.max(0, r.tope - r.total))]); d.push(['días', String(diasDelMes(r.m) - new Date().getDate())]); }
+  d.push(['veces', l.length + (nd ? ' · ' + nd + ' delivery' : '')]);
+  var h = '<div class="cf-datos">';
+  for (k = 0; k < d.length; k++) h += '<div><span class="rot">' + d[k][0] + '</span><span class="v' + (d[k][2] ? ' ' + d[k][2] : '') + '">' + d[k][1] + '</span></div>';
+  return h + '</div>';
+}
+function cfResumen() {
+  var m = CFV.mes, r = cfRitmo(m);
+  return '<div class="cf-carta" style="z-index:2"><div class="cp-tit"><h1>' + cap(MESES[+m.slice(5) - 1]) + ' de ' + m.slice(0, 4) + '</h1><div class="flechas">' +
+    '<a data-cf="mes-" class="' + (m > mesPrimero() ? '' : 'off') + '" aria-label="Mes anterior">' + FLECHA_I + '</a>' +
     '<a data-cf="mes+" class="' + (m < mesHoy() ? '' : 'off') + '" aria-label="Mes siguiente">' + FLECHA_D + '</a></div></div>' +
-    '<div class="cf-cifra"><b>' + eur(r.total) + '</b><span class="de" data-cf="tope">de ' + eur(r.tope) + LAPIZ_P + '</span></div>' + cfBarra(r, true) +
-    '<div class="cf-estado ' + e.c + (r.esp === null ? ' sin-marca' : '') + '">' + (e.t || '&nbsp;') + '</div><div class="cf-datos">' +
-    (r.total > r.tope ? '<div><span class="rot">de más</span><span class="v">' + eur(r.total - r.tope) + '</span></div>' : '<div><span class="rot">' + (act ? 'quedan' : 'sobraron') + '</span><span class="v">' + eur(r.tope - r.total) + '</span></div>') +
-    (act ? '<div><span class="rot">días</span><span class="v">' + (diasDelMes(m) - new Date().getDate()) + '</span></div>' : '') +
-    '<div><span class="rot">veces</span><span class="v">' + l.length + (nd ? ' · ' + nd + ' delivery' : '') + '</span></div></div></div>';
-  return h;
+    '<div class="cf-cifra"><b>' + eur(r.total) + '</b><span class="de" data-cf="tope">de ' + eur(r.tope) + LAPIZ_P + '</span></div>' + cfBarra(r) + cfDatos(r) + '</div>';
 }
 function cfSaldo() {
-  var d = cfDebe(), ult = CF.saldados.length ? CF.saldados[CF.saldados.length - 1].fecha : null, cab = 'entre nosotros';
+  var d = cfDebe(), ult = CF.saldados.length ? CF.saldados[CF.saldados.length - 1].fecha : null, cab = 'saldo entre los dos';
   if (ult) { var f = new Date(ult); cab += ' · saldado el ' + f.getDate() + ' ' + MESES3[f.getMonth()]; }
   var h = '<div class="cf-carta cf-saldo" style="z-index:1"><span class="rot">' + cab + '</span>';
-  if (!d) return h + '<div class="cf-sf"><span class="txt" style="margin-left:0">Estáis en paz</span></div></div>';
-  return h + '<div class="cf-sf"><span class="burs">' + burbuja(d.de) + FLECHA_SALDO + burbuja(d.a) + '</span>' +
-    '<span class="txt">' + NOMBRE_PAGA[d.de] + ' debe <b>' + eur(d.v, true) + '</b> a ' + NOMBRE_PAGA[d.a] + '</span>' +
-    '<a class="cf-saldar' + (CFV.saldar ? ' seguro' : '') + '" data-cf="saldar">' + (CFV.saldar ? '¿Saldar?' : 'Saldar') + '</a></div></div>';
+  if (!d) return h + '<div class="cf-sal"><span class="t">Estáis en paz</span><b>0 €</b></div></div>';
+  return h + '<div class="cf-sal"><span class="t">' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b></div>' +
+    '<a class="cf-saldar' + (CFV.saldar ? ' seguro' : '') + '" data-cf="saldar">' + (CFV.saldar ? 'Toca otra vez para dejarlo a 0' : 'Saldar cuentas') + '</a></div>';
 }
-// Meses: los últimos 6 (desde el primero con gastos); tocar uno lo abre
+// Últimos 6 meses. Hasta octubre de 2026 son totales fijos (CF_HIST); desde noviembre, los gastos apuntados
+function totalMes(m) { return m < CF_INICIO ? (CF_HIST[m] || 0) : totalDe(m); }
 function cfMeses(alto) {
-  var hoy = mesHoy(), desde = mesMas(hoy, -5), pri = mesPrimero(), ms = [], max = 0, k;
-  if (pri > desde) desde = pri;
-  for (var m = desde; m <= hoy; m = mesMas(m, 1)) { var t = totalDe(m); ms.push([m, t]); if (t > max) max = t; }
+  var hoy = mesHoy(), ms = [], max = 0, k, m;
+  for (k = 5; k >= 0; k--) { m = mesMas(hoy, -k); var t = totalMes(m); ms.push([m, t]); if (t > max) max = t; }
   var tope = topeDe(hoy); max = Math.max(max, tope) * 1.15;
-  var h = '<div class="w-cab"><h2 class="w-tit">Meses</h2><span class="rot">tope ' + eur(tope) + '</span></div><div class="crece"></div><div class="cf-meses">';
+  var h = '<div class="w-cab"><h2 class="w-tit">Últimos 6 meses</h2><span class="rot">tope ' + eur(tope) + '</span></div><div class="crece"></div><div class="cf-meses">';
   for (k = 0; k < ms.length; k++) {
-    var v = ms[k][1];
-    h += '<div class="col' + (ms[k][0] === CFV.mes ? ' sel' : v > topeDe(ms[k][0]) ? ' sobre' : '') + '" data-cf="ir-mes" data-m="' + ms[k][0] + '"><span class="v">' + eur(Math.round(v)) + '</span>' +
+    var v = ms[k][1], abre = ms[k][0] >= CF_INICIO;
+    h += '<div class="col' + (ms[k][0] === CFV.mes ? ' sel' : v > topeDe(ms[k][0]) ? ' sobre' : '') + '"' + (abre ? ' data-cf="ir-mes" data-m="' + ms[k][0] + '"' : '') + '><span class="v">' + eur(Math.round(v)) + '</span>' +
       '<span class="b" style="height:' + Math.max(2, Math.round(v / max * alto)) + 'px"></span><span class="m">' + MESES3[+ms[k][0].slice(5) - 1] + '</span></div>';
   }
   return h + '<span class="tope" style="bottom:' + (Math.round(tope / max * alto) + 23) + 'px"></span></div>';
 }
 function cfLista() {
   var l = gastosDe(CFV.mes), h = '', dia = null, k, j;
-  if (!l.length) return '<div class="cf-vacio">Sin gastos en ' + nombreMes(CFV.mes) + '</div>';
+  if (!l.length) return '<div class="cp-vacio">Sin gastos este mes</div>';
   for (k = 0; k < l.length; k++) {
     var g = l[k];
     if (g.fecha !== dia) {
-      dia = g.fecha; var s = 0, d = deISO(dia);
-      for (j = 0; j < l.length; j++) if (l[j].fecha === dia) s += +l[j].importe;
-      h += '<div class="cp-fr"><span>' + DIAS3[d.getDay()] + ' ' + d.getDate() + '</span><span class="rot">' + eur(s, true) + '</span></div>';
+      dia = g.fecha; var s = 0, n = 0, d = deISO(dia);
+      for (j = 0; j < l.length; j++) if (l[j].fecha === dia) { s += +l[j].importe; n++; }
+      h += '<div class="cp-fr"><span>' + DIAS3[d.getDay()] + ' ' + d.getDate() + '</span>' + (n > 1 ? '<span class="rot">' + eur(s, true) + '</span>' : '') + '</div>';
     }
     h += '<div class="cf-g' + (g.local ? ' local' : '') + '" data-cf="gasto" data-id="' + esc(g.id) + '"><span class="cf-tipo">' + (g.tipo === 'd' ? ICO_DELI : ICO_REST) + '</span>' +
-      '<span class="cf-nom"><b>' + esc(g.sitio) + '</b><span class="rot"><span class="pto ' + g.paga + '"></span>' + NOMBRE_PAGA[g.paga] + ' · ' + (g.tipo === 'd' ? 'delivery' : 'restaurante') + '</span></span>' +
+      '<span class="cf-nom"><b>' + esc(g.sitio) + '</b><span class="rot">' + (g.tipo === 'd' ? 'delivery' : 'restaurante') + ' · <span class="pto ' + g.paga + '"></span>' + NOMBRE_PAGA[g.paga] + '</span></span>' +
       '<span class="cf-imp">' + eur(g.importe, true) + '</span></div>';
   }
   return h;
 }
 function cfAnadir() { return '<div class="cp-in cf-in" data-cf="nuevo"><span>Apuntar gasto…</span><a aria-label="Apuntar gasto">' + MAS + '</a></div>'; }
+function cfCabLista() {
+  var n = gastosDe(CFV.mes).length;
+  return '<div class="cp-tit"><h1>Gastos del mes</h1><span class="sub">' + (n ? n + (n === 1 ? ' gasto' : ' gastos') : '') + '</span></div>' + cfAnadir();
+}
 function pintarWidgetComer() {
-  var r = cfRitmo(mesHoy()), e = cfEstado(r, true), d = cfDebe();
+  var r = cfRitmo(mesHoy()), e = cfEstado(r), d = cfDebe(), deb;
+  if (!d) deb = 'en paz';
+  else if (YO === d.a) deb = '<span class="pto ' + d.de + '"></span>te debe ' + eur(d.v, true);
+  else if (YO === d.de) deb = '<span class="pto ' + d.a + '"></span>le debes ' + eur(d.v, true);
+  else deb = '<span class="pto ' + d.de + '"></span>debe ' + eur(d.v, true);
   $('wComerM').innerHTML = '<div class="w-cab"><h2 class="w-tit">Comer fuera</h2><a class="cf-mas" data-cf="nuevo" aria-label="Apuntar gasto">' + MAS + '</a></div>' +
-    '<div class="cf-cifra"><b>' + eur(Math.round(r.total)) + '</b><span class="de">/ ' + r.tope + '</span></div>' + cfBarra(r, false) +
-    '<div class="cf-estado ' + e.c + '">' + (e.t || '&nbsp;') + '</div><div class="crece"></div>' +
-    (d ? '<div class="cf-debe">' + burbuja(d.de) + FLECHA_SALDO + burbuja(d.a) + '<span class="n">' + eur(d.v, true).replace(' €', '') + '</span></div>' : '<div class="cf-debe">en paz</div>');
+    '<div class="cf-cifra"><b>' + eur(Math.round(r.total)) + '</b><span class="de">/ ' + r.tope + '</span></div>' + cfBarra(r) +
+    '<div class="cf-estado ' + e.c + '">' + e.t + '</div><div class="crece"></div><div class="cf-debe">' + deb + '</div>';
 }
 function pintarComer() {
   if (!CFV.mes) CFV.mes = mesHoy();
-  var arriba = cfResumen() + cfSaldo(), lista = cfLista(), n = gastosDe(CFV.mes).length;
+  var arriba = cfResumen() + cfSaldo(), lista = cfLista(), cab = cfCabLista();
   $('cfIzq').innerHTML = arriba + '<div class="w cf-hist">' + cfMeses(120) + '</div>';
-  $('cfCab').innerHTML = '<div class="cp-tit"><h1>' + cap(nombreMes(CFV.mes)) + (n ? '<span class="sub">' + n + (n === 1 ? ' gasto' : ' gastos') + '</span>' : '') + '</h1></div>' + cfAnadir();
+  $('cfCab').innerHTML = cab;
   $('cfItems').innerHTML = lista;
-  $('mComer').innerHTML = arriba + cfAnadir() + '<div class="w cf-mlista"><div class="cf-items">' + lista + '</div></div><div class="w cf-hist">' + cfMeses(96) + '</div>';
+  $('mComer').innerHTML = arriba + '<div class="cf-mlis"><div class="cp-carta cp-cab">' + cab + '</div><div class="cp-carta cp-lcarta"><div class="cp-items">' + lista + '</div></div></div>' +
+    '<div class="w cf-hist">' + cfMeses(96) + '</div>';
   pintarWidgetComer();
 }
 
@@ -1749,9 +1783,9 @@ function cfPintarPartes() {
   var hoy = diaISO(new Date()), ayer = diaISO(masDias(new Date(), -1));
   var cual = CFH.otro ? 'otro' : CFH.fecha === hoy ? 'hoy' : CFH.fecha === ayer ? 'ayer' : 'otro';
   $('cfCuando').innerHTML = '<span class="cf-pill' + (cual === 'hoy' ? ' on' : '') + '" data-cfh="cuando" data-v="hoy">hoy</span>' +
-    '<span class="cf-pill' + (cual === 'ayer' ? ' on' : '') + '" data-cfh="cuando" data-v="ayer">ayer</span>' +
+    '<span class="cf-pill' + (cual === 'ayer' ? ' on' : '') + (ayer < CF_INICIO + '-01' ? ' off' : '') + '" data-cfh="cuando" data-v="ayer">ayer</span>' +
     '<span class="cf-pill' + (cual === 'otro' ? ' on' : '') + '" data-cfh="cuando" data-v="otro">' + (cual === 'otro' ? deISO(CFH.fecha).getDate() + ' ' + MESES3[deISO(CFH.fecha).getMonth()] : 'otro día') +
-    '<input id="cfFecha" class="cf-fecha" type="date" max="' + hoy + '" value="' + CFH.fecha + '" aria-label="Elegir día"></span>';
+    '<input id="cfFecha" class="cf-fecha" type="date" min="' + CF_INICIO + '-01" max="' + hoy + '" value="' + CFH.fecha + '" aria-label="Elegir día"></span>';
   $('cfOk').className = 'cfh-ok' + (cfListo() ? '' : ' off');
   var b = $('cfBorrar'); if (b) b.innerHTML = CFH.borrar ? '¿Borrar este gasto?' : 'Borrar gasto';
 }
@@ -1825,7 +1859,7 @@ function tocarHojaComer(e) {
     if (c === 'otro') { var f = $('cfFecha'); try { if (f && f.showPicker) f.showPicker(); else if (f) f.focus(); } catch (x) {} return; }
     CFH.otro = false;
     if (c === 'hoy') CFH.fecha = diaISO(new Date());
-    if (c === 'ayer') CFH.fecha = diaISO(masDias(new Date(), -1));
+    if (c === 'ayer') { var ay = diaISO(masDias(new Date(), -1)); if (ay < CF_INICIO + '-01') return; CFH.fecha = ay; }
   }
   cfPintarPartes();
 }
@@ -1852,6 +1886,7 @@ function tocarComer(e) {
 ['pagComer', 'mComer', 'wComerM'].forEach(function (id) { $(id).addEventListener('click', tocarComer); });
 $('cpHoja').addEventListener('change', function (e) {
   if (!(e.target && e.target.id === 'cfFecha' && CFH && e.target.value)) return;
+  if (e.target.value < CF_INICIO + '-01' || e.target.value > diaISO(new Date())) { e.target.value = CFH.fecha; return; }
   cfLeerHoja(); CFH.borrar = false;
   CFH.otro = CFH.fecha !== diaISO(new Date()) && CFH.fecha !== diaISO(masDias(new Date(), -1));
   cfPintarPartes();
