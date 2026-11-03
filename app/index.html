@@ -566,19 +566,21 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 #cpHoja .cf-imp-in input { flex-shrink: 0; min-width: 0; width: 4.2ch; max-width: 80%; margin: 0; min-height: 0; height: 52px; padding: 0; background: transparent; border-radius: 0; font-size: 44px; font-weight: 300; letter-spacing: -1.5px; }
 #cpHoja .cf-imp-in span { font-size: 20px; color: var(--sec); margin-left: 8px; }
 #cpHoja input.cf-sitio { height: 52px; min-height: 0; margin-top: 12px; padding: 0 16px; border-radius: 26px; font-size: 16px; }
-#cpHoja input.cf-fecha { height: 44px; min-height: 0; margin-top: 8px; padding: 0 16px; border-radius: 22px; font-size: 16px; }
+/* «otro día»: el selector de fecha va invisible encima del botón, así al tocarlo se abre el calendario */
+#cpHoja .cf-pill input.cf-fecha { position: absolute; left: 0; top: 0; width: 100%; height: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; opacity: 0; font-size: 16px; -webkit-appearance: none; }
 .cf-pills { display: flex; flex-wrap: wrap; margin: 4px 0 0 -4px; }
 .cf-pills:empty { display: none; }
 .cf-pill { margin: 4px 0 0 4px; height: 36px; padding: 0 16px; border-radius: 18px; background: var(--finde); font-size: 13px; display: flex; align-items: center; white-space: nowrap; cursor: pointer; }
-.cf-pill.on { background: var(--tinta); color: var(--widget); }
+.cf-pill.on { background: var(--acento); color: var(--tinta); }
 .cf-pill .bur { width: 20px; height: 20px; border-radius: 10px; font-size: 10px; margin: 0 8px 0 -8px; }
-.cf-seg { display: flex; margin-top: 12px; height: 44px; padding: 4px; border-radius: 22px; background: var(--finde); }
-.cf-seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 18px; cursor: pointer; }
+.cf-seg { display: flex; margin-top: 12px; height: 52px; padding: 4px; border-radius: 26px; background: var(--finde); }
+.cf-seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 22px; cursor: pointer; }
 .cf-seg span svg { margin-right: 8px; }
-.cf-seg span.on { background: var(--tinta); color: var(--widget); }
+.cf-seg span.on { background: var(--acento); color: var(--tinta); }
 .cf-linea { margin-top: 12px; }
 .cf-linea > .rot { display: block; }
-.cf-linea .cf-pills { margin-top: 0; }
+.cf-linea .cf-pills { margin-top: 0; flex-wrap: nowrap; }
+.cf-linea .cf-pill { position: relative; flex: 1 1 0; min-width: 0; justify-content: center; padding: 0 8px; overflow: hidden; }
 #cpHoja input { outline: none; }
 #cpHoja .ok.off { opacity: 0.3; }
 
@@ -1729,15 +1731,17 @@ function cfPintarPartes() {
   $('cfSeg').innerHTML = '<span data-cfh="clase" data-v="r" class="' + (CFH.clase === 'r' ? 'on' : '') + '">' + ICO_REST + 'Restaurante</span>' +
     '<span data-cfh="clase" data-v="d" class="' + (CFH.clase === 'd' ? 'on' : '') + '">' + ICO_DELI + 'Delivery</span>';
   h = '';
-  for (k = 0; k < 3; k++) { var q = 'LMF'.charAt(k); h += '<span class="cf-pill' + (CFH.paga === q ? ' on' : '') + '" data-cfh="paga" data-v="' + q + '">' + burbuja(q) + NOMBRE_PAGA[q] + '</span>'; }
+  // Cada uno apunta lo suyo o lo de la común; en la cocina, los tres. Al corregir un gasto del otro, se mantiene su opción
+  var ops = YO ? [YO, 'F'] : ['L', 'M', 'F'];
+  if (CFH.paga && ops.indexOf(CFH.paga) < 0) ops.unshift(CFH.paga);
+  for (k = 0; k < ops.length; k++) { var q = ops[k]; h += '<span class="cf-pill' + (CFH.paga === q ? ' on' : '') + '" data-cfh="paga" data-v="' + q + '">' + burbuja(q) + NOMBRE_PAGA[q] + '</span>'; }
   $('cfPaga').innerHTML = h;
   var hoy = diaISO(new Date()), ayer = diaISO(masDias(new Date(), -1));
   var cual = CFH.otro ? 'otro' : CFH.fecha === hoy ? 'hoy' : CFH.fecha === ayer ? 'ayer' : 'otro';
   $('cfCuando').innerHTML = '<span class="cf-pill' + (cual === 'hoy' ? ' on' : '') + '" data-cfh="cuando" data-v="hoy">hoy</span>' +
     '<span class="cf-pill' + (cual === 'ayer' ? ' on' : '') + '" data-cfh="cuando" data-v="ayer">ayer</span>' +
-    '<span class="cf-pill' + (cual === 'otro' ? ' on' : '') + '" data-cfh="cuando" data-v="otro">otro día</span>';
-  if (cual === 'otro' && !$('cfFecha')) $('cfFechaBox').innerHTML = '<input id="cfFecha" class="cf-fecha" type="date" max="' + hoy + '" value="' + CFH.fecha + '">';
-  if (cual !== 'otro') $('cfFechaBox').innerHTML = '';
+    '<span class="cf-pill' + (cual === 'otro' ? ' on' : '') + '" data-cfh="cuando" data-v="otro">' + (cual === 'otro' ? deISO(CFH.fecha).getDate() + ' ' + MESES3[deISO(CFH.fecha).getMonth()] : 'otro día') +
+    '<input id="cfFecha" class="cf-fecha" type="date" max="' + hoy + '" value="' + CFH.fecha + '" aria-label="Elegir día"></span>';
   $('cfOk').className = 'ok' + (cfListo() ? '' : ' off');
   var b = $('cfBorrar'); if (b) b.innerHTML = CFH.borrar ? '¿Borrar?' : 'Borrar';
 }
@@ -1760,7 +1764,7 @@ function abrirGasto(id) {
     '<input id="cfSitio" class="cf-sitio" type="text" autocomplete="off" autocorrect="off" placeholder="Dónde…" value="' + esc(CFH.sitio) + '">' +
     '<div class="cf-pills" id="cfSug"></div><div class="cf-seg" id="cfSeg"></div>' +
     '<div class="cf-linea"><span class="rot">paga</span><div class="cf-pills" id="cfPaga"></div></div>' +
-    '<div class="cf-linea"><span class="rot">cuándo</span><div class="cf-pills" id="cfCuando"></div></div><div id="cfFechaBox"></div>' +
+    '<div class="cf-linea"><span class="rot">cuándo</span><div class="cf-pills" id="cfCuando"></div></div>' +
     '<div class="bt">' + (g ? '<a class="quitar" data-h="cf-borrar" id="cfBorrar">Borrar</a>' : '') + '<a class="cancelar" data-h="cerrar">Cancelar</a><a class="ok off" data-h="cf-ok" id="cfOk">Guardar</a></div>';
   $('cpHoja').className = 'on';
   cfPintarPartes(); cfAncho();
@@ -1781,6 +1785,7 @@ function abrirTope() {
 }
 function tocarHojaComer(e) {
   var t = e.target, a = null, h = null;
+  if (t && t.id === 'cfFecha') { try { if (t.showPicker) t.showPicker(); } catch (x) {} return; }   // abre el calendario; el cambio llega por «change»
   while (t && t !== $('cpHojaIn')) { if (t.getAttribute) { a = t.getAttribute('data-cfh'); h = t.getAttribute('data-h'); if (a || h) break; } t = t.parentNode; }
   if (!a && !h) return;
   if (HOJA.tipo === 'cf-tope') {
@@ -1806,7 +1811,8 @@ function tocarHojaComer(e) {
   else if (a === 'paga') CFH.paga = t.getAttribute('data-v');
   else if (a === 'cuando') {
     var c = t.getAttribute('data-v');
-    CFH.otro = c === 'otro';
+    if (c === 'otro') { var f = $('cfFecha'); try { if (f && f.showPicker) f.showPicker(); else if (f) f.focus(); } catch (x) {} return; }
+    CFH.otro = false;
     if (c === 'hoy') CFH.fecha = diaISO(new Date());
     if (c === 'ayer') CFH.fecha = diaISO(masDias(new Date(), -1));
   }
@@ -1833,7 +1839,12 @@ function tocarComer(e) {
   pintarComer();
 }
 ['pagComer', 'mComer', 'wComerM'].forEach(function (id) { $(id).addEventListener('click', tocarComer); });
-$('cpHoja').addEventListener('change', function (e) { if (e.target && e.target.id === 'cfFecha' && CFH) { cfLeerHoja(); cfPintarPartes(); } });
+$('cpHoja').addEventListener('change', function (e) {
+  if (!(e.target && e.target.id === 'cfFecha' && CFH && e.target.value)) return;
+  cfLeerHoja(); CFH.borrar = false;
+  CFH.otro = CFH.fecha !== diaISO(new Date()) && CFH.fecha !== diaISO(masDias(new Date(), -1));
+  cfPintarPartes();
+});
 
 var PAGINAS = { calendario: 'p-cal', compra: 'p-compra', comer: 'p-comer' };
 function clasePagina() { return PAGINAS[location.hash.slice(1)] || ''; }
