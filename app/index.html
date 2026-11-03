@@ -559,30 +559,39 @@ body.movil.p-comer #mComer { display: block; margin-top: 16px; }
 #mComer .cp-in { margin-top: 16px; background: var(--widget); box-shadow: inset 0 0 0 1px var(--sep); }
 .cf-mlista { margin-top: 16px; padding: 0; overflow: hidden; }
 .cf-mlista .cf-items { overflow: visible; padding-bottom: 0; }
-/* Hoja: apuntar o corregir un gasto, cambiar el tope */
-#cpHoja .h.cf { padding-bottom: 16px; }
+/* Hoja: apuntar o corregir un gasto. Dos cartas en baraja: qué y dónde (arriba), quién y cuándo + botones (debajo) */
+#cpHoja .h.cf { padding: 0; background: transparent; }
 body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px); }
-#cpHoja .cf-imp-in { display: flex; align-items: baseline; margin-top: 4px; }
-#cpHoja .cf-imp-in input { flex-shrink: 0; min-width: 0; width: 4.2ch; max-width: 80%; margin: 0; min-height: 0; height: 52px; padding: 0; background: transparent; border-radius: 0; font-size: 44px; font-weight: 300; letter-spacing: -1.5px; }
-#cpHoja .cf-imp-in span { font-size: 20px; color: var(--sec); margin-left: 8px; }
-#cpHoja input.cf-sitio { height: 52px; min-height: 0; margin-top: 12px; padding: 0 16px; border-radius: 26px; font-size: 16px; }
+.cfh-a { position: relative; z-index: 2; background: var(--widget); border-radius: 20px; padding: 16px 16px 20px; box-shadow: inset 0 -1px 0 var(--sep); }
+.cfh-b { position: relative; z-index: 1; margin-top: -40px; padding: 56px 16px 16px; background: var(--finde); border-radius: 20px; }
+#cpHoja .cf-imp-in { display: flex; align-items: baseline; margin-top: 8px; }
+#cpHoja .cf-imp-in input { flex-shrink: 0; min-width: 0; width: 4.2ch; max-width: 80%; margin: 0; min-height: 0; height: 80px; padding: 0; background: transparent; border-radius: 0; font-size: 72px; font-weight: 300; letter-spacing: -3px; }
+#cpHoja .cf-imp-in span { font-size: 28px; font-weight: 300; color: var(--sec); margin-left: 8px; }
+#cpHoja input.cf-sitio { height: 52px; min-height: 0; margin-top: 16px; padding: 0 16px; border-radius: 26px; background: var(--finde); font-size: 16px; }
 /* «otro día»: el selector de fecha va invisible encima del botón, así al tocarlo se abre el calendario */
 #cpHoja .cf-pill input.cf-fecha { position: absolute; left: 0; top: 0; width: 100%; height: 100%; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; opacity: 0; font-size: 16px; -webkit-appearance: none; }
 .cf-pills { display: flex; flex-wrap: wrap; margin: 4px 0 0 -4px; }
 .cf-pills:empty { display: none; }
 .cf-pill { margin: 4px 0 0 4px; height: 36px; padding: 0 16px; border-radius: 18px; background: var(--finde); font-size: 13px; display: flex; align-items: center; white-space: nowrap; cursor: pointer; }
 .cf-pill.on { background: var(--acento); color: var(--tinta); }
-.cf-pill .bur { width: 20px; height: 20px; border-radius: 10px; font-size: 10px; margin: 0 8px 0 -8px; }
-.cf-seg { display: flex; margin-top: 12px; height: 52px; padding: 4px; border-radius: 26px; background: var(--finde); }
-.cf-seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 22px; cursor: pointer; }
-.cf-seg span svg { margin-right: 8px; }
+.cf-seg { display: flex; margin-top: 16px; height: 52px; padding: 4px; border-radius: 26px; background: var(--finde); }
+.cf-seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: var(--sec); border-radius: 22px; cursor: pointer; }
+.cf-seg span svg { margin-right: 8px; color: var(--tinta); }
 .cf-seg span.on { background: var(--acento); color: var(--tinta); }
-.cf-linea { margin-top: 12px; }
+/* Carta de abajo: botones a todo el ancho, repartidos a partes iguales */
+.cf-linea + .cf-linea { margin-top: 16px; }
 .cf-linea > .rot { display: block; }
-.cf-linea .cf-pills { margin-top: 0; flex-wrap: nowrap; }
-.cf-linea .cf-pill { position: relative; flex: 1 1 0; min-width: 0; justify-content: center; padding: 0 8px; overflow: hidden; }
+.cf-linea .cf-pills { margin-top: 4px; flex-wrap: nowrap; }
+.cf-linea .cf-pill { position: relative; flex: 1 1 0; min-width: 0; height: 44px; border-radius: 22px; justify-content: center; padding: 0 8px; overflow: hidden; background: var(--widget); font-size: 14px; }
+.cf-linea .cf-pill.on { background: var(--acento); }
+.cfh-bt { display: flex; margin-top: 24px; }
+.cfh-bt a { flex: 1 1 0; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: pointer; }
+.cfh-bt a + a { margin-left: 8px; }
+.cfh-cancelar { box-shadow: inset 0 0 0 1px var(--tinta); }
+.cfh-ok { background: var(--tinta); color: var(--widget); }
+.cfh-ok.off { background: var(--pista); color: var(--ter); }
+.cfh-borrar { display: block; margin-top: 16px; text-align: center; font-size: 13px; color: var(--aviso); cursor: pointer; }
 #cpHoja input { outline: none; }
-#cpHoja .ok.off { opacity: 0.3; }
 
 /* Modo reposo (?cocina) */
 #standby { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: #000; z-index: 50; }
@@ -1728,13 +1737,14 @@ function cfPintarPartes() {
     h += '<span class="cf-pill" data-cfh="sitio" data-i="' + k + '">' + esc(s[k].sitio) + '</span>'; n++;
   }
   $('cfSug').innerHTML = h;
-  $('cfSeg').innerHTML = '<span data-cfh="clase" data-v="r" class="' + (CFH.clase === 'r' ? 'on' : '') + '">' + ICO_REST + 'Restaurante</span>' +
-    '<span data-cfh="clase" data-v="d" class="' + (CFH.clase === 'd' ? 'on' : '') + '">' + ICO_DELI + 'Delivery</span>';
+  var gr = function (i) { return i.replace('width="16" height="16"', 'width="20" height="20"').replace('stroke-width="1.5"', 'stroke-width="1.6"'); };
+  $('cfSeg').innerHTML = '<span data-cfh="clase" data-v="r" class="' + (CFH.clase === 'r' ? 'on' : '') + '">' + gr(ICO_REST) + 'Restaurante</span>' +
+    '<span data-cfh="clase" data-v="d" class="' + (CFH.clase === 'd' ? 'on' : '') + '">' + gr(ICO_DELI) + 'Delivery</span>';
   h = '';
   // Cada uno apunta lo suyo o lo de la común; en la cocina, los tres. Al corregir un gasto del otro, se mantiene su opción
   var ops = YO ? [YO, 'F'] : ['L', 'M', 'F'];
   if (CFH.paga && ops.indexOf(CFH.paga) < 0) ops.unshift(CFH.paga);
-  for (k = 0; k < ops.length; k++) { var q = ops[k]; h += '<span class="cf-pill' + (CFH.paga === q ? ' on' : '') + '" data-cfh="paga" data-v="' + q + '">' + burbuja(q) + NOMBRE_PAGA[q] + '</span>'; }
+  for (k = 0; k < ops.length; k++) { var q = ops[k]; h += '<span class="cf-pill' + (CFH.paga === q ? ' on' : '') + '" data-cfh="paga" data-v="' + q + '">' + NOMBRE_PAGA[q] + '</span>'; }
   $('cfPaga').innerHTML = h;
   var hoy = diaISO(new Date()), ayer = diaISO(masDias(new Date(), -1));
   var cual = CFH.otro ? 'otro' : CFH.fecha === hoy ? 'hoy' : CFH.fecha === ayer ? 'ayer' : 'otro';
@@ -1742,8 +1752,8 @@ function cfPintarPartes() {
     '<span class="cf-pill' + (cual === 'ayer' ? ' on' : '') + '" data-cfh="cuando" data-v="ayer">ayer</span>' +
     '<span class="cf-pill' + (cual === 'otro' ? ' on' : '') + '" data-cfh="cuando" data-v="otro">' + (cual === 'otro' ? deISO(CFH.fecha).getDate() + ' ' + MESES3[deISO(CFH.fecha).getMonth()] : 'otro día') +
     '<input id="cfFecha" class="cf-fecha" type="date" max="' + hoy + '" value="' + CFH.fecha + '" aria-label="Elegir día"></span>';
-  $('cfOk').className = 'ok' + (cfListo() ? '' : ' off');
-  var b = $('cfBorrar'); if (b) b.innerHTML = CFH.borrar ? '¿Borrar?' : 'Borrar';
+  $('cfOk').className = 'cfh-ok' + (cfListo() ? '' : ' off');
+  var b = $('cfBorrar'); if (b) b.innerHTML = CFH.borrar ? '¿Borrar este gasto?' : 'Borrar gasto';
 }
 // El campo del importe crece con lo escrito, para que el € quede pegado a la cifra
 function cfAncho() {
@@ -1759,13 +1769,14 @@ function abrirGasto(id) {
     : { id: nuevoId(), nuevo: true, importe: '', sitio: '', clase: null, paga: YO || null, fecha: diaISO(new Date()) };
   HOJA = { tipo: 'comer' };
   $('cpHojaIn').className = 'h cf';
-  $('cpHojaIn').innerHTML = '<span class="rot">' + (g ? 'corregir gasto' : 'nuevo gasto') + '</span>' +
+  $('cpHojaIn').innerHTML = '<div class="cfh-a"><span class="rot">' + (g ? 'corregir gasto' : 'nuevo gasto') + '</span>' +
     '<div class="cf-imp-in"><input id="cfImp" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" value="' + esc(CFH.importe) + '"><span>€</span></div>' +
     '<input id="cfSitio" class="cf-sitio" type="text" autocomplete="off" autocorrect="off" placeholder="Dónde…" value="' + esc(CFH.sitio) + '">' +
-    '<div class="cf-pills" id="cfSug"></div><div class="cf-seg" id="cfSeg"></div>' +
-    '<div class="cf-linea"><span class="rot">paga</span><div class="cf-pills" id="cfPaga"></div></div>' +
+    '<div class="cf-pills" id="cfSug"></div><div class="cf-seg" id="cfSeg"></div></div>' +
+    '<div class="cfh-b"><div class="cf-linea"><span class="rot">paga</span><div class="cf-pills" id="cfPaga"></div></div>' +
     '<div class="cf-linea"><span class="rot">cuándo</span><div class="cf-pills" id="cfCuando"></div></div>' +
-    '<div class="bt">' + (g ? '<a class="quitar" data-h="cf-borrar" id="cfBorrar">Borrar</a>' : '') + '<a class="cancelar" data-h="cerrar">Cancelar</a><a class="ok off" data-h="cf-ok" id="cfOk">Guardar</a></div>';
+    '<div class="cfh-bt"><a class="cfh-cancelar" data-h="cerrar">Cancelar</a><a class="cfh-ok off" data-h="cf-ok" id="cfOk">Guardar</a></div>' +
+    (g ? '<a class="cfh-borrar" data-h="cf-borrar" id="cfBorrar">Borrar gasto</a>' : '') + '</div>';
   $('cpHoja').className = 'on';
   cfPintarPartes(); cfAncho();
   $('cfImp').addEventListener('input', function () { cfLeerHoja(); CFH.borrar = false; cfAncho(); cfPintarPartes(); });
@@ -1776,7 +1787,7 @@ function abrirGasto(id) {
 }
 function abrirTope() {
   HOJA = { tipo: 'cf-tope', ref: CFV.mes };
-  $('cpHojaIn').className = 'h cf';
+  $('cpHojaIn').className = 'h';
   $('cpHojaIn').innerHTML = '<span class="rot">tope de ' + nombreMes(CFV.mes) + ' en adelante</span><h2>Tope del mes</h2>' +
     '<input id="cpTxt" type="text" inputmode="decimal" autocomplete="off" value="' + String(topeDe(CFV.mes)).replace('.', ',') + '">' +
     '<div class="bt"><a class="cancelar" data-h="cerrar">Cancelar</a><a class="ok" data-h="cf-tope">Guardar</a></div>';
