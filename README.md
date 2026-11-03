@@ -53,3 +53,8 @@ Abrir la app: pedirá la clave familiar una vez y mostrará el calendario.
 
 ## Pendiente de seguridad
 La tabla `items` de la Fase 1 sigue abierta a cualquiera con la clave pública. Se cerrará al construir Compra.
+
+## Comer fuera: puesta en marcha (una sola vez)
+1. Supabase → **SQL Editor → New query** → pegar `supabase/sql/06_comer.sql` → Run.
+2. Supabase → **Edge Functions → Deploy a new function → Via Editor** → nombre `comer` → pegar `supabase/functions/comer/index.ts` → Deploy.
+3. En los ajustes de la función, **desactivar "Verify JWT"** (usa la misma clave familiar `FAMILY_KEY`).
