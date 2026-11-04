@@ -40,7 +40,13 @@ a { color: inherit; text-decoration: none; }
 .rail .logo, .m-top .logo { cursor: pointer; }
 .rail .esp { flex-grow: 1; }
 .nav { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; }
-.nav.activo { background: var(--tinta); color: var(--widget); }
+.nav { position: relative; z-index: 1; -webkit-transition: color 0.2s ease 0.12s; transition: color 0.2s ease 0.12s; }
+.nav.activo { color: var(--widget); }
+/* Burbuja del menú: una sola mancha negra que se estira y viaja hasta la opción activa */
+.rail { position: relative; }
+.burbuja { position: absolute; z-index: 0; background: var(--tinta); pointer-events: none; }
+.rail .burbuja { left: 13px; width: 46px; border-radius: 23px; }
+.m-nav .burbuja { top: 8px; height: 48px; border-radius: 24px; }
 .nav svg { width: 22px; height: 22px; }
 
 /* Contenido */
@@ -61,7 +67,7 @@ a { color: inherit; text-decoration: none; }
 
 /* Portada del iPad: páginas de widgets una al lado de otra; se pasa de una a otra deslizando el dedo o tocando los puntos */
 .portada { flex-grow: 1; min-height: 0; overflow: hidden; position: relative; }
-.tira { position: absolute; left: 0; top: 0; bottom: 0; display: flex; }
+.tira { position: absolute; left: 0; top: 0; bottom: 0; display: flex; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 /* El ancho y el alto de cada página los pone irPort() en píxeles: el Safari de iOS 10 no resuelve bien las alturas en % dentro de flex */
 .tira > .filas { flex: 0 0 auto; }
 .tira > .filas + .filas { margin-left: 16px; }
@@ -243,7 +249,9 @@ body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe
 .m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 8px; background: var(--widget); color: var(--tinta); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; z-index: 20; box-shadow: 0 8px 32px rgba(29,29,27,0.16), 0 1px 4px rgba(29,29,27,0.06); }
 .m-nav a { width: 48px; height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .m-nav svg { width: 22px; height: 22px; }
-.m-nav .on { width: 48px; height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; }
+.m-nav a { position: relative; z-index: 1; -webkit-transition: color 0.2s ease 0.12s; transition: color 0.2s ease 0.12s; }
+.m-nav a.activo { color: var(--widget); }
+.m-nav .on { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
 
 /* ================= PÁGINA CALENDARIO (#calendario) ================= */
 .pagina { display: none; }
@@ -655,6 +663,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 
   <nav class="rail" aria-label="Menú">
     <div class="logo">P<span>.</span></div>
+    <span class="burbuja" id="burT"></span>
     <div class="esp"></div>
     <a href="#" class="nav activo" id="navInicio" aria-label="Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
     <a href="#calendario" class="nav" id="navCal" aria-label="Calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
@@ -762,7 +771,8 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
   </div>
   <div id="mComer"></div>
   <nav class="m-nav" aria-label="Menú">
-    <a href="#" aria-label="Inicio" id="mNavInicio"><span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></span></a>
+    <span class="burbuja" id="burM"></span>
+    <a href="#" aria-label="Inicio" id="mNavInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
     <a href="#calendario" aria-label="Calendario" id="mNavCal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
     <a href="#compra" aria-label="Compra" id="mNavCompra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg></a>
     <a href="#" aria-label="Tareas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
@@ -1213,6 +1223,26 @@ function recargar() {
   var q = location.search.replace(/[?&]v=\d+/, '').replace(/^\?/, '');
   location.replace(location.pathname + '?' + (q ? q + '&' : '') + 'v=' + Date.now() + location.hash);
 }
+// Al cargar con ?v=… (tras tocar la «P.» o una actualización), se quita de la dirección.
+// En el iPad, con la app en la pantalla de inicio, una dirección distinta a la de arranque hacía
+// que los enlaces se abrieran en Safari, fuera de la app.
+(function () {
+  if (!/[?&]v=\d+/.test(location.search) || !window.history || !history.replaceState) return;
+  var q = location.search.replace(/[?&]v=\d+/, '').replace(/^\?/, '').replace(/^&/, '');
+  try { history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash); } catch (e) {}
+})();
+// Los enlaces internos (#calendario, #compra…) se resuelven aquí, sin que el navegador navegue:
+// así nunca puede sacar la app a Safari.
+document.addEventListener('click', function (e) {
+  if (e.defaultPrevented) return;
+  var a = e.target;
+  while (a && a !== document && !(a.tagName === 'A' && a.getAttribute('href'))) a = a.parentNode;
+  if (!a || a === document) return;
+  var h = a.getAttribute('href');
+  if (h.charAt(0) !== '#') return;
+  e.preventDefault();
+  if (location.hash !== h && !(h === '#' && !location.hash)) location.hash = h;
+});
 var logos = document.querySelectorAll('.rail .logo, .m-top .logo');
 for (var li = 0; li < logos.length; li++) logos[li].addEventListener('click', recargar);
 
@@ -1943,6 +1973,29 @@ $('cpHoja').addEventListener('change', function (e) {
   cfPintarPartes();
 });
 
+/* ---------- Burbuja del menú ----------
+   Al cambiar de página, la mancha primero se estira hasta la opción nueva (el borde de delante)
+   y después recoge el de detrás, con un pequeño rebote: parece que fluye de un icono a otro. */
+function moverBurbuja(bur, el, vertical, anim) {
+  if (!bur || !el || !el.offsetWidth) return;
+  var ini = vertical ? 'top' : 'left', tam = vertical ? 'height' : 'width';
+  var a = vertical ? el.offsetTop : el.offsetLeft, t = vertical ? el.offsetHeight : el.offsetWidth, p = bur._p;
+  clearTimeout(bur._t);
+  function pon(i, n, tr) { bur.style.webkitTransition = bur.style.transition = tr; bur.style[ini] = i + 'px'; bur.style[tam] = n + 'px'; }
+  if (!anim || p === undefined || p === a) { pon(a, t, 'none'); bur._p = a; return; }
+  var curva = ini + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0), ' + tam + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0)';
+  if (a > p) pon(p, a + t - p, curva); else pon(a, p + t - a, curva);
+  bur._t = setTimeout(function () { pon(a, t, ini + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1), ' + tam + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)'); }, 190);
+  bur._p = a;
+}
+function moverBurbujas(anim) {
+  var c = clasePagina();
+  var t = { '': 'navInicio', 'p-cal': 'navCal', 'p-compra': 'navCompra', 'p-comer': 'navComer' }[c];
+  var m = { '': 'mNavInicio', 'p-cal': 'mNavCal', 'p-compra': 'mNavCompra', 'p-comer': 'mNavComer' }[c];
+  if (MOVIL) moverBurbuja($('burM'), $(m), false, anim); else moverBurbuja($('burT'), $(t), true, anim);
+}
+window.addEventListener('resize', function () { moverBurbujas(false); });
+
 var PAGINAS = { calendario: 'p-cal', compra: 'p-compra', comer: 'p-comer' };
 function clasePagina() { return PAGINAS[location.hash.slice(1)] || ''; }
 function marcarMovil(el, on) {
@@ -1957,7 +2010,9 @@ function irPagina() {
   $('navCal').className = 'nav' + (c === 'p-cal' ? ' activo' : '');
   $('navCompra').className = 'nav' + (c === 'p-compra' ? ' activo' : '');
   $('navComer').className = 'nav' + (c === 'p-comer' ? ' activo' : '');
-  marcarMovil($('mNavInicio'), !c); marcarMovil($('mNavCal'), c === 'p-cal'); marcarMovil($('mNavCompra'), c === 'p-compra'); marcarMovil($('mNavComer'), c === 'p-comer');
+  var mn = { '': 'mNavInicio', 'p-cal': 'mNavCal', 'p-compra': 'mNavCompra', 'p-comer': 'mNavComer' };
+  for (var k in mn) $(mn[k]).className = k === c ? 'activo' : '';
+  moverBurbujas(true);
   if (c === 'p-cal') pintarPagCal();
   if (!c && !MOVIL) setTimeout(function () { irPort(PORT, true); }, 0);   // al volver a la portada, la página en la que estaba
   if (c === 'p-compra') { pintarCompra(); sincCompra(true); }
@@ -1976,6 +2031,8 @@ var ORDEN_PAG = ['', 'calendario', 'compra', 'comer'];
    En el iPad deslizar el dedo no cambia de herramienta (para eso está el menú lateral):
    en la portada pasa de una página de widgets a otra. No da la vuelta: en la última se para. */
 var PORT = 0;
+// true: la página sigue al dedo mientras se arrastra. false: en cuanto se reconoce el gesto, salta la animación (más fluido en el iPad de 2012)
+var SEGUIR_DEDO = false;
 function nPort() { return $('tira').children.length; }
 function anchoPort() { return $('tira').parentNode.offsetWidth; }
 function medirPort() {
@@ -1985,7 +2042,7 @@ function medirPort() {
 }
 // Mueve la tira a una posición (px). Con animación al soltar el dedo; sin ella mientras se arrastra
 function ponerPort(x, anim) {
-  var t = $('tira'), tr = 'translateX(' + x + 'px)';
+  var t = $('tira'), tr = 'translate3d(' + x + 'px, 0, 0)';   // 3d: lo mueve la tarjeta gráfica (más fluido en el iPad viejo)
   t.style.webkitTransition = anim ? '-webkit-transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none';
   t.style.transition = anim ? 'transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none';
   t.style.webkitTransform = tr; t.style.transform = tr;
@@ -2028,6 +2085,11 @@ window.addEventListener('resize', function () { irPort(PORT, true); });
     if (!MOVIL && !(modo === 'v' && dentroScroll)) e.preventDefault();
     if (!valido || modo !== 'h') return;
     e.preventDefault();   // gesto lateral: que no se mueva también arriba y abajo
+    if (enPortada && !SEGUIR_DEDO) {
+      // Basta con un gesto corto: la animación arranca ya, con el dedo todavía en la pantalla
+      if (Math.abs(dx) > 40) { arrastre = Date.now(); valido = false; irPort(PORT + (dx < 0 ? 1 : -1)); }
+      return;
+    }
     if (enPortada) {
       var d = dx / ESCALA;
       if ((PORT === 0 && d > 0) || (PORT === nPort() - 1 && d < 0)) d = d / 3;   // en los extremos, resistencia
@@ -2039,6 +2101,7 @@ window.addEventListener('resize', function () { irPort(PORT, true); });
     var t = e.changedTouches[0], dx = t.clientX - x0, dt = Math.max(1, Date.now() - t0); x0 = null;
     if (!valido || modo !== 'h') return;
     arrastre = Date.now();
+    if (enPortada && !SEGUIR_DEDO) { if (Math.abs(dx) > 20) irPort(PORT + (dx < 0 ? 1 : -1)); return; }
     if (enPortada) {
       var d = dx / ESCALA, rapido = Math.abs(dx) > 30 && Math.abs(dx) / dt > 0.35;
       irPort(Math.abs(d) > anchoPort() * 0.2 || rapido ? PORT + (d < 0 ? 1 : -1) : PORT);
