@@ -61,8 +61,9 @@ a { color: inherit; text-decoration: none; }
 
 /* Portada del iPad: páginas de widgets una al lado de otra; se pasa de una a otra deslizando el dedo o tocando los puntos */
 .portada { flex-grow: 1; min-height: 0; overflow: hidden; position: relative; }
-.tira { height: 100%; display: flex; -webkit-transition: -webkit-transform 0.35s ease; transition: transform 0.35s ease; }
-.tira > .filas { flex: 0 0 100%; width: 100%; height: 100%; }
+.tira { position: absolute; left: 0; top: 0; bottom: 0; display: flex; }
+/* El ancho y el alto de cada página los pone irPort() en píxeles: el Safari de iOS 10 no resuelve bien las alturas en % dentro de flex */
+.tira > .filas { flex: 0 0 auto; }
 .tira > .filas + .filas { margin-left: 16px; }
 .dots { cursor: pointer; padding: 12px 0 12px 12px; }
 .filas { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; }
@@ -838,11 +839,12 @@ function modo() {
 }
 
 /* ---------- Escala al tamaño de pantalla ---------- */
+var ESCALA = 1;   // escala del lienzo del iPad (para pasar los píxeles del dedo a los del diseño)
 function encajar() {
   modo(); if (MOVIL) { rejilla(); if ($('kMiniM')) cuadrarMes(); return; }
   var st = $('stage'), top = window.navigator.standalone ? 20 : 14;
   var vw = window.innerWidth, vh = window.innerHeight - top;
-  var s = Math.min(vw / 1024, vh / 768);
+  var s = Math.min(vw / 1024, vh / 768); ESCALA = s;
   st.style.width = (vw / s) + 'px'; st.style.height = (vh / s) + 'px';
   var t = 'translate(0px,' + top + 'px) scale(' + s + ')';
   st.style.webkitTransform = t; st.style.transform = t;
@@ -1975,11 +1977,22 @@ var ORDEN_PAG = ['', 'calendario', 'compra', 'comer'];
    en la portada pasa de una página de widgets a otra. No da la vuelta: en la última se para. */
 var PORT = 0;
 function nPort() { return $('tira').children.length; }
+function anchoPort() { return $('tira').parentNode.offsetWidth; }
+function medirPort() {
+  var p = $('tira').parentNode, w = p.offsetWidth, h = p.offsetHeight, l = $('tira').children;
+  if (!w || !h) return;
+  for (var k = 0; k < l.length; k++) { l[k].style.width = w + 'px'; l[k].style.height = h + 'px'; }
+}
+// Mueve la tira a una posición (px). Con animación al soltar el dedo; sin ella mientras se arrastra
+function ponerPort(x, anim) {
+  var t = $('tira'), tr = 'translateX(' + x + 'px)';
+  t.style.webkitTransition = anim ? '-webkit-transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none';
+  t.style.transition = anim ? 'transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none';
+  t.style.webkitTransform = tr; t.style.transform = tr;
+}
 function irPort(i, sinAnim) {
   PORT = Math.max(0, Math.min(nPort() - 1, i));
-  var t = $('tira'), w = t.parentNode.offsetWidth, x = 'translateX(' + (-PORT * (w + 16)) + 'px)';
-  t.style.webkitTransition = t.style.transition = sinAnim ? 'none' : '';
-  t.style.webkitTransform = x; t.style.transform = x;
+  medirPort(); ponerPort(-PORT * (anchoPort() + 16), !sinAnim);
   var h = '';
   for (var k = 0; k < nPort(); k++) h += '<span' + (k === PORT ? ' class="on"' : '') + '></span>';
   $('dots').innerHTML = h; $('dots').setAttribute('aria-label', 'Página ' + (PORT + 1) + ' de ' + nPort());
@@ -1988,22 +2001,57 @@ function irPort(i, sinAnim) {
 $('dots').addEventListener('click', function () { irPort(PORT + 1 < nPort() ? PORT + 1 : 0); });
 window.addEventListener('resize', function () { irPort(PORT, true); });
 (function () {
-  var x0 = null, y0 = null, valido = false;
+  var x0 = null, y0 = null, t0 = 0, valido = false, modo = null, base = 0, arrastre = 0, enPortada = false;
+  // ¿Hay algo que se pueda desplazar en vertical bajo el dedo? (listas de la compra, de gastos…)
+  function enScroll(el) {
+    while (el && el !== document.body && el !== document) {
+      if (el.scrollHeight > el.clientHeight + 1) { var o = window.getComputedStyle(el).overflowY; if (o === 'auto' || o === 'scroll') return true; }
+      el = el.parentNode;
+    }
+    return false;
+  }
+  var dentroScroll = false;
   document.addEventListener('touchstart', function (e) {
-    var t = e.touches[0], el = e.target; x0 = t.clientX; y0 = t.clientY;
-    valido = e.touches.length === 1 && x0 > 24 && x0 < window.innerWidth - 24 && !HOJA && !reposo &&
+    var t = e.touches[0], el = e.target; x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); modo = null;
+    dentroScroll = enScroll(e.target);
+    enPortada = !MOVIL && !location.hash.slice(1);
+    valido = e.touches.length === 1 && (enPortada || MOVIL) && x0 > 24 && x0 < window.innerWidth - 24 && !HOJA && !reposo &&
       !(document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName));
     while (valido && el && el !== document) { if (el.id === 'kMiniM' || el.id === 'kSem' || el.id === 'puerta') valido = false; el = el.parentNode; }
+    if (valido && enPortada) base = -PORT * (anchoPort() + 16);
   }, true);
+  document.addEventListener('touchmove', function (e) {
+    if (x0 === null) return;
+    var t = e.touches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    if (modo === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) modo = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+    // iPad: la pantalla no rebota ni se estira (solo se desplazan las listas que tienen scroll)
+    if (!MOVIL && !(modo === 'v' && dentroScroll)) e.preventDefault();
+    if (!valido || modo !== 'h') return;
+    e.preventDefault();   // gesto lateral: que no se mueva también arriba y abajo
+    if (enPortada) {
+      var d = dx / ESCALA;
+      if ((PORT === 0 && d > 0) || (PORT === nPort() - 1 && d < 0)) d = d / 3;   // en los extremos, resistencia
+      ponerPort(base + d, false);
+    }
+  }, { passive: false, capture: true });
   document.addEventListener('touchend', function (e) {
-    if (!valido || x0 === null) return;
-    var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
-    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    if (!MOVIL) { if (!location.hash.slice(1)) irPort(PORT + (dx < 0 ? 1 : -1)); return; }
+    if (x0 === null) return;
+    var t = e.changedTouches[0], dx = t.clientX - x0, dt = Math.max(1, Date.now() - t0); x0 = null;
+    if (!valido || modo !== 'h') return;
+    arrastre = Date.now();
+    if (enPortada) {
+      var d = dx / ESCALA, rapido = Math.abs(dx) > 30 && Math.abs(dx) / dt > 0.35;
+      irPort(Math.abs(d) > anchoPort() * 0.2 || rapido ? PORT + (d < 0 ? 1 : -1) : PORT);
+      return;
+    }
+    if (Math.abs(dx) < 70) return;
     var i = ORDEN_PAG.indexOf(location.hash.slice(1)); if (i < 0) i = 0;
     i = (i + (dx < 0 ? 1 : -1) + ORDEN_PAG.length) % ORDEN_PAG.length;
     location.hash = ORDEN_PAG[i] ? '#' + ORDEN_PAG[i] : '#';
   }, true);
+  document.addEventListener('touchcancel', function () { if (x0 !== null && enPortada && modo === 'h') irPort(PORT); x0 = null; }, true);
+  // Tras arrastrar, que no se abra el widget sobre el que se soltó el dedo
+  document.addEventListener('click', function (e) { if (Date.now() - arrastre < 400) { e.preventDefault(); e.stopPropagation(); } }, true);
 })();
 
 /* ---------- Tiempo (Open-Meteo, sin registro) ---------- */
