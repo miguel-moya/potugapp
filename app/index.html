@@ -59,6 +59,12 @@ a { color: inherit; text-decoration: none; }
 .dots span + span { margin-left: 4px; }
 .dots span.on { background: var(--tinta); }
 
+/* Portada del iPad: páginas de widgets una al lado de otra; se pasa de una a otra deslizando el dedo o tocando los puntos */
+.portada { flex-grow: 1; min-height: 0; overflow: hidden; position: relative; }
+.tira { height: 100%; display: flex; -webkit-transition: -webkit-transform 0.35s ease; transition: transform 0.35s ease; }
+.tira > .filas { flex: 0 0 100%; width: 100%; height: 100%; }
+.tira > .filas + .filas { margin-left: 16px; }
+.dots { cursor: pointer; padding: 12px 0 12px 12px; }
 .filas { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; }
 .filas > * + * { margin-top: 16px; }
 .fila { flex: 1 1 0; min-height: 0; display: flex; }
@@ -240,7 +246,7 @@ body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe
 
 /* ================= PÁGINA CALENDARIO (#calendario) ================= */
 .pagina { display: none; }
-body.p-cal .filas, body.p-cal .dots { display: none; }
+body.p-cal .portada, body.p-cal .dots { display: none; }
 body.p-cal #pagCal { display: flex; }
 #pagCal { flex-grow: 1; min-height: 0; overflow: hidden; }
 .k-izq { width: 300px; flex-shrink: 0; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
@@ -345,7 +351,7 @@ body.movil.p-cal #mCal { display: block; margin-top: 16px; }
 #mCal .k-ag { overflow: visible; }
 
 /* ================= PÁGINA COMPRA (#compra) ================= */
-body.p-compra .filas, body.p-compra .dots { display: none; }
+body.p-compra .portada, body.p-compra .dots { display: none; }
 body.p-compra #pagCompra { display: flex; }
 #pagCompra { flex-grow: 1; min-height: 0; overflow: hidden; }
 /* Básicos: acordeón en baraja (un grupo abierto) */
@@ -466,7 +472,7 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 #wCompraM .wc-pills { max-height: 36px; }
 
 /* ================= COMER FUERA (#comer) ================= */
-body.p-comer .filas, body.p-comer .dots { display: none; }
+body.p-comer .portada, body.p-comer .dots { display: none; }
 body.p-comer #pagComer { display: flex; }
 #pagComer { flex-grow: 1; min-height: 0; overflow: hidden; }
 .cf-izq { flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
@@ -605,6 +611,25 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 .cfh-borrar { display: block; margin-top: 16px; text-align: center; font-size: 13px; color: var(--aviso); cursor: pointer; }
 #cpHoja input { outline: none; }
 
+/* Widget Comer fuera del iPad (portada, página 2): resumen arriba y saldo debajo, en baraja */
+.wct { display: flex; flex-direction: column; cursor: pointer; }
+.wct .cf-carta:first-child { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.wct .cf-cifra b { font-size: 44px; letter-spacing: -1.5px; }
+.wct .cf-barra { height: 8px; border-radius: 4px; margin-top: 16px; }
+.wct .cf-barra i { border-radius: 4px; }
+.wct .cf-barra .marca { height: 16px; }
+.wct .cf-estado { margin-top: 12px; }
+.wct .ult { display: flex; align-items: center; font-size: 13px; }
+.wct .ult + .ult { margin-top: 8px; }
+.wct .ult .n1 { flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wct .ult .pto { margin-right: 8px; }
+.wct .ult .imp { font-family: var(--mono); font-size: 12px; margin-left: 8px; }
+.wct .cf-saldo { display: flex; align-items: center; }
+.wct .cf-saldo .t { flex-grow: 1; min-width: 0; display: flex; flex-direction: column; }
+.wct .cf-saldo .t span { font-size: 12px; color: var(--sec); }
+.wct .cf-saldo .t b { font-size: 20px; font-weight: 300; letter-spacing: -0.5px; margin-top: 2px; }
+.wct .cf-mas { width: 40px; height: 40px; border-radius: 20px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 12px; }
+
 /* Modo reposo (?cocina) */
 #standby { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: #000; z-index: 50; }
 #standby.on { display: block; }
@@ -645,10 +670,11 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
       <div class="cuando"><span id="hora">--:--</span><span id="fecha"></span></div>
       <div class="derecha">
         <span id="estado"></span>
-        <div class="dots" aria-label="Página 1 de 2" role="img"><span class="on"></span><span></span></div>
+        <div class="dots" id="dots" aria-label="Página 1 de 2" role="button"></div>
       </div>
     </header>
 
+    <div class="portada"><div class="tira" id="tira">
     <div class="filas">
       <div class="fila">
         <a href="#calendario" class="w cal" id="cal">
@@ -664,6 +690,17 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
         </div>
       </div>
     </div>
+
+    <!-- Portada, página 2 -->
+    <div class="filas">
+      <div class="fila">
+        <div class="wct" id="wComerT"></div>
+        <div class="w pend"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg><h2 class="w-tit">Fotos</h2><span class="t12">Pendiente de desarrollo</span></div>
+        <div class="w pend"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-4 9 4-9 4z"/><path d="M7 11v5c3 2 7 2 10 0v-5"/></svg><h2 class="w-tit">Cole</h2><span class="t12">Pendiente de desarrollo</span></div>
+      </div>
+      <div class="fila"></div>
+    </div>
+    </div></div>
 
     <!-- Página Compra -->
     <div class="pagina" id="pagCompra">
@@ -1618,12 +1655,11 @@ function enviarComer() {
   x.onerror = x.ontimeout = function () { CFV.enviando = false; };
   x.send(lote.length ? JSON.stringify({ acciones: lote }) : null);
 }
-// Consultas: con la página abierta, cada minuto; en la portada del móvil (el widget), cada 15 min.
-// En el iPad todavía no hay widget en la portada: allí solo se consulta con la página abierta.
+// Consultas: con la página abierta, cada minuto; en la portada (los widgets), cada 15 min.
 var ultimaComer = 0;
 function sincComer(forzar) {
   if (reposo || document.hidden) return;
-  var pag = clasePagina(), util = pag === 'p-comer' || (pag === '' && MOVIL);
+  var pag = clasePagina(), util = pag === 'p-comer' || pag === '';
   if (!util && !colaCF.length) return;
   var cada = pag === 'p-comer' ? 60 * 1000 : 15 * 60 * 1000;
   if (!forzar && !colaCF.length && Date.now() - ultimaComer < cada - 500) return;
@@ -1722,6 +1758,18 @@ function cfCabLista() {
   var n = gastosDe(CFV.mes).length;
   return '<div class="cp-tit"><h1>Gastos del mes</h1><span class="sub">' + (n ? n + (n === 1 ? ' gasto' : ' gastos') : '') + '</span></div>' + cfAnadir();
 }
+// Widget del iPad (página 2 de la portada)
+function pintarWidgetComerT() {
+  var r = cfRitmo(mesHoy()), e = cfEstado(r), d = cfDebe(), l = gastosDe(mesHoy()), h, k;
+  h = '<div class="cf-carta" style="z-index:2"><div class="w-cab"><h2 class="w-tit">Comer fuera</h2><span class="rot">' + MESES[new Date().getMonth()] + '</span></div>' +
+    '<div class="cf-cifra"><b>' + eur(Math.round(r.total)) + '</b><span class="de">de ' + eur(r.tope) + '</span></div>' + cfBarra(r) +
+    '<div class="cf-estado ' + e.c + '">' + e.t + '</div><div class="crece"></div>';
+  for (k = 0; k < l.length && k < 2; k++) h += '<div class="ult"><span class="pto ' + l[k].paga + '"></span><span class="n1">' + esc(l[k].sitio) + '</span><span class="imp">' + eur(l[k].importe, true) + '</span></div>';
+  h += '</div><div class="cf-carta cf-saldo" style="z-index:1"><div class="t">' +
+    (d ? '<span>' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b>' : '<span>saldo entre los dos</span><b>Estáis en paz</b>') +
+    '</div><a class="cf-mas" data-cf="nuevo" aria-label="Apuntar gasto">' + MAS + '</a></div>';
+  $('wComerT').innerHTML = h;
+}
 function pintarWidgetComer() {
   var r = cfRitmo(mesHoy()), e = cfEstado(r), d = cfDebe(), deb;
   if (!d) deb = 'en paz';
@@ -1731,6 +1779,7 @@ function pintarWidgetComer() {
   $('wComerM').innerHTML = '<div class="w-cab"><h2 class="w-tit">Comer fuera</h2><a class="cf-mas" data-cf="nuevo" aria-label="Apuntar gasto">' + MAS + '</a></div>' +
     '<div class="cf-cifra"><b>' + eur(Math.round(r.total)) + '</b><span class="de">/ ' + r.tope + '</span></div>' + cfBarra(r) +
     '<div class="cf-estado ' + e.c + '">' + e.t + '</div><div class="crece"></div><div class="cf-debe">' + deb + '</div>';
+  pintarWidgetComerT();
 }
 function pintarComer() {
   if (!CFV.mes) CFV.mes = mesHoy();
@@ -1868,7 +1917,7 @@ function tocarHojaComer(e) {
 function tocarComer(e) {
   var t = e.target, acc = null;
   while (t && t !== this) { if (t.getAttribute && t.getAttribute('data-cf')) { acc = t.getAttribute('data-cf'); break; } t = t.parentNode; }
-  if (this.id === 'wComerM' && acc !== 'nuevo') { location.hash = '#comer'; return; }
+  if ((this.id === 'wComerM' || this.id === 'wComerT') && acc !== 'nuevo') { location.hash = '#comer'; return; }
   if (!acc) return;
   if (acc !== 'saldar' && CFV.saldar) CFV.saldar = false;
   if (acc === 'nuevo') { abrirGasto(null); return; }
@@ -1883,7 +1932,7 @@ function tocarComer(e) {
   }
   pintarComer();
 }
-['pagComer', 'mComer', 'wComerM'].forEach(function (id) { $(id).addEventListener('click', tocarComer); });
+['pagComer', 'mComer', 'wComerM', 'wComerT'].forEach(function (id) { $(id).addEventListener('click', tocarComer); });
 $('cpHoja').addEventListener('change', function (e) {
   if (!(e.target && e.target.id === 'cfFecha' && CFH && e.target.value)) return;
   if (e.target.value < CF_INICIO + '-01' || e.target.value > diaISO(new Date())) { e.target.value = CFH.fecha; return; }
@@ -1908,6 +1957,7 @@ function irPagina() {
   $('navComer').className = 'nav' + (c === 'p-comer' ? ' activo' : '');
   marcarMovil($('mNavInicio'), !c); marcarMovil($('mNavCal'), c === 'p-cal'); marcarMovil($('mNavCompra'), c === 'p-compra'); marcarMovil($('mNavComer'), c === 'p-comer');
   if (c === 'p-cal') pintarPagCal();
+  if (!c && !MOVIL) setTimeout(function () { irPort(PORT, true); }, 0);   // al volver a la portada, la página en la que estaba
   if (c === 'p-compra') { pintarCompra(); sincCompra(true); }
   if (c === 'p-comer') { CFV.mes = mesHoy(); CFV.saldar = false; pintarComer(); sincComer(true); }
   window.scrollTo(0, 0);
@@ -1919,6 +1969,24 @@ window.addEventListener('hashchange', irPagina);
    (allí deslizar cambia de mes), con un campo de texto abierto ni empezando pegado al borde
    (en el iPhone ese gesto es «atrás» del navegador). */
 var ORDEN_PAG = ['', 'calendario', 'compra', 'comer'];
+
+/* ---------- Portada del iPad: varias páginas de widgets ----------
+   En el iPad deslizar el dedo no cambia de herramienta (para eso está el menú lateral):
+   en la portada pasa de una página de widgets a otra. No da la vuelta: en la última se para. */
+var PORT = 0;
+function nPort() { return $('tira').children.length; }
+function irPort(i, sinAnim) {
+  PORT = Math.max(0, Math.min(nPort() - 1, i));
+  var t = $('tira'), w = t.parentNode.offsetWidth, x = 'translateX(' + (-PORT * (w + 16)) + 'px)';
+  t.style.webkitTransition = t.style.transition = sinAnim ? 'none' : '';
+  t.style.webkitTransform = x; t.style.transform = x;
+  var h = '';
+  for (var k = 0; k < nPort(); k++) h += '<span' + (k === PORT ? ' class="on"' : '') + '></span>';
+  $('dots').innerHTML = h; $('dots').setAttribute('aria-label', 'Página ' + (PORT + 1) + ' de ' + nPort());
+}
+// Tocar los puntos: siguiente página (y de la última vuelve a la primera)
+$('dots').addEventListener('click', function () { irPort(PORT + 1 < nPort() ? PORT + 1 : 0); });
+window.addEventListener('resize', function () { irPort(PORT, true); });
 (function () {
   var x0 = null, y0 = null, valido = false;
   document.addEventListener('touchstart', function (e) {
@@ -1931,6 +1999,7 @@ var ORDEN_PAG = ['', 'calendario', 'compra', 'comer'];
     if (!valido || x0 === null) return;
     var t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null;
     if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    if (!MOVIL) { if (!location.hash.slice(1)) irPort(PORT + (dx < 0 ? 1 : -1)); return; }
     var i = ORDEN_PAG.indexOf(location.hash.slice(1)); if (i < 0) i = 0;
     i = (i + (dx < 0 ? 1 : -1) + ORDEN_PAG.length) % ORDEN_PAG.length;
     location.hash = ORDEN_PAG[i] ? '#' + ORDEN_PAG[i] : '#';
@@ -2012,7 +2081,7 @@ var reposo = false, tReposo = null;
 function dormir() { reposo = true; $('standby').className = 'on'; }
 function despertar() {
   reposo = false; $('standby').className = '';
-  volverHoy(); if (location.hash) location.hash = ''; else pintarPagCal();   // la cocina siempre vuelve a la portada y a hoy
+  volverHoy(); irPort(0, true); if (location.hash) location.hash = ''; else pintarPagCal();   // la cocina siempre vuelve a la portada (página 1) y a hoy
   cargarCal(); vigilar();
 }
 function vigilar() { if (!COCINA) return; clearTimeout(tReposo); tReposo = setTimeout(dormir, IDLE_MS); }
@@ -2022,7 +2091,7 @@ $('standby').addEventListener('touchend', function (e) { e.preventDefault(); des
 $('standby').addEventListener('click', despertar);
 
 /* ---------- Arranque ---------- */
-ponerYo(); encajar(); ultimoDia = diaISO(new Date()); reloj(); pintarCal(); pintarCompra(); pintarComer(); irPagina(); sincCompra(true); sincComer(true);
+ponerYo(); encajar(); ultimoDia = diaISO(new Date()); reloj(); pintarCal(); pintarCompra(); pintarComer(); irPagina(); irPort(0, true); sincCompra(true); sincComer(true);
 setInterval(reloj, 10000);
 cargarCal(); setInterval(function () { if (!reposo) cargarCal(); }, CAL_MS);
 cargarTiempo(); setInterval(cargarTiempo, 30 * 60 * 1000);
