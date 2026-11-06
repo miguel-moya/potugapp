@@ -304,11 +304,11 @@ body.movil #movil { overflow-x: hidden; display: block; padding: 0 16px 112px; p
 #movil .pend { padding: 12px; }
 /* Menú flotante: píldora blanca a 16 px de los lados y del fondo; 8 px entre el círculo activo y el borde */
 .m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 8px; background: var(--widget); color: var(--tinta); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; z-index: 20; box-shadow: 0 8px 32px rgba(29,29,27,0.16), 0 1px 4px rgba(29,29,27,0.06); }
-.m-nav a { width: 48px; height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.m-nav a { -webkit-flex: 0 1 48px; flex: 0 1 48px; min-width: 44px; height: 48px; display: flex; align-items: center; justify-content: center; }
 .m-nav svg { width: 22px; height: 22px; }
 .m-nav a { position: relative; z-index: 1; -webkit-transition: color 0.2s ease 0.12s; transition: color 0.2s ease 0.12s; }
 .m-nav a.activo { color: var(--widget); }
-.m-nav .on { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+.m-nav .on { width: 100%; height: 48px; display: flex; align-items: center; justify-content: center; }
 
 /* ================= PÁGINA CALENDARIO (#calendario) ================= */
 .pagina { display: none; }
@@ -623,12 +623,15 @@ body.p-comer #pagComer { display: flex; }
 .cf-lis-cab { padding: 16px; flex-shrink: 0; }
 .cf-in { cursor: pointer; }
 /* Móvil: la acción principal (apuntar gasto) flota abajo a la derecha, encima del menú, al alcance del pulgar */
-.fab { display: none; position: fixed; z-index: 21; right: 16px; bottom: 96px; bottom: calc(96px + env(safe-area-inset-bottom)); width: 56px; height: 56px; border-radius: 28px;
-  background: var(--tinta); color: var(--widget); align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 24px rgba(29,29,27,0.24), 0 1px 4px rgba(29,29,27,0.12); }
-.fab svg { width: 22px; height: 22px; }
+.fab { display: none; position: fixed; z-index: 20; right: 16px; bottom: 16px; width: 64px; height: 64px; border-radius: 32px;
+  background: var(--widget); color: var(--tinta); align-items: center; justify-content: center; cursor: pointer;
+  box-shadow: 0 8px 32px rgba(29,29,27,0.16), 0 1px 4px rgba(29,29,27,0.06); }
+.fab svg { width: 24px; height: 24px; }
+/* Móvil: la acción principal va pegada al menú, a su misma altura (el menú se acorta para dejarle sitio) */
 body.movil.p-comer #cfFab { display: flex; }
-body.movil.p-comer #movil { padding-bottom: 176px; }   /* que el último gasto no quede bajo el botón */
-body.movil #mComer .cf-cab-mas { display: none; }   /* en el móvil el + de la cabecera sobra: está el flotante */
+body.movil.p-comer .m-nav { right: 88px; }
+body.movil #mComer .cf-cab-mas { display: none; }   /* en el móvil el + de la cabecera sobra */
+#mComer .cf-cabm { padding: 16px 16px 20px; }
 html:not(.sin-anim) .fab { -webkit-transition: -webkit-transform 0.12s ease; transition: transform 0.12s ease; }
 html:not(.sin-anim) .fab:active { -webkit-transform: scale(0.92); transform: scale(0.92); }
 .cf-cab-mas { width: 40px; height: 40px; border-radius: 20px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
@@ -2069,6 +2072,11 @@ function cfCabLista() {
   return '<div class="cp-tit"><h1>Gastos del mes' + (n ? '<span class="sub">' + n + (n === 1 ? ' gasto' : ' gastos') + '</span>' : '') + '</h1>' +
     '<a class="cf-cab-mas" data-cf="nuevo" aria-label="Apuntar gasto">' + MAS + '</a></div>';
 }
+// Móvil: cabecera como la de «Últimos 6 meses» (título de widget y el dato a la derecha)
+function cfCabListaM() {
+  var n = gastosDe(CFV.mes).length;
+  return '<div class="w-cab"><h2 class="w-tit">Gastos del mes</h2><span class="rot">' + (n ? n + (n === 1 ? ' gasto' : ' gastos') : 'ninguno') + '</span></div>';
+}
 // Widget del iPad (página 2 de la portada)
 function pintarWidgetComerT() {
   var r = cfRitmo(mesHoy()), e = cfEstado(r), d = cfDebe(), l = gastosDe(mesHoy()), h, k;
@@ -2134,7 +2142,7 @@ function pintarComerYa() {
   $('cfIzq').innerHTML = arriba + '<div class="w cf-hist">' + cfMeses(120) + '</div>';
   $('cfCab').innerHTML = cab;
   $('cfItems').innerHTML = lista;
-  $('mComer').innerHTML = arriba + '<div class="cf-mlis"><div class="cp-carta cp-cab">' + cab + '</div><div class="cp-carta cp-lcarta"><div class="cp-items">' + lista + '</div></div></div>' +
+  $('mComer').innerHTML = arriba + '<div class="cf-mlis"><div class="cp-carta cp-cab cf-cabm">' + cfCabListaM() + '</div><div class="cp-carta cp-lcarta"><div class="cp-items">' + lista + '</div></div></div>' +
     '<div class="w cf-hist">' + cfMeses(96) + '</div>';
   pintarWidgetComer();
 }
@@ -2299,7 +2307,8 @@ function moverBurbuja(bur, el, vertical, anim) {
   if (!bur || !el || !el.offsetWidth) return;
   var ini = vertical ? 'top' : 'left', tam = vertical ? 'height' : 'width';
   var a = vertical ? el.offsetTop : el.offsetLeft, t = vertical ? el.offsetHeight : el.offsetWidth, p = bur._p;
-  if (vertical) bur.style.left = el.offsetLeft + 'px'; else bur.style.top = el.offsetTop + 'px';   // el otro eje, centrado sobre el icono
+  if (vertical) bur.style.left = el.offsetLeft + 'px';
+  else { bur.style.height = t + 'px'; bur.style.borderRadius = (t / 2) + 'px'; bur.style.top = (el.offsetTop + (el.offsetHeight - t) / 2) + 'px'; }   // el otro eje, centrado sobre el icono
   clearTimeout(bur._t);
   function pon(i, n, tr) { bur.style.webkitTransition = bur.style.transition = tr; bur.style[ini] = i + 'px'; bur.style[tam] = n + 'px'; }
   if (!ANIM || !anim || p === undefined || p === a) { pon(a, t, 'none'); bur._p = a; return; }
