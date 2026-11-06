@@ -622,6 +622,15 @@ body.p-comer #pagComer { display: flex; }
 .cf-lis { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; padding: 0; }
 .cf-lis-cab { padding: 16px; flex-shrink: 0; }
 .cf-in { cursor: pointer; }
+/* Móvil: la acción principal (apuntar gasto) flota abajo a la derecha, encima del menú, al alcance del pulgar */
+.fab { display: none; position: fixed; z-index: 21; right: 16px; bottom: 96px; bottom: calc(96px + env(safe-area-inset-bottom)); width: 56px; height: 56px; border-radius: 28px;
+  background: var(--tinta); color: var(--widget); align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 24px rgba(29,29,27,0.24), 0 1px 4px rgba(29,29,27,0.12); }
+.fab svg { width: 22px; height: 22px; }
+body.movil.p-comer #cfFab { display: flex; }
+body.movil.p-comer #movil { padding-bottom: 176px; }   /* que el último gasto no quede bajo el botón */
+body.movil #mComer .cf-cab-mas { display: none; }   /* en el móvil el + de la cabecera sobra: está el flotante */
+html:not(.sin-anim) .fab { -webkit-transition: -webkit-transform 0.12s ease; transition: transform 0.12s ease; }
+html:not(.sin-anim) .fab:active { -webkit-transform: scale(0.92); transform: scale(0.92); }
 .cf-cab-mas { width: 40px; height: 40px; border-radius: 20px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
 .cf-in span { flex-grow: 1; font-size: 14px; color: var(--ter); }
 .cf-items { flex-grow: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
@@ -904,6 +913,7 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
   </div>
   <div id="mComer"></div>
   <div id="mAjustes"><section class="w aj-carta" id="ajQuienM"></section><section class="w aj-carta" id="ajPrefM"></section><section class="aj-baraja" id="ajEstM"></section></div>
+  <a class="fab" id="cfFab" aria-label="Apuntar gasto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
   <nav class="m-nav" aria-label="Menú">
     <span class="burbuja" id="burM"></span>
     <a href="#" aria-label="Inicio" id="mNavInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
@@ -2272,6 +2282,7 @@ function tocarComer(e) {
   }
   pintarComer();
 }
+$('cfFab').addEventListener('click', function () { abrirGasto(null); });   // en el mismo toque, para que salga el teclado
 ['pagComer', 'mComer', 'wComerM', 'wComerT'].forEach(function (id) { $(id).addEventListener('click', tocarComer); });
 $('cpHoja').addEventListener('change', function (e) {
   if (!(e.target && e.target.id === 'cfFecha' && CFH && e.target.value)) return;
@@ -2474,7 +2485,7 @@ function irPagina() {
   if (c === 'p-cal') pintarPagCal();
   if (!c && !MOVIL) setTimeout(function () { irPort(PORT, true); }, 0);   // al volver a la portada, la página en la que estaba
   if (c === 'p-compra') { pintarCompra(); sincCompra(true); }
-  if (c === 'p-comer') { CFV.mes = mesHoy(); CFV.saldar = false; pintarComer(); sincComer(true); }
+  if (c === 'p-comer') { CFV.mes = mesHoy(); CFV.saldar = false; pintarComer(); sincComer(true); if (MOVIL) animar($('cfFab'), 'a-pop'); }
   if (c === 'p-ajustes') { AJ.otra = false; AJ.gpsMal = false; AJ.clave = AJ.borrar = false; pintarAjustes(); }
   marcarAjustes();
   window.scrollTo(0, 0);
