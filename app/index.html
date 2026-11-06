@@ -1752,7 +1752,8 @@ function abrirHoja(tipo, ref) {
       '<div class="bt"><a class="cancelar" data-h="cerrar">Cancelar</a><a class="ok" data-h="ok">Crear</a></div>';
   }
   $('cpHojaIn').innerHTML = h; mostrarHoja();
-  setTimeout(function () { var t = $('cpTxt'); if (t) t.focus(); }, 50);
+  // El foco va en el mismo toque que abre la hoja (sin esperar): si no, el iPhone no saca el teclado
+  var t0 = $('cpTxt'); if (t0) t0.focus();
 }
 function mostrarHoja() {
   var v = $('cpHoja'); clearTimeout(v._t);
@@ -2200,7 +2201,8 @@ function abrirGasto(id) {
   $('cfSitio').addEventListener('input', function () { cfLeerHoja(); CFH.borrar = false; cfPintarPartes(); });
   $('cfSitio').addEventListener('keydown', function (e) { if (e.keyCode === 13) { e.preventDefault(); this.blur(); } });
   $('cfImp').addEventListener('keydown', function (e) { if (e.keyCode === 13) { e.preventDefault(); $('cfSitio').focus(); } });
-  if (!g) setTimeout(function () { if ($('cfImp')) $('cfImp').focus(); }, 50);
+  // El foco va en el mismo toque que abre la hoja (sin esperar): si no, el iPhone no saca el teclado
+  if (!g) $('cfImp').focus();
 }
 function abrirTope() {
   HOJA = { tipo: 'cf-tope', ref: CFV.mes };
@@ -2209,7 +2211,8 @@ function abrirTope() {
     '<input id="cpTxt" type="text" inputmode="decimal" autocomplete="off" value="' + String(topeDe(CFV.mes)).replace('.', ',') + '">' +
     '<div class="bt"><a class="cancelar" data-h="cerrar">Cancelar</a><a class="ok" data-h="cf-tope">Guardar</a></div>';
   mostrarHoja();
-  setTimeout(function () { var t = $('cpTxt'); if (t) { t.focus(); t.select(); } }, 50);
+  // El foco va en el mismo toque que abre la hoja (sin esperar): si no, el iPhone no saca el teclado
+  var t1 = $('cpTxt'); if (t1) { t1.focus(); t1.select(); }
 }
 function tocarHojaComer(e) {
   var t = e.target, a = null, h = null;
