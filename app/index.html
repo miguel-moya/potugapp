@@ -44,6 +44,8 @@ a { color: inherit; text-decoration: none; }
 .nav { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; }
 .nav { position: relative; z-index: 1; -webkit-transition: color 0.2s ease 0.12s; transition: color 0.2s ease 0.12s; }
 .nav.activo { color: var(--widget); }
+/* Modo simple (sin animaciones): todo cambia al instante, salvo la tira de páginas de la portada */
+.sin-anim *:not(.tira), .sin-anim *:before, .sin-anim *:after { -webkit-transition: none !important; transition: none !important; -webkit-animation: none !important; animation: none !important; }
 /* Burbuja del menú: una sola mancha negra que se estira y viaja hasta la opción activa */
 .rail { position: relative; }
 .burbuja { position: absolute; z-index: 0; background: var(--tinta); pointer-events: none; }
@@ -819,6 +821,22 @@ var DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'
 var DIAS3 = ['dom','lun','mar','mié','jue','vie','sáb'];
 var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 var Q = location.search.toLowerCase();
+/* ---------- Animaciones: completas o modo simple ----------
+   Cada aparato recuerda su elección (como ?lidia / ?miguel):
+     ?anim=no  → modo simple (sin animaciones de adorno)      ?anim=si → animaciones completas
+   Sin elegir nada: modo simple en iPhone/iPad con iOS 12 o anterior (el iPad de la cocina), completas en el resto.
+   En modo simple solo se mantiene el deslizamiento entre páginas de la portada (va fluido incluso en el iPad viejo).
+   Cualquier animación nueva debe mirar ANIM (o quedará anulada por la clase .sin-anim del <html>). */
+if (/[?&]anim=no\b/.test(Q)) { try { localStorage.setItem('potugapp.anim', 'no'); } catch (e) {} }
+if (/[?&]anim=si\b/.test(Q)) { try { localStorage.setItem('potugapp.anim', 'si'); } catch (e) {} }
+var ANIM = (function () {
+  var v = null; try { v = localStorage.getItem('potugapp.anim'); } catch (e) {}
+  if (v === 'no') return false;
+  if (v === 'si') return true;
+  var ios = navigator.userAgent.match(/OS (\d+)_\d+.* like Mac OS X/);
+  return !(ios && +ios[1] <= 12);
+})();
+if (!ANIM) document.documentElement.className += ' sin-anim';
 var COCINA = Q.indexOf('cocina') !== -1;
 // Prueba de diseño: ?filas2 pone los 6 días del widget en dos filas de tres (se recuerda; ?filas1 lo quita)
 if (/filas2/.test(Q)) { try { localStorage.setItem('potugapp.filas', '2'); } catch (e) {} }
@@ -855,7 +873,7 @@ function modo() {
   if (m !== MOVIL) {
     MOVIL = m;
     document.body.className = (m ? 'movil' : '') + (clasePagina() ? ' ' + clasePagina() : '');
-    document.documentElement.className = m ? 'movil' : '';
+    document.documentElement.className = (m ? 'movil' : '') + (ANIM ? '' : ' sin-anim');
   }
 }
 
@@ -1999,7 +2017,7 @@ function moverBurbuja(bur, el, vertical, anim) {
   if (vertical) bur.style.left = el.offsetLeft + 'px'; else bur.style.top = el.offsetTop + 'px';   // el otro eje, centrado sobre el icono
   clearTimeout(bur._t);
   function pon(i, n, tr) { bur.style.webkitTransition = bur.style.transition = tr; bur.style[ini] = i + 'px'; bur.style[tam] = n + 'px'; }
-  if (!anim || p === undefined || p === a) { pon(a, t, 'none'); bur._p = a; return; }
+  if (!ANIM || !anim || p === undefined || p === a) { pon(a, t, 'none'); bur._p = a; return; }
   var curva = ini + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0), ' + tam + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0)';
   if (a > p) pon(p, a + t - p, curva); else pon(a, p + t - a, curva);
   bur._t = setTimeout(function () { pon(a, t, ini + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1), ' + tam + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)'); }, 190);
