@@ -68,10 +68,10 @@ a { color: inherit; text-decoration: none; }
 .a-latido { -webkit-animation: aLatido 0.22s ease-out; animation: aLatido 0.22s ease-out; }
 .a-nuevo { -webkit-animation: aNuevo 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aNuevo 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 /* Respuesta al tocar: los botones se hunden un poco mientras el dedo está encima */
-html:not(.sin-anim) .cp-in a, html:not(.sin-anim) .cf-mas, html:not(.sin-anim) .cfh-bt a, html:not(.sin-anim) .cf-saldar, html:not(.sin-anim) .cp-fin,
+html:not(.sin-anim) .cp-in a, html:not(.sin-anim) .cf-mas, html:not(.sin-anim) .cf-cab-mas, html:not(.sin-anim) .cfh-bt a, html:not(.sin-anim) .cf-saldar, html:not(.sin-anim) .cp-fin,
 html:not(.sin-anim) .volver, html:not(.sin-anim) .cp-btn, html:not(.sin-anim) .flechas a, html:not(.sin-anim) .cf-pill, html:not(.sin-anim) .cp-pill,
 html:not(.sin-anim) #cpHoja .ok, html:not(.sin-anim) .cp-nuevo-g { -webkit-transition: -webkit-transform 0.12s ease; transition: transform 0.12s ease; }
-html:not(.sin-anim) .cp-in a:active, html:not(.sin-anim) .cf-mas:active, html:not(.sin-anim) .cfh-bt a:active, html:not(.sin-anim) .cf-saldar:active, html:not(.sin-anim) .cp-fin:active,
+html:not(.sin-anim) .cp-in a:active, html:not(.sin-anim) .cf-mas:active, html:not(.sin-anim) .cf-cab-mas:active, html:not(.sin-anim) .cfh-bt a:active, html:not(.sin-anim) .cf-saldar:active, html:not(.sin-anim) .cp-fin:active,
 html:not(.sin-anim) .volver:active, html:not(.sin-anim) .cp-btn:active, html:not(.sin-anim) .flechas a:active, html:not(.sin-anim) .cf-pill:active, html:not(.sin-anim) .cp-pill:active,
 html:not(.sin-anim) #cpHoja .ok:active, html:not(.sin-anim) .cp-nuevo-g:active { -webkit-transform: scale(0.94); transform: scale(0.94); }
 /* Esqueleto de carga (solo la primera vez en un aparato): barras grises que laten */
@@ -622,6 +622,7 @@ body.p-comer #pagComer { display: flex; }
 .cf-lis { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; padding: 0; }
 .cf-lis-cab { padding: 16px; flex-shrink: 0; }
 .cf-in { cursor: pointer; }
+.cf-cab-mas { width: 40px; height: 40px; border-radius: 20px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
 .cf-in span { flex-grow: 1; font-size: 14px; color: var(--ter); }
 .cf-items { flex-grow: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
 .cf-g { display: flex; align-items: center; min-height: 52px; padding: 0 16px; cursor: pointer; }
@@ -2054,7 +2055,9 @@ function cfLista() {
 function cfAnadir() { return '<div class="cp-in cf-in" data-cf="nuevo"><span>Apuntar gasto…</span><a aria-label="Apuntar gasto">' + MAS + '</a></div>'; }
 function cfCabLista() {
   var n = gastosDe(CFV.mes).length;
-  return '<div class="cp-tit"><h1>Gastos del mes</h1><span class="sub">' + (n ? n + (n === 1 ? ' gasto' : ' gastos') : '') + '</span></div>' + cfAnadir();
+  // Apuntar es un botón (abre la hoja), no un campo: el + va suelto, como en el widget
+  return '<div class="cp-tit"><h1>Gastos del mes' + (n ? '<span class="sub">' + n + (n === 1 ? ' gasto' : ' gastos') + '</span>' : '') + '</h1>' +
+    '<a class="cf-cab-mas" data-cf="nuevo" aria-label="Apuntar gasto">' + MAS + '</a></div>';
 }
 // Widget del iPad (página 2 de la portada)
 function pintarWidgetComerT() {
@@ -2553,7 +2556,8 @@ window.addEventListener('resize', function () { irPort(PORT, true); });
     var t = e.touches[0], dx = t.clientX - x0, dy = t.clientY - y0;
     if (modo === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) modo = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
     // iPad: la pantalla no rebota ni se estira (solo se desplazan las listas que tienen scroll)
-    if (!MOVIL && !(modo === 'v' && dentroScroll)) e.preventDefault();
+    // (sin bloquear nunca dentro de una lista con scroll: si se bloquea el primer movimiento, iOS cancela todo el desplazamiento)
+    if (!MOVIL && !dentroScroll) e.preventDefault();
     if (!valido || modo !== 'h') return;
     e.preventDefault();   // gesto lateral: que no se mueva también arriba y abajo
     if (enPortada && !SEGUIR_DEDO) {
