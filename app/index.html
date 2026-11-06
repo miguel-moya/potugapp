@@ -710,6 +710,44 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 .wct .cf-saldo .t b { font-size: 20px; font-weight: 300; letter-spacing: -0.5px; margin-top: 2px; }
 .wct .cf-mas { width: 40px; height: 40px; border-radius: 20px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 12px; }
 
+/* ================= AJUSTES (#ajustes) ================= */
+body.p-ajustes .portada, body.p-ajustes .dots { display: none; }
+body.p-ajustes #pagAjustes { display: flex; }
+#pagAjustes { flex-grow: 1; min-height: 0; overflow: hidden; }
+#pagAjustes > .aj-col { flex: 1 1 0; min-width: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+#pagAjustes > .aj-col + .aj-col { flex: 0 0 372px; margin-left: 16px; }
+#mAjustes { display: none; }
+body.movil.p-ajustes #mInicio { display: none; }
+body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
+.aj-carta { padding: 16px; }
+.aj-carta + .aj-carta { margin-top: 16px; }
+.aj-fila { display: flex; align-items: center; justify-content: space-between; min-height: 52px; font-size: 14px; }
+.aj-fila + .aj-fila { box-shadow: inset 0 1px 0 var(--sep); }
+.aj-fila .v { font-size: 13px; color: var(--sec); text-align: right; margin-left: 12px; }
+.aj-fila .v.mal { color: var(--aviso); }
+.aj-bloque { margin-top: 16px; }
+.aj-bloque > .rot { display: block; margin-bottom: 8px; }
+/* Segmentado de 2 o 3 opciones, con el fondo que se desliza (.seg-bola) */
+.aj-seg { position: relative; display: flex; height: 44px; padding: 4px; border-radius: 22px; background: var(--finde); }
+.aj-seg > span { position: relative; z-index: 1; flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); cursor: pointer; white-space: nowrap; -webkit-transition: color 0.2s; transition: color 0.2s; }
+.aj-seg > span .pto { margin-right: 8px; }
+.aj-seg > span.on { color: var(--tinta); }
+.aj-seg .seg-bola { border-radius: 18px; background: var(--acento); }
+/* Buscador de ciudad */
+.aj-busca { margin-top: 12px; }
+.aj-res { margin-top: 4px; }
+.aj-res .cp-s .rot { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55%; }
+.aj-nota { font-size: 12px; color: var(--aviso); margin-top: 8px; }
+.aj-btn { margin-top: 16px; height: 44px; border-radius: 22px; box-shadow: inset 0 0 0 1px var(--tinta); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: pointer; }
+.aj-btn.seguro { background: var(--tinta); color: var(--widget); }
+.aj-peligro { display: block; margin-top: 16px; text-align: center; font-size: 13px; color: var(--aviso); cursor: pointer; }
+.aj-peligro.seguro { font-weight: 600; }
+/* Botón de usuario activo (estás en Ajustes) */
+.nav.activo .yo, #ajustesM.activo .yo { box-shadow: 0 0 0 2px var(--fondo), 0 0 0 4px var(--tinta); }
+#ajustes.activo:not(.conyo) { background: var(--tinta); color: var(--widget); }
+#ajustesM { display: flex; align-items: center; justify-content: center; border-radius: 24px; }
+#ajustesM.activo:not(.conyo) { width: 48px; height: 48px; background: var(--tinta); color: var(--widget); }
+
 /* Modo reposo (?cocina) */
 #standby { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: #000; z-index: 50; }
 #standby.on { display: block; }
@@ -743,7 +781,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
     <a href="#comer" class="nav" id="navComer" aria-label="Comer fuera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg></a>
     <a href="#" class="nav" aria-label="Fotos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></a>
     <div class="esp"></div>
-    <a href="#" class="nav" id="ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg></a>
+    <a href="#ajustes" class="nav" id="ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg></a>
   </nav>
 
   <main class="content">
@@ -763,7 +801,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
         </a>
       </div>
       <div class="fila">
-        <a href="#" class="w tiempo" id="tiempo"><div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div><span class="esq" style="width:40%;height:40px;margin-top:20px"></span><span class="esq" style="width:70%"></span><span class="esq" style="width:55%"></span></div></a>
+        <a href="#" class="w tiempo" id="tiempo"><div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy</span></div><span class="esq" style="width:40%;height:40px;margin-top:20px"></span><span class="esq" style="width:70%"></span><span class="esq" style="width:55%"></span></div></a>
         <div class="wc" id="wCompra"><div class="cp-carta wc-a"><div id="wcTop" data-acc="ir"></div><div class="cp-in"><input id="wcInT" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div></div><div class="cp-carta wc-b" data-acc="ir"><span class="rot">habituales</span><div class="wc-pills" id="wcP"></div></div></div>
         <div class="w pend">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
@@ -782,6 +820,12 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
       <div class="fila"></div>
     </div>
     </div></div>
+
+    <!-- Página Ajustes -->
+    <div class="pagina" id="pagAjustes">
+      <div class="aj-col"><section class="w aj-carta" id="ajQuien"></section><section class="w aj-carta" id="ajPref"></section></div>
+      <div class="aj-col"><section class="w aj-carta" id="ajEst"></section></div>
+    </div>
 
     <!-- Página Compra -->
     <div class="pagina" id="pagCompra">
@@ -815,13 +859,13 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 <div id="movil">
   <header class="m-top">
     <div><div class="logo">P<span>.</span></div><div class="m-fecha" id="fechaM"></div><div id="estadoM"></div></div>
-    <a href="#" id="ajustesM" aria-label="Ajustes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg></a>
+    <a href="#ajustes" id="ajustesM" aria-label="Ajustes"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2"/><circle cx="8" cy="16" r="2"/></svg></a>
   </header>
   <!-- Rejilla de 2 columnas: grande 2x2 (cuadrado), mediano 2x1 (rectángulo), pequeño 1x1 (cuadrado) -->
   <div id="mInicio">
   <a href="#calendario" class="w m-cal m-g" id="calM" style="margin-top:16px"></a>
   <div class="m-fila">
-    <a href="#" class="w m-tiempo m-p" id="tiempoM"><div class="t-hoy"><span class="rot">hoy · marratxí</span><span class="esq" style="width:45%;height:32px;margin-top:12px"></span><span class="esq" style="width:75%"></span></div></a>
+    <a href="#" class="w m-tiempo m-p" id="tiempoM"><div class="t-hoy"><span class="rot">hoy</span><span class="esq" style="width:45%;height:32px;margin-top:12px"></span><span class="esq" style="width:75%"></span></div></a>
     <div class="w cf-w m-p" id="wComerM"></div>
   </div>
   <div class="wc m-m" id="wCompraM"><div class="cp-carta wc-a"><div class="wc-cab" data-acc="ir"><h2 class="w-tit">Lista de la compra</h2><span class="wc-n" id="wcNM"></span></div>
@@ -841,6 +885,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
     <section class="cp-bas" id="mcBas"></section>
   </div>
   <div id="mComer"></div>
+  <div id="mAjustes"><section class="w aj-carta" id="ajQuienM"></section><section class="w aj-carta" id="ajPrefM"></section><section class="w aj-carta" id="ajEstM"></section></div>
   <nav class="m-nav" aria-label="Menú">
     <span class="burbuja" id="burM"></span>
     <a href="#" aria-label="Inicio" id="mNavInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
@@ -869,7 +914,12 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 <script>
 /* ================= CONFIGURACIÓN ================= */
 var FN_CAL = 'https://hxkpogkirwlamgvnvawl.supabase.co/functions/v1/calendario';
-var LAT = 39.62, LON = 2.75;          // Marratxí
+var CASA = { lat: 39.62, lon: 2.75, nombre: 'Marratxí' };
+// Ubicación del tiempo en este aparato: casa, mi ubicación (GPS) u otra ciudad. Se guarda en potugapp.lugar
+var LUGAR = { modo: 'casa' };
+try { var lg = JSON.parse(localStorage.getItem('potugapp.lugar')); if (lg && lg.modo) LUGAR = lg; } catch (e) {}
+var LAT = LUGAR.modo === 'ciudad' ? LUGAR.lat : CASA.lat, LON = LUGAR.modo === 'ciudad' ? LUGAR.lon : CASA.lon;
+function nombreLugar() { return (LUGAR.modo === 'ciudad' ? LUGAR.nombre : LUGAR.modo === 'gps' ? (LUGAR.nombre || 'aquí') : CASA.nombre).toLowerCase(); }
 var IDLE_MS = 2 * 60 * 1000;          // reposo (solo ?cocina)
 var CAL_MS = 5 * 60 * 1000;           // refresco del calendario
 var MAX_HOY = 6, MAX_DIA = 2;         // eventos visibles antes de "+N más"
@@ -895,13 +945,24 @@ var ANIM = (function () {
   return !(ios && +ios[1] <= 12);
 })();
 if (!ANIM) document.documentElement.className += ' sin-anim';
-var COCINA = Q.indexOf('cocina') !== -1;
+/* Quién usa este aparato: L (Lidia), M (Miguel) o C (compartido: el iPad de la cocina).
+   Lo elegido en Ajustes manda. Si no se ha elegido nunca ahí, vale el parámetro de la dirección (?lidia, ?miguel, ?cocina),
+   que se recuerda; así un icono creado con ?lidia no pisa lo que se cambie después en Ajustes. */
+var QUIEN = (function () {
+  var g = null; try { g = localStorage.getItem('potugapp.quien'); } catch (e) {}
+  var elegido = false; try { elegido = localStorage.getItem('potugapp.quienAjustes') === '1'; } catch (e) {}
+  var url = /lidia/.test(Q) ? 'L' : /miguel/.test(Q) ? 'M' : /cocina/.test(Q) ? 'C' : null;
+  var q = elegido && /^[LMC]$/.test(g) ? g : (url || (/^[LMC]$/.test(g) ? g : null));
+  if (q) { try { localStorage.setItem('potugapp.quien', q); } catch (e) {} }
+  return q;
+})();
+var COCINA = QUIEN === 'C';
 // Prueba de diseño: ?filas2 pone los 6 días del widget en dos filas de tres (se recuerda; ?filas1 lo quita)
 if (/filas2/.test(Q)) { try { localStorage.setItem('potugapp.filas', '2'); } catch (e) {} }
 if (/filas1/.test(Q)) { try { localStorage.removeItem('potugapp.filas'); } catch (e) {} }
 var FILAS2 = false; try { FILAS2 = localStorage.getItem('potugapp.filas') === '2'; } catch (e) {}
 // Quién usa este aparato: ?lidia / ?miguel. Se recuerda para cuando se abra sin el parámetro.
-var YO = /lidia/.test(Q) ? 'L' : /miguel/.test(Q) ? 'M' : null;
+var YO = QUIEN === 'L' || QUIEN === 'M' ? QUIEN : null;
 var NOMBRES = { L: 'Lidia', M: 'Miguel' };
 
 function $(id) { return document.getElementById(id); }
@@ -920,8 +981,6 @@ function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 function borrar(k) { try { localStorage.removeItem(k); } catch (e) {} }
 
-if (YO) guardar('potugapp.quien', YO);
-else if (!COCINA) { YO = leer('potugapp.quien'); if (!NOMBRES[YO]) YO = null; }
 function ponerYo() {
   if (!YO) return;
   var b = '<span class="yo ' + YO + '">' + YO + '</span>';
@@ -989,6 +1048,8 @@ function pedir(url, cabeceras, cb) {
 
 /* ---------- Estado de conexión (solo se ve si algo falla) ---------- */
 var calOk = null;
+// Última descarga correcta y último fallo de cada parte (para Ajustes → Estado)
+var OK = { cal: null, compra: null, comer: null, tiempo: null }, ERR = { cal: null, compra: null, comer: null, tiempo: null };
 function estado(msg) { $('estado').innerHTML = $('estadoM').innerHTML = msg ? esc(msg) : ''; }
 
 /* ---------- Calendario ---------- */
@@ -1007,14 +1068,14 @@ function cargarCal() {
   pedir(FN_CAL, { 'x-familia': clave }, function (err, j) {
     if (err === 401) { borrar('potugapp.clave'); mostrarPuerta('La clave no es correcta'); return; }
     if (err || !j) {
-      estado(calOk ? 'offline · datos de las ' + calOk : 'sin conexión con el calendario');
+      ERR.cal = Date.now(); estado(calOk ? 'offline · datos de las ' + calOk : 'sin conexión con el calendario');
       return;
     }
     eventos = j.eventos || [];
     if (j.hasta) { RANGO.desde = j.desde; RANGO.hasta = j.hasta; }
     guardar('potugapp.cal', JSON.stringify({ eventos: eventos, desde: RANGO.desde, hasta: RANGO.hasta }));
     if (!CAL_LISTO) { CAL_LISTO = true; setTimeout(function () { animar($('cal'), 'a-funde'); animar($('calM'), 'a-funde'); }, 0); }
-    var d = new Date(); calOk = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    var d = new Date(); calOk = pad(d.getHours()) + ':' + pad(d.getMinutes()); OK.cal = Date.now(); ERR.cal = null;
     var NOM = { CAL_LIDIA: 'Lidia', CAL_MIGUEL: 'Miguel', CAL_BRUNO: 'Bruno', CAL_FAMILIA: 'Familia', CAL_FESTIVOS: 'Festivos' }, fallan = [];
     for (var z = 0; j.errores && z < j.errores.length; z++) { var s0 = j.errores[z].split(':')[0], mot = j.errores[z].slice(s0.length + 1).replace(/^\s+/, '').slice(0, 40); fallan.push((NOM[s0] || s0) + ' (' + mot + ')'); }
     estado(fallan.length ? 'no responde: ' + fallan.join(', ') : '');
@@ -1430,7 +1491,8 @@ function enviarCompra() {
     CV.enviando = false;
     if (x.status === 401) { borrar('potugapp.clave'); mostrarPuerta('La clave no es correcta'); return; }
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) {}
-    if (x.status !== 200 || !j || !j.lista) { estado('compra: sin conexión, se guardará al volver'); return; }
+    if (x.status !== 200 || !j || !j.lista) { ERR.compra = Date.now(); estado('compra: sin conexión, se guardará al volver'); return; }
+    OK.compra = Date.now(); ERR.compra = null;
     cola = cola.slice(lote.length);
     var antes = JSON.stringify(CS);
     CS = { grupos: j.grupos, basicos: j.basicos, lista: j.lista };
@@ -1854,7 +1916,8 @@ function enviarComer() {
     CFV.enviando = false;
     if (x.status === 401) { borrar('potugapp.clave'); mostrarPuerta('La clave no es correcta'); return; }
     var j = null; try { j = JSON.parse(x.responseText); } catch (e) {}
-    if (x.status !== 200 || !j || !j.gastos) { estado('comer fuera: sin conexión, se guardará al volver'); return; }
+    if (x.status !== 200 || !j || !j.gastos) { ERR.comer = Date.now(); estado('comer fuera: sin conexión, se guardará al volver'); return; }
+    OK.comer = Date.now(); ERR.comer = null;
     colaCF = colaCF.slice(lote.length);
     var antes = JSON.stringify(CF);
     CF = { gastos: j.gastos, topes: j.topes, saldados: j.saldados };
@@ -2211,11 +2274,147 @@ function moverBurbujas(anim) {
   var c = clasePagina();
   var t = { '': 'navInicio', 'p-cal': 'navCal', 'p-compra': 'navCompra', 'p-comer': 'navComer' }[c];
   var m = { '': 'mNavInicio', 'p-cal': 'mNavCal', 'p-compra': 'mNavCompra', 'p-comer': 'mNavComer' }[c];
-  if (MOVIL) moverBurbuja($('burM'), $(m), false, anim); else moverBurbuja($('burT'), $(t), true, anim);
+  // En Ajustes no hay opción del menú activa: la burbuja se esconde (y reaparece en su sitio al salir)
+  $('burM').style.opacity = m ? '' : 0; $('burT').style.opacity = t ? '' : 0;
+  if (!t && !m) return;
+  if (MOVIL) moverBurbuja($('burM'), $(m), false, anim && $('burM').style.opacity !== '0'); else moverBurbuja($('burT'), $(t), true, anim);
 }
 window.addEventListener('resize', function () { moverBurbujas(false); });
 
-var PAGINAS = { calendario: 'p-cal', compra: 'p-compra', comer: 'p-comer' };
+/* ================= AJUSTES (#ajustes) =================
+   Solo de este aparato (localStorage): quién soy, animaciones, ubicación del tiempo; estado y mantenimiento. */
+var AJ = { otra: false, buscando: null, res: [], gpsMal: false, clave: false, borrar: false };
+// Segmentado con fondo que se desliza: opciones [[valor, texto]], valor elegido (o null)
+function ajSeg(id, ops, val) {
+  var n = ops.length, i = -1, h = '', k;
+  for (k = 0; k < n; k++) if (ops[k][0] === val) i = k;
+  h = '<div class="aj-seg" id="' + id + '"><i class="seg-bola" style="width:calc((100% - 8px) / ' + n + ');' + (i < 0 ? 'opacity:0;' : '') +
+    '-webkit-transform:translateX(' + (Math.max(0, i) * 100) + '%);transform:translateX(' + (Math.max(0, i) * 100) + '%)"></i>';
+  for (k = 0; k < n; k++) h += '<span data-aj="' + id + '" data-v="' + ops[k][0] + '"' + (k === i ? ' class="on"' : '') + '>' + ops[k][1] + '</span>';
+  return h + '</div>';
+}
+// Mueve el fondo de un segmentado sin repintar (para que se vea deslizarse)
+function ajMover(seg, val) {
+  var l = seg.querySelectorAll('span'), b = seg.querySelector('.seg-bola'), k, i = -1;
+  for (k = 0; k < l.length; k++) { var on = l[k].getAttribute('data-v') === val; l[k].className = on ? 'on' : ''; if (on) i = k; }
+  if (i < 0) { b.style.opacity = 0; return; }
+  b.style.opacity = 1; b.style.webkitTransform = b.style.transform = 'translateX(' + (i * 100) + '%)';
+}
+function hace(t) {
+  if (!t) return '—';
+  var m = Math.floor((Date.now() - t) / 60000);
+  if (m < 1) return 'ahora'; if (m < 60) return 'hace ' + m + ' min';
+  var d = new Date(t); return 'a las ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+function htmlQuien() {
+  return '<div class="cp-tit"><h1>Quién soy</h1></div><div class="aj-bloque">' +
+    ajSeg('ajQ', [['L', '<span class="pto L"></span>Lidia'], ['M', '<span class="pto M"></span>Miguel'], ['C', 'Compartido']], QUIEN) + '</div>';
+}
+function htmlPref() {
+  var av = leer('potugapp.anim') || 'auto', lg = AJ.otra ? 'ciudad' : LUGAR.modo, h;
+  h = '<div class="cp-tit"><h1>Preferencias</h1></div>' +
+    '<div class="aj-bloque"><span class="rot">animaciones</span>' + ajSeg('ajA', [['auto', 'Automático'], ['si', 'Sí'], ['no', 'No']], av) + '</div>' +
+    '<div class="aj-bloque"><span class="rot">tiempo · ' + esc(nombreLugar()) + '</span>' + ajSeg('ajL', [['casa', 'Casa'], ['gps', 'Mi ubicación'], ['ciudad', 'Otra ciudad']], lg);
+  if (AJ.gpsMal) h += '<div class="aj-nota">No se ha podido obtener la ubicación</div>';
+  if (lg === 'ciudad') {
+    h += '<div class="cp-in aj-busca"><input id="ajCiudad" type="text" autocomplete="off" autocorrect="off" placeholder="Busca una ciudad…" aria-label="Buscar ciudad"></div><div class="aj-res" id="ajRes"></div>';
+  }
+  return h + '</div>';
+}
+function htmlEst() {
+  var pend = cola.length + colaCF.length, v = versionVista ? versionVista.replace(/^potugapp\s*/, '') : '—', d;
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)) { d = new Date(v.replace('Z', ':00Z')); if (!isNaN(d)) v = d.getDate() + ' ' + MESES3[d.getMonth()] + ' · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function fila(t, ok, err) { return '<div class="aj-fila"><span>' + t + '</span><span class="v' + (err && (!ok || err > ok) ? ' mal' : '') + '">' + (err && (!ok || err > ok) ? 'falla · ' + hace(err) : hace(ok)) + '</span></div>'; }
+  return '<div class="cp-tit"><h1>Estado</h1><span class="sub">' + esc(v) + '</span></div><div class="aj-bloque">' +
+    fila('Calendario', OK.cal, ERR.cal) + fila('Lista de la compra', OK.compra, ERR.compra) + fila('Comer fuera', OK.comer, ERR.comer) + fila('Tiempo', OK.tiempo, ERR.tiempo) +
+    '<div class="aj-fila"><span>Pendiente de enviar</span><span class="v' + (pend ? ' mal' : '') + '">' + (pend ? pend + (pend === 1 ? ' cambio' : ' cambios') : 'nada') + '</span></div></div>' +
+    '<a class="aj-btn" data-aj="recargar">Recargar la app</a>' +
+    '<a class="aj-peligro' + (AJ.clave ? ' seguro' : '') + '" data-aj="clave">' + (AJ.clave ? 'Toca otra vez para olvidar la clave' : 'Olvidar la clave familiar en este aparato') + '</a>' +
+    '<a class="aj-peligro' + (AJ.borrar ? ' seguro' : '') + '" data-aj="borrar">' + (AJ.borrar ? (pend ? 'Toca otra vez · se perderán ' + pend + (pend === 1 ? ' cambio sin enviar' : ' cambios sin enviar') : 'Toca otra vez para borrarlos') : 'Borrar los datos guardados en este aparato') + '</a>';
+}
+function pintarAjustes(parte) {
+  if (!parte || parte === 'q') { var q = htmlQuien(); $('ajQuien').innerHTML = q; $('ajQuienM').innerHTML = q; }
+  if (!parte || parte === 'p') { var pr = htmlPref(); $('ajPref').innerHTML = pr; $('ajPrefM').innerHTML = pr; }
+  if (!parte || parte === 'e') { var e = htmlEst(); $('ajEst').innerHTML = e; $('ajEstM').innerHTML = e; }
+}
+setInterval(function () { if (clasePagina() === 'p-ajustes' && !reposo) pintarAjustes('e'); }, 20000);
+
+function ajAnim(v) {
+  if (v === 'auto') borrar('potugapp.anim'); else guardar('potugapp.anim', v);
+  var ios = navigator.userAgent.match(/OS (\d+)_\d+.* like Mac OS X/);
+  ANIM = v === 'si' ? true : v === 'no' ? false : !(ios && +ios[1] <= 12);
+  document.documentElement.className = (MOVIL ? 'movil' : '') + (ANIM ? '' : ' sin-anim');
+}
+function ajLugar(l) {
+  LUGAR = l; AJ.otra = false; AJ.gpsMal = false; AJ.res = [];
+  guardar('potugapp.lugar', JSON.stringify(LUGAR));
+  LAT = l.modo === 'ciudad' ? l.lat : l.modo === 'gps' && l.lat ? l.lat : CASA.lat;
+  LON = l.modo === 'ciudad' ? l.lon : l.modo === 'gps' && l.lon ? l.lon : CASA.lon;
+  cargarTiempo(); pintarAjustes('p');
+}
+// Buscador de ciudades (Open-Meteo, gratuito y sin registro)
+function ajBuscar(t) {
+  clearTimeout(AJ.buscando);
+  var caja = MOVIL ? $('ajPrefM') : $('ajPref'), res = caja.querySelector('#ajRes');
+  if (!res) return;
+  if (t.replace(/\s/g, '').length < 2) { res.innerHTML = ''; return; }
+  AJ.buscando = setTimeout(function () {
+    pedir('https://geocoding-api.open-meteo.com/v1/search?count=5&language=es&format=json&name=' + encodeURIComponent(t), {}, function (err, j) {
+      var l = (!err && j && j.results) || [], h = '', k;
+      AJ.res = l;
+      for (k = 0; k < l.length; k++) h += '<div class="cp-s" data-aj="ciudad" data-i="' + k + '"><span>' + esc(l[k].name) + '</span><span class="rot">' + esc([l[k].admin1, l[k].country].filter(Boolean).join(' · ')) + '</span></div>';
+      res.innerHTML = h || (err ? '' : '<div class="cp-s ya">Sin resultados</div>');
+    });
+  }, 300);
+}
+function tocarAjustes(e) {
+  var t = e.target, acc = null;
+  while (t && t !== this) { if (t.getAttribute && t.getAttribute('data-aj')) { acc = t.getAttribute('data-aj'); break; } t = t.parentNode; }
+  if (!acc) return;
+  var v = t.getAttribute('data-v');
+  if (acc !== 'clave') AJ.clave = false;
+  if (acc !== 'borrar') AJ.borrar = false;
+  if (acc === 'ajQ') {
+    if (v === QUIEN) return;
+    ajMover(t.parentNode, v);
+    guardar('potugapp.quien', v); guardar('potugapp.quienAjustes', '1');
+    // Cambiar de persona afecta a toda la app: se recarga (sin el parámetro de la dirección, que ya no manda)
+    setTimeout(function () { location.replace(location.pathname + '?v=' + Date.now() + '#ajustes'); }, ANIM ? 320 : 0);
+    return;
+  }
+  if (acc === 'ajA') { ajMover(t.parentNode, v); ajAnim(v); return; }
+  if (acc === 'ajL') {
+    ajMover(t.parentNode, v);
+    if (v === 'casa') { setTimeout(function () { ajLugar({ modo: 'casa' }); }, ANIM ? 280 : 0); return; }
+    if (v === 'ciudad') { AJ.otra = true; AJ.gpsMal = false; setTimeout(function () { pintarAjustes('p'); var i = MOVIL ? $('ajPrefM').querySelector('input') : $('ajPref').querySelector('input'); if (i) i.focus(); }, ANIM ? 280 : 0); return; }
+    if (v === 'gps') {
+      if (!navigator.geolocation) { AJ.gpsMal = true; pintarAjustes('p'); return; }
+      navigator.geolocation.getCurrentPosition(function (p) {
+        ajLugar({ modo: 'gps', lat: Math.round(p.coords.latitude * 100) / 100, lon: Math.round(p.coords.longitude * 100) / 100 });
+      }, function () { AJ.gpsMal = true; AJ.otra = false; pintarAjustes('p'); }, { timeout: 15000, maximumAge: 30 * 60 * 1000 });
+      return;
+    }
+  }
+  if (acc === 'ciudad') { var c = AJ.res[+t.getAttribute('data-i')]; if (c) ajLugar({ modo: 'ciudad', nombre: c.name, lat: Math.round(c.latitude * 100) / 100, lon: Math.round(c.longitude * 100) / 100 }); return; }
+  if (acc === 'recargar') { recargar(); return; }
+  if (acc === 'clave') {
+    if (!AJ.clave) { AJ.clave = true; pintarAjustes('e'); setTimeout(function () { if (AJ.clave) { AJ.clave = false; pintarAjustes('e'); } }, 4000); return; }
+    AJ.clave = false; borrar('potugapp.clave'); mostrarPuerta(); pintarAjustes('e'); return;
+  }
+  if (acc === 'borrar') {
+    if (!AJ.borrar) { AJ.borrar = true; pintarAjustes('e'); setTimeout(function () { if (AJ.borrar) { AJ.borrar = false; pintarAjustes('e'); } }, 4000); return; }
+    // Se borran los datos descargados y las colas; se mantienen quién soy, la clave y las preferencias
+    var l = ['potugapp.compra', 'potugapp.cola', 'potugapp.comer', 'potugapp.colaComer', 'potugapp.cal', 'potugapp.tiempo'];
+    for (var k = 0; k < l.length; k++) borrar(l[k]);
+    location.reload(); return;
+  }
+}
+['pagAjustes', 'mAjustes'].forEach(function (id) {
+  $(id).addEventListener('click', tocarAjustes);
+  $(id).addEventListener('input', function (e) { if (e.target && e.target.id === 'ajCiudad') ajBuscar(e.target.value); });
+});
+
+var PAGINAS = { calendario: 'p-cal', compra: 'p-compra', comer: 'p-comer', ajustes: 'p-ajustes' };
 function clasePagina() { return PAGINAS[location.hash.slice(1)] || ''; }
 function marcarMovil(el, on) {
   var dentro = /^<span class="on">/.test(el.innerHTML);
@@ -2236,6 +2435,9 @@ function irPagina() {
   if (!c && !MOVIL) setTimeout(function () { irPort(PORT, true); }, 0);   // al volver a la portada, la página en la que estaba
   if (c === 'p-compra') { pintarCompra(); sincCompra(true); }
   if (c === 'p-comer') { CFV.mes = mesHoy(); CFV.saldar = false; pintarComer(); sincComer(true); }
+  if (c === 'p-ajustes') { AJ.otra = false; AJ.gpsMal = false; AJ.clave = AJ.borrar = false; pintarAjustes(); }
+  $('ajustes').className = 'nav' + (YO ? ' conyo' : '') + (c === 'p-ajustes' ? ' activo' : '');
+  $('ajustesM').className = (YO ? 'conyo' : '') + (c === 'p-ajustes' ? ' activo' : '');
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', irPagina);
@@ -2295,6 +2497,7 @@ window.addEventListener('resize', function () { irPort(PORT, true); });
     var t = e.touches[0], el = e.target; x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); modo = null;
     dentroScroll = enScroll(e.target);
     enPortada = !MOVIL && !location.hash.slice(1);
+    if (location.hash === '#ajustes') { valido = false; return; }
     valido = e.touches.length === 1 && (enPortada || MOVIL) && x0 > 24 && x0 < window.innerWidth - 24 && !HOJA && !reposo &&
       !(document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName));
     while (valido && el && el !== document) { if (el.id === 'kMiniM' || el.id === 'kSem' || el.id === 'puerta') valido = false; el = el.parentNode; }
@@ -2348,6 +2551,7 @@ document.addEventListener('keydown', function (e) {
   if (k < 37 || k > 40 || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
   if (HOJA || reposo || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))) return;
   var pag = location.hash.slice(1);
+  if (pag === 'ajustes') return;
   if (k === 37 || k === 39) {
     if (MOVIL || pag) return;
     e.preventDefault(); irPort(PORT + (k === 39 ? 1 : -1)); return;
@@ -2383,12 +2587,25 @@ function estadoCielo(c) {
 }
 function pct(v) { v = Math.round(v); return '<span class="n">' + (v < 10 ? '<i>0</i>' : '') + v + '%</span>'; }
 function cargarTiempo() {
+  if (LUGAR.modo === 'gps' && navigator.geolocation) {
+    // La posición se pide como mucho cada 30 min; si falla, se usa la última conocida (o casa)
+    navigator.geolocation.getCurrentPosition(function (p) {
+      LAT = Math.round(p.coords.latitude * 100) / 100; LON = Math.round(p.coords.longitude * 100) / 100;
+      LUGAR.lat = LAT; LUGAR.lon = LON; guardar('potugapp.lugar', JSON.stringify(LUGAR)); descargarTiempo();
+    }, function () { if (LUGAR.lat) { LAT = LUGAR.lat; LON = LUGAR.lon; } descargarTiempo(); }, { maximumAge: 30 * 60 * 1000, timeout: 15000 });
+    return;
+  }
+  descargarTiempo();
+}
+function descargarTiempo() {
   var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON +
     '&current=temperature_2m,weather_code,relative_humidity_2m&hourly=wind_speed_10m' +
     '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_gusts_10m_max' +
-    '&timezone=Europe%2FMadrid&forecast_days=3';
+    '&timezone=auto&forecast_days=3';
   pedir(url, {}, function (err, d) {
-    if (err || !d || !d.daily) return;
+    if (err || !d || !d.daily) { ERR.tiempo = Date.now(); return; }
+    OK.tiempo = Date.now(); ERR.tiempo = null;
+    d.lugar = nombreLugar();
     guardar('potugapp.tiempo', JSON.stringify(d));
     var primera = !$('tiempo').getAttribute('data-ok');
     pintarTiempo(d);
@@ -2397,7 +2614,7 @@ function cargarTiempo() {
 }
 // El tiempo guardado sirve al arrancar si es de hoy (si no, se espera a la descarga)
 function tiempoGuardado() {
-  try { var d = JSON.parse(leer('potugapp.tiempo')); if (d && d.daily && d.daily.time[0] === diaISO(new Date())) pintarTiempo(d); } catch (e) {}
+  try { var d = JSON.parse(leer('potugapp.tiempo')); if (d && d.daily && d.daily.time[0] === diaISO(new Date()) && d.lugar === nombreLugar()) pintarTiempo(d); } catch (e) {}
 }
 function pintarTiempo(d) {
   {
@@ -2406,7 +2623,7 @@ function pintarTiempo(d) {
     viento = Math.round(viento / Math.min(24, d.hourly.wind_speed_10m.length));
     var ahora = d.current ? Math.round(d.current.temperature_2m) : Math.round(dl.temperature_2m_max[0]);
     var cod = d.current ? d.current.weather_code : dl.weather_code[0];
-    var h = '<div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div>' + icono(cod, 34, 'ico-hoy', 1) +
+    var h = '<div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · ' + esc(nombreLugar()) + '</span></div>' + icono(cod, 34, 'ico-hoy', 1) +
       '<div class="gran"><b>' + ahora + '°</b><div><span style="font-size:13px">' + estadoCielo(cod) + '</span>' +
       '<span class="t12">' + Math.round(dl.temperature_2m_min[0]) + '° / ' + Math.round(dl.temperature_2m_max[0]) + '°</span></div></div>' +
       '<div class="dos"><div><span class="rot">viento</span><span class="v">' + viento + ' km/h</span></div>' +
@@ -2425,7 +2642,7 @@ function pintarTiempo(d) {
     }
     $('tiempo').innerHTML = h;
     var p1 = dl.time[1].split('-'), f1 = new Date(+p1[0], +p1[1] - 1, +p1[2]);
-    var hm = '<div class="t-hoy"><div class="w-cab"><span class="rot">hoy · marratxí</span></div>' + icono(cod, 30, 'ico-hoy', 1) +
+    var hm = '<div class="t-hoy"><div class="w-cab"><span class="rot">hoy · ' + esc(nombreLugar()) + '</span></div>' + icono(cod, 30, 'ico-hoy', 1) +
       '<b>' + ahora + '°</b><span class="t12">' + Math.round(dl.temperature_2m_min[0]) + '° / ' + Math.round(dl.temperature_2m_max[0]) + '° · ' + dl.precipitation_probability_max[0] + '%</span></div>';
     for (k = 1; k <= 2; k++) {
       var pk = dl.time[k].split('-'), fk = new Date(+pk[0], +pk[1] - 1, +pk[2]);
