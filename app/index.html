@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-title" content="PotugApp">
 <title>PotugApp</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Space+Mono&amp;display=swap">
 <!--
   PotugApp · pantalla principal (iPad / escritorio)
@@ -45,7 +47,7 @@ a { color: inherit; text-decoration: none; }
 /* Burbuja del menú: una sola mancha negra que se estira y viaja hasta la opción activa */
 .rail { position: relative; }
 .burbuja { position: absolute; z-index: 0; background: var(--tinta); pointer-events: none; }
-.rail .burbuja { left: 13px; width: 46px; border-radius: 23px; }
+.rail .burbuja { margin: 0 !important; width: 46px; border-radius: 23px; }   /* sin el margen de 4 px que llevan los demás hijos del menú */
 .m-nav .burbuja { top: 8px; height: 48px; border-radius: 24px; }
 .nav svg { width: 22px; height: 22px; }
 
@@ -170,9 +172,12 @@ a { color: inherit; text-decoration: none; }
 .prev { position: relative; display: flex; align-items: center; flex-shrink: 0; height: 84px; margin-top: -40px; padding: 40px 16px 0; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
 .prev.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-finde); }
 .prev.ultima { box-shadow: none; }
-.prev .rot { width: 58px; font-size: 11px; }   /* mismo tamaño que «hoy · marratxí» */
-.prev .tt { font-size: 14px; font-weight: 300; margin-left: 8px; flex-grow: 1; }
-.prev .pp { display: flex; align-items: center; font-size: 12px; line-height: 1; }
+.prev .rot { width: 44px; flex-shrink: 0; font-size: 11px; }   /* mismo tamaño que «hoy · marratxí» */
+.prev .tt { font-size: 14px; font-weight: 300; width: 36px; flex-shrink: 0; }
+/* izquierda: día · temperatura · lluvia · viento; derecha: el icono del día, bajo el de hoy */
+.prev .pp { display: flex; align-items: center; font-size: 12px; line-height: 1; margin-left: 8px; }
+.prev .pp + .pp { margin-left: 12px; }
+.prev .ico-dia { margin-left: auto; margin-right: 6px; flex-shrink: 0; }   /* centrado bajo el icono de hoy (34 px) */
 .prev .pp .n { min-width: 26px; }
 .prev .pp svg { margin-right: 4px; display: block; }
 
@@ -182,7 +187,9 @@ a { color: inherit; text-decoration: none; }
 .pend .t12 { margin-top: 4px; }
 
 /* Usuario (?lidia, ?miguel) en lugar del icono de ajustes */
-.yo { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: var(--tinta); }
+/* Burbuja del usuario: del mismo tamaño que la burbuja activa del menú (46 px en el iPad, 48 en el móvil) */
+.yo { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: var(--tinta); }
+#ajustesM .yo { width: 48px; height: 48px; border-radius: 24px; }
 .yo.L { background: var(--lidia); } .yo.M { background: var(--miguel); }
 .nav.conyo { width: 46px; height: 46px; }
 
@@ -204,7 +211,10 @@ body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe
 .m-g, .m-p, .m-m { overflow: hidden; }
 .m-cal { display: flex; flex-direction: column; }
 .m-hoy { flex-shrink: 0; }
-.m-dias { flex: 1 1 0; min-height: 0; overflow: hidden; margin-top: -40px; display: flex; flex-direction: column; }
+.m-dias { position: relative; flex: 1 1 0; min-height: 0; overflow: hidden; margin-top: -40px; display: flex; flex-direction: column; }
+/* Si no caben todos los días, el último se corta con un degradado (como en el iPad) */
+.m-dias.corta:after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 64px; z-index: 30; pointer-events: none;
+  background: -webkit-linear-gradient(top, rgba(228,225,217,0), #e4e1d9 90%); background: linear-gradient(rgba(228,225,217,0), #e4e1d9 90%); }
 .m-cal { padding: 0; background: transparent; }
 .m-hoy { position: relative; z-index: 10; background: var(--acento); border-radius: 20px; padding: 16px; }
 .m-hoy-cab { display: flex; justify-content: space-between; align-items: baseline; }
@@ -263,14 +273,15 @@ body.p-cal #pagCal { display: flex; }
 .k-dia { flex-grow: 1; min-height: 0; padding: 16px 16px 24px; display: flex; flex-direction: column; background: var(--acento); overflow: hidden; }
 .k-dia.otro { background: var(--widget); }
 .k-dia.otro .k-fest { color: var(--sec); }
-.k-cab { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; }
-.volver { font-family: var(--mono); font-size: 10px; text-decoration: underline; cursor: pointer; }
+.k-cab { display: flex; justify-content: space-between; align-items: center; min-height: 24px; font-family: var(--mono); font-size: 11px; }
+/* Botón pequeño con borde (como «Terminar compra», en 24 px) */
+.volver { height: 24px; padding: 0 12px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--tinta); display: flex; align-items: center; font-family: Manrope, -apple-system, sans-serif; font-size: 11px; font-weight: 600; color: var(--tinta); white-space: nowrap; cursor: pointer; }
 .k-num { display: flex; align-items: baseline; margin-top: 8px; }
 .k-num b { font-size: 60px; font-weight: 300; line-height: 0.9; letter-spacing: -2px; }
 .k-num span { font-size: 15px; margin-left: 8px; }
 .k-fest { font-size: 12px; color: #4a4640; margin-top: 8px; }
 .k-lista > * + * { margin-top: 8px; }
-.k-lista .ev .td { font-family: var(--mono); font-size: 10px; width: 38px; flex-shrink: 0; flex-grow: 0; line-height: 1.2; display: block; }
+.k-lista .ev .td { font-family: var(--mono); font-size: 10px; width: 40px; flex-shrink: 0; flex-grow: 0; line-height: 1.2; display: block; }
 .k-lista .pasado { opacity: 0.45; }
 .k-vacio { font-size: 13px; color: #4a4640; }
 .k-dia.otro .k-vacio { color: var(--ter); }
@@ -945,8 +956,7 @@ function pintarCal() {
   if (!normales.length) html += '<div class="vacio-hoy">Nada previsto :)</div>';
   for (i = 0; i < visibles; i++) {
     e = normales[i];
-    if (e.todoElDia) html += '<div class="ev"><div class="td"><span class="rot">día</span><span class="t">' + esc(e.titulo) + '</span></div>' + burbujas(e.quienes) + '</div>';
-    else html += '<div class="ev"><span class="h">' + e.hora + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
+    html += '<div class="ev"><span class="h">' + (e.todoElDia ? 'día' : e.hora) + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
   }
   if (normales.length > visibles) html += '<div class="mas">+' + (normales.length - visibles) + ' más</div>';
   html += '</div></div>';
@@ -988,7 +998,7 @@ function pintarCalMovil(porDia, hoy, fest, normales) {
   if (!normales.length) h += '<div class="vacio-hoy">Nada previsto :)</div>';
   for (var i = 0; i < visibles; i++) {
     var e = normales[i];
-    h += '<div class="ev"><span class="h">' + (e.todoElDia ? '' : e.hora) + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
+    h += '<div class="ev"><span class="h">' + (e.todoElDia ? 'día' : e.hora) + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
   }
   if (normales.length > visibles) h += '<div class="mas" style="padding-left:48px;color:#4a4640">+' + (normales.length - visibles) + ' más</div>';
   h += '</div></div><div class="m-dias" id="diasM">';
@@ -1000,7 +1010,7 @@ function pintarCalMovil(porDia, hoy, fest, normales) {
     h += '<div class="m-dia' + (dow === 0 || dow === 6 ? ' finde' : '') + '" data-dia="' + diaISO(d) + '" style="z-index:' + (10 - n) + '"><span class="rot">' + DIAS3[dow] + '</span><span class="num">' + d.getDate() + '</span>';
     var resto = nor.length;
     if (f) h += '<span class="t fest">[F] ' + esc(f.titulo) + '</span>';
-    else if (nor.length) { e = nor[0]; resto--; h += '<span class="t">' + (e.todoElDia ? '' : '<span class="h">' + e.hora + '</span>') + puntos(e.quienes) + esc(e.titulo) + '</span>'; }
+    else if (nor.length) { e = nor[0]; resto--; h += '<span class="t"><span class="h">' + (e.todoElDia ? 'día' : e.hora) + '</span>' + puntos(e.quienes) + esc(e.titulo) + '</span>'; }
     else h += '<span class="t nada">—</span>';
     if (resto > 0) h += '<span class="mas">+' + resto + ' más</span>';
     h += '</div>';
@@ -1008,19 +1018,16 @@ function pintarCalMovil(porDia, hoy, fest, normales) {
   $('calM').innerHTML = h + '</div>';
   recortarDias();
 }
-// El calendario es cuadrado: se muestran los días que caben enteros
+// El calendario es cuadrado: se ven todos los días que quepan; si el último no cabe entero, se corta con un degradado
 function recortarDias() {
   var c = $('diasM'); if (!c || !MOVIL) return;
   var filas = c.childNodes, k;
-  for (k = 0; k < filas.length; k++) filas[k].style.display = '';
-  var lim = c.getBoundingClientRect().bottom;
-  var ult = null;
-  for (k = 0; k < filas.length; k++) { filas[k].className = filas[k].className.replace(/\s*ultima/g, ''); }
-  for (k = 0; k < filas.length; k++) {
-    if (filas[k].getBoundingClientRect().bottom > lim + 0.5) filas[k].style.display = 'none'; else ult = filas[k];
-  }
-  if (ult) ult.className += ' ultima';   // la última se estira hasta el borde
+  for (k = 0; k < filas.length; k++) filas[k].className = filas[k].className.replace(/\s*ultima/g, '');
+  if (filas.length) filas[filas.length - 1].className += ' ultima';   // si sobra sitio, la última se estira hasta el borde
+  c.className = c.className.replace(/\s*corta/g, '') + (c.scrollHeight > c.clientHeight + 1 ? ' corta' : '');
 }
+// Las fuentes cargan después: se vuelve a medir
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { recortarDias(); });
 function rejilla() {
   if (!MOVIL) return;
   var W = $('movil').clientWidth - 32, c = Math.floor((W - 16) / 2), k, l;
@@ -1052,8 +1059,9 @@ function eventosDe(iso) {
 function htmlDia() {
   var d = deISO(K.sel), esHoy = K.sel === diaISO(hoyD()), x = eventosDe(K.sel), h = '', i, e;
   var ahora = new Date(), hhmm = pad(ahora.getHours()) + ':' + pad(ahora.getMinutes());
-  h += '<div class="k-cab">' + (esHoy ? '<span>hoy</span>' + (x.fest ? '<span>[F]</span>' : '')
-    : '<span>' + MESES3[d.getMonth()] + ' ' + d.getFullYear() + (x.fest ? ' · [F]' : '') + '</span><a class="volver" data-acc="hoy">volver a hoy</a>') + '</div>';
+  var movido = !esHoy || K.mes.getTime() !== mesMin().getTime();
+  h += '<div class="k-cab">' + (esHoy ? '<span>hoy' + (x.fest ? ' · [F]' : '') + '</span>'
+    : '<span>' + MESES3[d.getMonth()] + ' ' + d.getFullYear() + (x.fest ? ' · [F]' : '') + '</span>') + (movido ? '<a class="volver" data-acc="hoy">volver a hoy</a>' : '') + '</div>';
   h += '<div class="k-num"><b>' + d.getDate() + '</b><span>' + DIAS[d.getDay()] + '</span></div>';
   if (x.fest) h += '<div class="k-fest">' + esc(x.fest.titulo) + '</div>';
   h += '<div class="crece"></div><div class="k-lista">';
@@ -1108,7 +1116,7 @@ function htmlMes() {
   var ini = lunes(m), ultimo = new Date(m.getFullYear(), m.getMonth() + 1, 0);
   var filas = Math.ceil((((m.getDay() + 6) % 7) + ultimo.getDate()) / 7);
   h = '<div class="k-sem-cab"><h1>' + cap(MESES[m.getMonth()]) + ' ' + m.getFullYear() + '</h1>' +
-    '<div class="dcha">' + (movido ? '<a class="volver" data-acc="hoy">volver a hoy</a>' : '') + '<div class="flechas">' +
+    '<div class="dcha"><div class="flechas">' +
     '<a data-acc="mes-" class="' + (m > mesMin() ? '' : 'off') + '" aria-label="Mes anterior">' + FLECHA_I + '</a>' +
     '<a data-acc="mes+" class="' + (m < mesMax() ? '' : 'off') + '" aria-label="Mes siguiente">' + FLECHA_D + '</a></div></div></div>';
   h += '<div class="k-dias"><span>lun</span><span>mar</span><span>mié</span><span>jue</span><span>vie</span><span>sáb</span><span>dom</span></div><div class="k-rej">';
@@ -1980,6 +1988,7 @@ function moverBurbuja(bur, el, vertical, anim) {
   if (!bur || !el || !el.offsetWidth) return;
   var ini = vertical ? 'top' : 'left', tam = vertical ? 'height' : 'width';
   var a = vertical ? el.offsetTop : el.offsetLeft, t = vertical ? el.offsetHeight : el.offsetWidth, p = bur._p;
+  if (vertical) bur.style.left = el.offsetLeft + 'px'; else bur.style.top = el.offsetTop + 'px';   // el otro eje, centrado sobre el icono
   clearTimeout(bur._t);
   function pon(i, n, tr) { bur.style.webkitTransition = bur.style.transition = tr; bur.style[ini] = i + 'px'; bur.style[tam] = n + 'px'; }
   if (!anim || p === undefined || p === a) { pon(a, t, 'none'); bur._p = a; return; }
@@ -2124,6 +2133,7 @@ var NUBES = '<path d="M7 17h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 11 3 3 0 0 0
 var LLUVIA = '<path d="M7 14h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 8 3 3 0 0 0 7 14z"/><path d="M9 17l-1 3M13 17l-1 3M17 17l-1 3"/>';
 var NIEVE = '<path d="M12 12L12.0 3.0M12.0 6.0L10.3 4.0M12.0 6.0L13.7 4.0M12 12L4.2 7.5M6.8 9.0L4.2 9.5M6.8 9.0L5.9 6.6M12 12L4.2 16.5M6.8 15.0L5.9 17.4M6.8 15.0L4.2 14.5M12 12L12.0 21.0M12.0 18.0L13.7 20.0M12.0 18.0L10.3 20.0M12 12L19.8 16.5M17.2 15.0L19.8 14.5M17.2 15.0L18.1 17.4M12 12L19.8 7.5M17.2 9.0L18.1 6.6M17.2 9.0L19.8 9.5"/>';
 var RAYO = '<path d="M13.5 2.5L6 13.5h5.5L10.5 21.5 18 10.5h-5.5z"/>';
+var VIENTO = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h16a3 3 0 1 1-3 3"/><path d="M3 16h7"/></svg>';
 var GOTA = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c3.4 4.4 5.5 7.4 5.5 10.6a5.5 5.5 0 0 1-11 0c0-3.2 2.1-6.2 5.5-10.6z"/></svg>';
 function icono(c, tam, cls, trazo) {
   // Códigos WMO de Open-Meteo: 71-77 y 85-86 nieve, 95-99 tormenta
@@ -2161,8 +2171,12 @@ function cargarTiempo() {
       '</div>';
     for (k = 1; k <= 2; k++) {
       var p = dl.time[k].split('-'), fd = new Date(+p[0], +p[1] - 1, +p[2]), fds = fd.getDay() === 0 || fd.getDay() === 6;
-      h += '<div class="prev' + (fds ? ' finde' : '') + (k === 2 ? ' ultima' : '') + '" style="z-index:' + (3 - k) + '"><span class="rot">' + DIAS3[fd.getDay()] + '</span>' + icono(dl.weather_code[k], 20) +
-        '<span class="tt">' + Math.round(dl.temperature_2m_max[k]) + '°</span><span class="pp">' + GOTA + pct(dl.precipitation_probability_max[k]) + '</span></div>';
+      // Viento medio del día: media de sus 24 horas
+      var vk = 0, nk = 0, hh;
+      for (hh = k * 24; hh < k * 24 + 24 && hh < d.hourly.wind_speed_10m.length; hh++) { vk += d.hourly.wind_speed_10m[hh]; nk++; }
+      h += '<div class="prev' + (fds ? ' finde' : '') + (k === 2 ? ' ultima' : '') + '" style="z-index:' + (3 - k) + '"><span class="rot">' + DIAS3[fd.getDay()] + '</span>' +
+        '<span class="tt">' + Math.round(dl.temperature_2m_max[k]) + '°</span><span class="pp">' + GOTA + pct(dl.precipitation_probability_max[k]) + '</span>' +
+        '<span class="pp">' + VIENTO + (nk ? Math.round(vk / nk) : '—') + ' km/h</span>' + icono(dl.weather_code[k], 22, 'ico-dia') + '</div>';
     }
     $('tiempo').innerHTML = h;
     var p1 = dl.time[1].split('-'), f1 = new Date(+p1[0], +p1[1] - 1, +p1[2]);
