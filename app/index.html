@@ -945,16 +945,11 @@ var ANIM = (function () {
   return !(ios && +ios[1] <= 12);
 })();
 if (!ANIM) document.documentElement.className += ' sin-anim';
-/* Quién usa este aparato: L (Lidia), M (Miguel) o C (compartido: el iPad de la cocina).
-   Lo elegido en Ajustes manda. Si no se ha elegido nunca ahí, vale el parámetro de la dirección (?lidia, ?miguel, ?cocina),
-   que se recuerda; así un icono creado con ?lidia no pisa lo que se cambie después en Ajustes. */
+/* Quién usa este aparato: L (Lidia), M (Miguel) o C (compartido). Se elige en Ajustes y se recuerda en el aparato.
+   Hay una sola dirección para todos: un aparato nuevo empieza como Compartido. (Los antiguos ?lidia, ?miguel y ?cocina ya no hacen nada.) */
 var QUIEN = (function () {
   var g = null; try { g = localStorage.getItem('potugapp.quien'); } catch (e) {}
-  var elegido = false; try { elegido = localStorage.getItem('potugapp.quienAjustes') === '1'; } catch (e) {}
-  var url = /lidia/.test(Q) ? 'L' : /miguel/.test(Q) ? 'M' : /cocina/.test(Q) ? 'C' : null;
-  var q = elegido && /^[LMC]$/.test(g) ? g : (url || (/^[LMC]$/.test(g) ? g : null));
-  if (q) { try { localStorage.setItem('potugapp.quien', q); } catch (e) {} }
-  return q;
+  return /^[LMC]$/.test(g) ? g : 'C';
 })();
 var COCINA = QUIEN === 'C';
 // Prueba de diseño: ?filas2 pone los 6 días del widget en dos filas de tres (se recuerda; ?filas1 lo quita)
@@ -981,8 +976,10 @@ function guardar(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 function leer(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 function borrar(k) { try { localStorage.removeItem(k); } catch (e) {} }
 
+var ICONO_AJUSTES = null;
 function ponerYo() {
-  if (!YO) return;
+  if (ICONO_AJUSTES === null) ICONO_AJUSTES = [$('ajustes').innerHTML, $('ajustesM').innerHTML];
+  if (!YO) { $('ajustes').innerHTML = ICONO_AJUSTES[0]; $('ajustesM').innerHTML = ICONO_AJUSTES[1]; $('ajustes').setAttribute('aria-label', 'Ajustes'); $('ajustesM').setAttribute('aria-label', 'Ajustes'); return; }
   var b = '<span class="yo ' + YO + '">' + YO + '</span>';
   $('ajustes').innerHTML = b; $('ajustes').setAttribute('aria-label', NOMBRES[YO] + ' · ajustes');
   $('ajustesM').innerHTML = b; $('ajustesM').setAttribute('aria-label', NOMBRES[YO] + ' · ajustes');
@@ -2367,6 +2364,13 @@ function ajBuscar(t) {
     });
   }, 300);
 }
+function aplicarQuien(q) {
+  QUIEN = q; COCINA = q === 'C'; YO = q === 'L' || q === 'M' ? q : null;
+  guardar('potugapp.quien', q);
+  ponerYo(); marcarAjustes();
+  pintarCompra(); pintarComer();
+  clearTimeout(tReposo); vigilar();
+}
 function tocarAjustes(e) {
   var t = e.target, acc = null;
   while (t && t !== this) { if (t.getAttribute && t.getAttribute('data-aj')) { acc = t.getAttribute('data-aj'); break; } t = t.parentNode; }
@@ -2377,9 +2381,8 @@ function tocarAjustes(e) {
   if (acc === 'ajQ') {
     if (v === QUIEN) return;
     ajMover(t.parentNode, v);
-    guardar('potugapp.quien', v); guardar('potugapp.quienAjustes', '1');
-    // Cambiar de persona afecta a toda la app: se recarga (sin el parámetro de la dirección, que ya no manda)
-    setTimeout(function () { location.replace(location.pathname + '?v=' + Date.now() + '#ajustes'); }, ANIM ? 320 : 0);
+    // Se aplica al momento, sin recargar: se repinta lo que depende de quién eres (burbuja, saldo, quién paga…)
+    setTimeout(function () { aplicarQuien(v); }, ANIM ? 280 : 0);
     return;
   }
   if (acc === 'ajA') { ajMover(t.parentNode, v); ajAnim(v); return; }
@@ -2414,6 +2417,11 @@ function tocarAjustes(e) {
   $(id).addEventListener('input', function (e) { if (e.target && e.target.id === 'ajCiudad') ajBuscar(e.target.value); });
 });
 
+function marcarAjustes() {
+  var c = clasePagina();
+  $('ajustes').className = 'nav' + (YO ? ' conyo' : '') + (c === 'p-ajustes' ? ' activo' : '');
+  $('ajustesM').className = (YO ? 'conyo' : '') + (c === 'p-ajustes' ? ' activo' : '');
+}
 var PAGINAS = { calendario: 'p-cal', compra: 'p-compra', comer: 'p-comer', ajustes: 'p-ajustes' };
 function clasePagina() { return PAGINAS[location.hash.slice(1)] || ''; }
 function marcarMovil(el, on) {
@@ -2436,8 +2444,7 @@ function irPagina() {
   if (c === 'p-compra') { pintarCompra(); sincCompra(true); }
   if (c === 'p-comer') { CFV.mes = mesHoy(); CFV.saldar = false; pintarComer(); sincComer(true); }
   if (c === 'p-ajustes') { AJ.otra = false; AJ.gpsMal = false; AJ.clave = AJ.borrar = false; pintarAjustes(); }
-  $('ajustes').className = 'nav' + (YO ? ' conyo' : '') + (c === 'p-ajustes' ? ' activo' : '');
-  $('ajustesM').className = (YO ? 'conyo' : '') + (c === 'p-ajustes' ? ' activo' : '');
+  marcarAjustes();
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', irPagina);
@@ -2672,7 +2679,9 @@ function despertar() {
   volverHoy(); irPort(0, true); if (location.hash) location.hash = ''; else pintarPagCal();   // la cocina siempre vuelve a la portada (página 1) y a hoy
   cargarCal(); vigilar();
 }
-function vigilar() { if (!COCINA) return; clearTimeout(tReposo); tReposo = setTimeout(dormir, IDLE_MS); }
+// Salvapantallas: solo en una tableta compartida (el iPad de la cocina); nunca en el ordenador ni en el móvil
+function conReposo() { return COCINA && TACTIL && !MOVIL; }
+function vigilar() { clearTimeout(tReposo); if (!conReposo()) return; tReposo = setTimeout(dormir, IDLE_MS); }
 document.addEventListener('touchstart', function () { if (!reposo) vigilar(); }, true);
 document.addEventListener('mousedown', function () { if (!reposo) vigilar(); }, true);
 $('standby').addEventListener('touchend', function (e) { e.preventDefault(); despertar(); });
@@ -2681,7 +2690,7 @@ $('standby').addEventListener('click', despertar);
 // sin pasar por el salvapantallas, así basta con despertar y desbloquear el iPad (sin un tercer toque).
 // Se detecta de dos formas: la página deja de verse y vuelve, o el reloj ha saltado (el iPad dormido para el código).
 var ultimoLatido = Date.now();
-function volverDeBloqueo() { if (COCINA && reposo) despertar(); }
+function volverDeBloqueo() { if (conReposo() && reposo) despertar(); }
 document.addEventListener('visibilitychange', function () { if (!document.hidden) volverDeBloqueo(); });
 window.addEventListener('pageshow', volverDeBloqueo);
 setInterval(function () { var t = Date.now(); if (t - ultimoLatido > 60 * 1000) volverDeBloqueo(); ultimoLatido = t; }, 5000);
