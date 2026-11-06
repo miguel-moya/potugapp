@@ -593,6 +593,10 @@ body.p-comer #pagComer { display: flex; }
 .cf-pill.off { opacity: 0.25; cursor: default; }
 /* Móvil: lista como en la compra (cabecera y lista en baraja) */
 .cf-mlis { margin-top: 16px; }
+.cf-pest { margin-top: 16px; }
+#mComer.v-meses .cf-pest .seg-bola { -webkit-transform: translateX(100%); transform: translateX(100%); }
+#mComer.v-gastos .cf-vm, #mComer.v-meses .cf-vg { display: none; }
+#mComer .cf-mlista .cp-items > .cp-fr:first-child { padding-top: 0; }
 #mComer .cp-lcarta { padding-bottom: 8px; }
 #mComer .cp-items { overflow: visible; }
 #mComer .cf-hist { margin-top: 16px; }
@@ -624,7 +628,7 @@ body.p-comer #pagComer { display: flex; }
 .cf-in { cursor: pointer; }
 /* Móvil: la acción principal (apuntar gasto) flota abajo a la derecha, encima del menú, al alcance del pulgar */
 .fab { display: none; position: fixed; z-index: 20; right: 16px; bottom: 16px; width: 64px; height: 64px; border-radius: 32px;
-  background: var(--widget); color: var(--tinta); align-items: center; justify-content: center; cursor: pointer;
+  background: var(--tinta); color: var(--widget); align-items: center; justify-content: center; cursor: pointer;   /* negro, como todos los + de la app */
   box-shadow: 0 8px 32px rgba(29,29,27,0.16), 0 1px 4px rgba(29,29,27,0.06); }
 .fab svg { width: 24px; height: 24px; }
 /* Móvil: la acción principal va pegada al menú, a su misma altura (el menú se acorta para dejarle sitio) */
@@ -1884,7 +1888,7 @@ var CF = { gastos: [], topes: [], saldados: [] };
 var colaCF = [];
 try { CF = JSON.parse(leer('potugapp.comer')) || CF; } catch (e) {}
 try { colaCF = JSON.parse(leer('potugapp.colaComer')) || []; } catch (e) {}
-var CFV = { mes: null, saldar: false, enviando: false };
+var CFV = { mes: null, saldar: false, enviando: false, vistaM: 'gastos' };
 var CFH = null;   // gasto que se está apuntando o corrigiendo en la hoja
 
 function mesHoy() { return diaISO(new Date()).slice(0, 7); }
@@ -2142,8 +2146,13 @@ function pintarComerYa() {
   $('cfIzq').innerHTML = arriba + '<div class="w cf-hist">' + cfMeses(120) + '</div>';
   $('cfCab').innerHTML = cab;
   $('cfItems').innerHTML = lista;
-  $('mComer').innerHTML = arriba + '<div class="cf-mlis"><div class="cp-carta cp-cab cf-cabm">' + cfCabListaM() + '</div><div class="cp-carta cp-lcarta"><div class="cp-items">' + lista + '</div></div></div>' +
-    '<div class="w cf-hist">' + cfMeses(96) + '</div>';
+  // Móvil: pestañas para elegir entre la lista del mes y la gráfica (la lista puede ser muy larga)
+  var n = gastosDe(CFV.mes).length;
+  $('mComer').className = 'v-' + CFV.vistaM;
+  $('mComer').innerHTML = arriba + '<div class="cp-seg cf-pest"><i class="seg-bola"></i><span data-cf="vista" data-v="gastos"' + (CFV.vistaM === 'gastos' ? ' class="on"' : '') + '>Gastos' + (n ? '<b>' + n + '</b>' : '') + '</span>' +
+    '<span data-cf="vista" data-v="meses"' + (CFV.vistaM === 'meses' ? ' class="on"' : '') + '>Últimos 6 meses</span></div>' +
+    '<div class="cf-vg"><div class="w cf-mlista"><div class="cp-items">' + lista + '</div></div></div>' +
+    '<div class="cf-vm"><div class="w cf-hist">' + cfMeses(160) + '</div></div>';
   pintarWidgetComer();
 }
 
@@ -2283,7 +2292,14 @@ function tocarComer(e) {
   if (acc === 'tope') { abrirTope(); return; }
   if (acc === 'mes-' && CFV.mes > mesPrimero()) CFV.mes = mesMas(CFV.mes, -1);
   else if (acc === 'mes+' && CFV.mes < mesHoy()) CFV.mes = mesMas(CFV.mes, 1);
-  else if (acc === 'ir-mes') CFV.mes = t.getAttribute('data-m');
+  else if (acc === 'ir-mes') { CFV.mes = t.getAttribute('data-m'); CFV.vistaM = 'gastos'; }   // tocar un mes abre su lista
+  else if (acc === 'vista') {
+    var vv = t.getAttribute('data-v'); if (vv === CFV.vistaM) return;
+    // Solo se cambia la clase: así el fondo de la pestaña se desliza (sin repintar)
+    CFV.vistaM = vv; $('mComer').className = 'v-' + vv;
+    var ps = t.parentNode.children; for (var q = 0; q < ps.length; q++) if (ps[q].getAttribute('data-v')) ps[q].className = ps[q].getAttribute('data-v') === vv ? 'on' : '';
+    return;
+  }
   else if (acc === 'saldar') {
     if (CFV.saldar) { CFV.saldar = false; cfAccion({ tipo: 'saldar', id: nuevoId(), quien: YO || (COCINA ? 'cocina' : null) }); return; }
     CFV.saldar = true; setTimeout(function () { if (CFV.saldar) { CFV.saldar = false; pintarComer(); } }, 4000);
@@ -2494,7 +2510,7 @@ function irPagina() {
   if (c === 'p-cal') pintarPagCal();
   if (!c && !MOVIL) setTimeout(function () { irPort(PORT, true); }, 0);   // al volver a la portada, la página en la que estaba
   if (c === 'p-compra') { pintarCompra(); sincCompra(true); }
-  if (c === 'p-comer') { CFV.mes = mesHoy(); CFV.saldar = false; pintarComer(); sincComer(true); if (MOVIL) animar($('cfFab'), 'a-pop'); }
+  if (c === 'p-comer') { CFV.mes = mesHoy(); CFV.saldar = false; CFV.vistaM = 'gastos'; pintarComer(); sincComer(true); if (MOVIL) animar($('cfFab'), 'a-pop'); }
   if (c === 'p-ajustes') { AJ.otra = false; AJ.gpsMal = false; AJ.clave = AJ.borrar = false; pintarAjustes(); }
   marcarAjustes();
   window.scrollTo(0, 0);
