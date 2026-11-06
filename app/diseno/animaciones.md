@@ -41,7 +41,8 @@ Para 3 opciones: ancho `calc(33.33% - 4px)` y `translateX(100%)` / `translateX(2
 
 ### Hojas (ventanas)
 Usar siempre `mostrarHoja()` y `cerrarHoja()` (nunca cambiar `#cpHoja.className` a mano).
-Entrada: velo de 0 a 35 % de oscuridad y hoja que sube 32 px con escala 0,97 → 1 (0,34 s). Salida: baja y se funde con curva que acelera (0,22 s).
+Centradas en vertical; en pantallas táctiles, mientras se escribe, suben arriba (clase `.teclado`) para que no las tape el teclado.
+Entrada: velo de 0 a 55 % de oscuridad y hoja que sube 32 px con escala 0,97 → 1 (0,34 s). Salida: baja y se funde con curva que acelera (0,22 s).
 Cualquier hoja nueva se pinta dentro de `#cpHojaIn` y hereda la animación.
 
 ### Lista que se recoloca (técnica FLIP)
@@ -64,6 +65,9 @@ Botones, flechas y pastillas se encogen a 0,94 mientras el dedo está encima (0,
 ### Burbuja del menú
 Mancha negra única en el lateral del iPad (`#burT`) y en el menú del móvil (`#burM`). Al cambiar de página se estira hacia la opción nueva (0,2 s) y recoge el extremo de detrás con un rebote suave (0,3 s). `moverBurbujas(true)` desde `irPagina()`.
 Probada y descartada: versión con tres piezas y `transform` (se partía en los extremos).
+
+### Cambio de herramienta en el móvil
+La pantalla nueva entra desde un lado (`.a-pag-der` / `.a-pag-izq`, 28 % y 0,32 s), según el orden del menú o la dirección del dedo (`DIR_DEDO`). Ajustes cuenta como la última. En iPad y ordenador el cambio es instantáneo.
 
 ### Portada del iPad
 Páginas de widgets en una tira (`.portada > .tira > .filas`). El gesto lanza la animación sin seguir al dedo (`SEGUIR_DEDO = false`; con `true` sigue al dedo). En movimiento usa `translate3d`; quieta, `translateX` (una capa 3D quieta deja el texto borroso).
