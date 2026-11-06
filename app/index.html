@@ -45,8 +45,8 @@ a { color: inherit; text-decoration: none; }
 .nav { position: relative; z-index: 1; -webkit-transition: color 0.2s ease 0.12s; transition: color 0.2s ease 0.12s; }
 .nav.activo { color: var(--widget); }
 /* ---------- Animaciones (solo desplazar, escalar y fundir; cortas; en modo simple, ninguna) ---------- */
-@-webkit-keyframes aEntra { from { opacity: 0; -webkit-transform: translateY(8px); } to { opacity: 1; -webkit-transform: none; } }
-@keyframes aEntra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@-webkit-keyframes aEntra { from { opacity: 0; -webkit-transform: translateY(12px); } to { opacity: 1; -webkit-transform: none; } }
+@keyframes aEntra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @-webkit-keyframes aDer { from { opacity: 0; -webkit-transform: translateX(24px); } to { opacity: 1; -webkit-transform: none; } }
 @keyframes aDer { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
 @-webkit-keyframes aIzq { from { opacity: 0; -webkit-transform: translateX(-24px); } to { opacity: 1; -webkit-transform: none; } }
@@ -57,10 +57,14 @@ a { color: inherit; text-decoration: none; }
 @keyframes aLatido { 0% { transform: scale(1); } 40% { transform: scale(0.92); } 100% { transform: scale(1); } }
 @-webkit-keyframes aNuevo { from { opacity: 0; -webkit-transform: translateY(-6px); } to { opacity: 1; -webkit-transform: none; } }
 @keyframes aNuevo { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
-.a-entra > * { -webkit-animation: aEntra 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aEntra 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-.a-der { -webkit-animation: aDer 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aDer 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-.a-izq { -webkit-animation: aIzq 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aIzq 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-.a-pop { -webkit-animation: aPop 0.3s ease-out both; animation: aPop 0.3s ease-out both; }
+.a-entra > * { -webkit-animation: aEntra 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aEntra 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.a-der { -webkit-animation: aDer 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aDer 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.a-izq { -webkit-animation: aIzq 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aIzq 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.a-pop { -webkit-animation: aPop 0.4s ease-out both; animation: aPop 0.4s ease-out both; }
+/* Resaltado: un fondo de color que se apaga poco a poco (producto recién añadido) */
+@-webkit-keyframes aResalta { 0%, 30% { background-color: rgba(201,178,155,0.55); } 100% { background-color: rgba(201,178,155,0); } }
+@keyframes aResalta { 0%, 30% { background-color: rgba(201,178,155,0.55); } 100% { background-color: rgba(201,178,155,0); } }
+.a-resalta { -webkit-animation: aResalta 1.4s ease-out both; animation: aResalta 1.4s ease-out both; }
 .a-latido { -webkit-animation: aLatido 0.22s ease-out; animation: aLatido 0.22s ease-out; }
 .a-nuevo { -webkit-animation: aNuevo 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aNuevo 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 /* Respuesta al tocar: los botones se hunden un poco mientras el dedo está encima */
@@ -74,9 +78,9 @@ html:not(.sin-anim) #cpHoja .ok:active, html:not(.sin-anim) .cp-nuevo-g:active {
 .sin-anim *:not(.tira), .sin-anim *:before, .sin-anim *:after { -webkit-transition: none !important; transition: none !important; -webkit-animation: none !important; animation: none !important; }
 /* Burbuja del menú: una sola mancha negra que se estira y viaja hasta la opción activa */
 .rail { position: relative; }
-.burbuja { position: absolute; z-index: 0; left: 0; top: 0; pointer-events: none; }
-.rail .burbuja { margin: 0 !important; }   /* sin el margen de 4 px que llevan los demás hijos del menú */
-.burbuja i { position: absolute; left: 0; top: 0; display: block; background: var(--tinta); -webkit-transform-origin: 0 0; transform-origin: 0 0; }
+.burbuja { position: absolute; z-index: 0; background: var(--tinta); pointer-events: none; }
+.rail .burbuja { margin: 0 !important; width: 46px; border-radius: 23px; }   /* sin el margen de 4 px que llevan los demás hijos del menú */
+.m-nav .burbuja { top: 8px; height: 48px; border-radius: 24px; }
 .nav svg { width: 22px; height: 22px; }
 
 /* Contenido */
@@ -465,10 +469,12 @@ body.movil .cp-in a { width: 40px !important; height: 40px !important; border-ra
 #cpHoja { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 70; background: rgba(29,29,27,0); -webkit-transition: background-color 0.22s; transition: background-color 0.22s; }
 #cpHoja.ver { background: rgba(29,29,27,0.35); }
 /* La hoja aparece subiendo 16 px; al cerrar, lo mismo al revés y más rápido */
-#cpHoja .h { opacity: 0; -webkit-transition: opacity 0.2s, -webkit-transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); transition: opacity 0.2s, transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); }
-#cpHoja:not(.ver) .h { -webkit-transform: translate(-50%, 16px); transform: translate(-50%, 16px); }
+#cpHoja .h { opacity: 0; -webkit-transition: opacity 0.24s, -webkit-transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1); transition: opacity 0.24s, transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1); }
+#cpHoja:not(.ver) .h { -webkit-transform: translate(-50%, 32px) scale(0.97); transform: translate(-50%, 32px) scale(0.97); }
 #cpHoja.ver .h { opacity: 1; }
-#cpHoja.cierra, #cpHoja.cierra .h { -webkit-transition-duration: 0.14s; transition-duration: 0.14s; }
+/* Al cerrar: baja y se funde, algo más rápido que al abrir (con una curva que acelera al irse) */
+#cpHoja.cierra { -webkit-transition-duration: 0.22s; transition-duration: 0.22s; }
+#cpHoja.cierra .h { -webkit-transition: opacity 0.2s ease-in, -webkit-transform 0.22s cubic-bezier(0.4, 0, 1, 1); transition: opacity 0.2s ease-in, transform 0.22s cubic-bezier(0.4, 0, 1, 1); }
 #cpHoja.on { display: block; }
 #cpHoja .h { position: absolute; left: 50%; top: 96px; width: 420px; max-width: calc(100% - 32px); -webkit-transform: translateX(-50%); transform: translateX(-50%); background: var(--widget); border-radius: 20px; padding: 16px; }
 #cpHoja .rot { font-size: 10px; }
@@ -720,7 +726,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 
   <nav class="rail" aria-label="Menú">
     <div class="logo">P<span>.</span></div>
-    <span class="burbuja" id="burT"><i></i><i></i><i></i></span>
+    <span class="burbuja" id="burT"></span>
     <div class="esp"></div>
     <a href="#" class="nav activo" id="navInicio" aria-label="Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
     <a href="#calendario" class="nav" id="navCal" aria-label="Calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
@@ -828,7 +834,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
   </div>
   <div id="mComer"></div>
   <nav class="m-nav" aria-label="Menú">
-    <span class="burbuja" id="burM"><i></i><i></i><i></i></span>
+    <span class="burbuja" id="burM"></span>
     <a href="#" aria-label="Inicio" id="mNavInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
     <a href="#calendario" aria-label="Calendario" id="mNavCal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
     <a href="#compra" aria-label="Compra" id="mNavCompra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg></a>
@@ -895,7 +901,7 @@ function $(id) { return document.getElementById(id); }
 function animar(el, cls) {
   if (!ANIM || !el || !el.classList) return;
   el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
-  clearTimeout(el['_' + cls]); el['_' + cls] = setTimeout(function () { el.classList.remove(cls); }, 450);
+  clearTimeout(el['_' + cls]); el['_' + cls] = setTimeout(function () { el.classList.remove(cls); }, cls === 'a-resalta' ? 1500 : 600);
 }
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -1389,8 +1395,7 @@ function efectoCompra(a) {
   if (!ANIM || !a.id) return;
   var l = document.querySelectorAll('[data-acc="item"][data-id="' + a.id + '"]'), k;
   for (k = 0; k < l.length; k++) {
-    if (a.tipo === 'anadir') animar(l[k], 'a-nuevo');
-    if (a.tipo === 'tachar' && a.hecho) animar(l[k].querySelector('.cp-ck'), 'a-pop');
+    if (a.tipo === 'anadir') animar(l[k], 'a-resalta');
   }
 }
 
@@ -1632,8 +1637,9 @@ function mostrarHoja() {
 function cerrarHoja() {
   HOJA = null; CFH = null;
   var v = $('cpHoja'); clearTimeout(v._t);
+  v.className = 'on ver cierra'; void v.offsetWidth;   // primero se fija la curva de salida, luego se quita «ver»
   v.className = 'on cierra';
-  v._t = setTimeout(function () { if (!HOJA) { v.className = ''; $('cpHojaIn').className = 'h'; } }, ANIM ? 160 : 0);
+  v._t = setTimeout(function () { if (!HOJA) { v.className = ''; $('cpHojaIn').className = 'h'; } }, ANIM ? 240 : 0);
   var t = document.activeElement; if (t && t.blur && /INPUT|TEXTAREA/.test(t.tagName)) t.blur();
 }
 $('cpHoja').addEventListener('click', function (e) {
@@ -1675,7 +1681,17 @@ function tocarCompra(e) {
   }
   else if (acc === 'pill-mas') { abrirHoja('basico-nuevo', gid); return; }
   else if (acc === 'grupo-nuevo') { abrirHoja('grupo-nuevo'); return; }
-  else if (acc === 'item') { var it = itemDe(t.getAttribute('data-id')); if (it) accion({ tipo: 'tachar', id: it.id, hecho: !it.hecho, quien: YO }); return; }
+  else if (acc === 'item') {
+    var it = itemDe(t.getAttribute('data-id')); if (!it) return;
+    // Al marcarlo: primero se marca en su sitio (con «pop») y, un momento después, baja a «En el carro»
+    if (ANIM && !it.hecho) {
+      var mismos = document.querySelectorAll('[data-acc="item"][data-id="' + it.id + '"]'), z;
+      for (z = 0; z < mismos.length; z++) { mismos[z].className += ' hecho'; var ck = mismos[z].querySelector('.cp-ck'); ck.innerHTML = TICK; animar(ck, 'a-pop'); }
+      var idT = it.id; setTimeout(function () { var i2 = itemDe(idT); if (i2 && !i2.hecho) accion({ tipo: 'tachar', id: idT, hecho: true, quien: YO }); }, 450);
+      return;
+    }
+    accion({ tipo: 'tachar', id: it.id, hecho: !it.hecho, quien: YO }); return;
+  }
   else if (acc === 'terminar') { if (CV.fin) { CV.fin = false; accion({ tipo: 'terminar' }); return; } CV.fin = true; setTimeout(function () { if (CV.fin) { CV.fin = false; pintarCompra(); } }, 4000); }
   else if (acc === 'seg') CV.vistaMovil = t.getAttribute('data-v');
   else if (acc === 'mas') { anadirLibre(inputActivo().value); limpiarInput(); return; }
@@ -1730,7 +1746,7 @@ function diasDelMes(m) { var p = m.split('-'); return new Date(+p[0], +p[1], 0).
 function nombreMes(m, anio) { var t = MESES[+m.slice(5) - 1]; return anio || m.slice(0, 4) !== mesHoy().slice(0, 4) ? t + ' ' + m.slice(0, 4) : t; }
 function red(n) { return Math.round(n * 100) / 100; }
 function eur(n, dec) { n = red(n); return ((dec || n % 1) ? n.toFixed(2).replace('.', ',') : String(n)) + ' €'; }
-function leerEur(s) { var v = parseFloat(String(s || '').replace(/[\s€]/g, '').replace(',', '.')); return isFinite(v) && v > 0 ? red(v) : 0; }
+function leerEur(s) { var v = parseFloat(String(s || '').replace(/&nbsp;|[\s€]/g, '').replace(',', '.')); return isFinite(v) && v > 0 ? red(v) : 0; }
 function gastoDe(id) { for (var i = 0; i < CF.gastos.length; i++) if (CF.gastos[i].id === id) return CF.gastos[i]; return null; }
 function topeDe(m) {
   var t = null, pri = null, k;
@@ -1931,12 +1947,34 @@ function pintarWidgetComer() {
 }
 // La barra del mes crece (o decrece) desde donde estaba hasta su nuevo valor tras apuntar, borrar o cambiar el tope
 var BARRAS = ['cfIzq', 'mComer', 'wComerM', 'wComerT'];
+function rodarCifra(el, de, a, dec) {
+  if (de === a) return;
+  var t0 = null, dur = 500, raf = window.requestAnimationFrame || function (f) { return setTimeout(function () { f(Date.now()); }, 16); };
+  function paso(t) {
+    if (!el.parentNode) return;
+    if (t0 === null) t0 = t;
+    var x = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - x, 3), v = de + (a - de) * e;
+    el.innerHTML = dec ? eur(x < 1 ? Math.round(v * 100) / 100 : a, true) : eur(Math.round(v));
+    if (x < 1) raf(paso);
+  }
+  el.innerHTML = dec ? eur(de, true) : eur(Math.round(de));   // arranca en el valor anterior (sin destello del nuevo)
+  raf(paso);
+}
 function barraDe(id) { var c = $(id); return c ? c.querySelector('.cf-barra i') : null; }
 function pintarComer() {
   var antes = {}, k;
-  for (k = 0; k < BARRAS.length; k++) { var b0 = barraDe(BARRAS[k]); antes[BARRAS[k]] = b0 ? b0.style.width : null; }
+  var cifras = {};
+  for (k = 0; k < BARRAS.length; k++) {
+    var b0 = barraDe(BARRAS[k]); antes[BARRAS[k]] = b0 ? b0.style.width : null;
+    var c0 = $(BARRAS[k]) ? $(BARRAS[k]).querySelector('.cf-cifra b') : null; cifras[BARRAS[k]] = c0 ? leerEur(c0.innerHTML) : null;
+  }
   pintarComerYa();
   if (!ANIM || !CFV.animBarra) return;
+  // La cifra cuenta desde el valor anterior hasta el nuevo, al mismo ritmo que la barra
+  for (k = 0; k < BARRAS.length; k++) {
+    var c1 = $(BARRAS[k]) ? $(BARRAS[k]).querySelector('.cf-cifra b') : null;
+    if (c1 && cifras[BARRAS[k]] !== null) rodarCifra(c1, cifras[BARRAS[k]], leerEur(c1.innerHTML) || 0, /,/.test(c1.innerHTML));
+  }
   for (k = 0; k < BARRAS.length; k++) {
     var b = barraDe(BARRAS[k]), w = b ? b.style.width : null;
     if (!b || antes[BARRAS[k]] === null || antes[BARRAS[k]] === w) continue;
@@ -2109,29 +2147,15 @@ $('cpHoja').addEventListener('change', function (e) {
    y después recoge el de detrás, con un pequeño rebote: parece que fluye de un icono a otro. */
 function moverBurbuja(bur, el, vertical, anim) {
   if (!bur || !el || !el.offsetWidth) return;
-  // La mancha son dos círculos (inicio y final) y un tramo recto entre ellos. Solo se mueven con transform
-  // (lo barato para el móvil): primero avanza el círculo de delante, luego el de detrás lo alcanza con un rebote.
-  var a = vertical ? el.offsetTop : el.offsetLeft, t = vertical ? el.offsetHeight : el.offsetWidth, p = bur._p, ps = bur.children;
-  if (bur._t0 !== t) {
-    bur._t0 = t;
-    for (var k = 0; k < 2; k++) { ps[k].style.width = ps[k].style.height = t + 'px'; ps[k].style.borderRadius = (t / 2) + 'px'; }
-    ps[2].style.width = vertical ? t + 'px' : '100px'; ps[2].style.height = vertical ? '100px' : t + 'px';
-    ps[2].style[vertical ? 'top' : 'left'] = (t / 2) + 'px';
-  }
-  if (vertical) bur.style.left = el.offsetLeft + 'px'; else bur.style.top = el.offsetTop + 'px';
+  var ini = vertical ? 'top' : 'left', tam = vertical ? 'height' : 'width';
+  var a = vertical ? el.offsetTop : el.offsetLeft, t = vertical ? el.offsetHeight : el.offsetWidth, p = bur._p;
+  if (vertical) bur.style.left = el.offsetLeft + 'px'; else bur.style.top = el.offsetTop + 'px';   // el otro eje, centrado sobre el icono
   clearTimeout(bur._t);
-  function tr(x, esc) { return vertical ? 'translate3d(0,' + x + 'px,0)' + (esc !== undefined ? ' scale(1,' + esc + ')' : '') : 'translate3d(' + x + 'px,0,0)' + (esc !== undefined ? ' scale(' + esc + ',1)' : ''); }
-  function pon(x0, x1, tran) {
-    var v = [tr(x0), tr(x1), tr(x0, Math.max(0.0001, (x1 - x0) / 100))];
-    for (var k = 0; k < 3; k++) { ps[k].style.webkitTransition = ps[k].style.transition = tran; ps[k].style.webkitTransform = ps[k].style.transform = v[k]; }
-  }
-  if (!ANIM || !anim || p === undefined || p === a) { pon(a, a, 'none'); bur._p = a; return; }
-  var ida = '-webkit-transform 0.2s cubic-bezier(0.5, 0, 0.75, 0)', ida2 = 'transform 0.2s cubic-bezier(0.5, 0, 0.75, 0)';
-  pon(Math.min(a, p), Math.max(a, p), ida); ps[0].style.transition = ps[1].style.transition = ps[2].style.transition = ida2;
-  bur._t = setTimeout(function () {
-    pon(a, a, '-webkit-transform 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)');
-    for (var k = 0; k < 3; k++) ps[k].style.transition = 'transform 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)';
-  }, 190);
+  function pon(i, n, tr) { bur.style.webkitTransition = bur.style.transition = tr; bur.style[ini] = i + 'px'; bur.style[tam] = n + 'px'; }
+  if (!ANIM || !anim || p === undefined || p === a) { pon(a, t, 'none'); bur._p = a; return; }
+  var curva = ini + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0), ' + tam + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0)';
+  if (a > p) pon(p, a + t - p, curva); else pon(a, p + t - a, curva);
+  bur._t = setTimeout(function () { pon(a, t, ini + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1), ' + tam + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)'); }, 190);
   bur._p = a;
 }
 function moverBurbujas(anim) {
