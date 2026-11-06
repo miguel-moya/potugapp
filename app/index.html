@@ -44,13 +44,39 @@ a { color: inherit; text-decoration: none; }
 .nav { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; }
 .nav { position: relative; z-index: 1; -webkit-transition: color 0.2s ease 0.12s; transition: color 0.2s ease 0.12s; }
 .nav.activo { color: var(--widget); }
+/* ---------- Animaciones (solo desplazar, escalar y fundir; cortas; en modo simple, ninguna) ---------- */
+@-webkit-keyframes aEntra { from { opacity: 0; -webkit-transform: translateY(8px); } to { opacity: 1; -webkit-transform: none; } }
+@keyframes aEntra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@-webkit-keyframes aDer { from { opacity: 0; -webkit-transform: translateX(24px); } to { opacity: 1; -webkit-transform: none; } }
+@keyframes aDer { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+@-webkit-keyframes aIzq { from { opacity: 0; -webkit-transform: translateX(-24px); } to { opacity: 1; -webkit-transform: none; } }
+@keyframes aIzq { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+@-webkit-keyframes aPop { 0% { -webkit-transform: scale(0.6); } 60% { -webkit-transform: scale(1.12); } 100% { -webkit-transform: scale(1); } }
+@keyframes aPop { 0% { transform: scale(0.6); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@-webkit-keyframes aLatido { 0% { -webkit-transform: scale(1); } 40% { -webkit-transform: scale(0.92); } 100% { -webkit-transform: scale(1); } }
+@keyframes aLatido { 0% { transform: scale(1); } 40% { transform: scale(0.92); } 100% { transform: scale(1); } }
+@-webkit-keyframes aNuevo { from { opacity: 0; -webkit-transform: translateY(-6px); } to { opacity: 1; -webkit-transform: none; } }
+@keyframes aNuevo { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.a-entra > * { -webkit-animation: aEntra 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aEntra 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.a-der { -webkit-animation: aDer 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aDer 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.a-izq { -webkit-animation: aIzq 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aIzq 0.26s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.a-pop { -webkit-animation: aPop 0.3s ease-out both; animation: aPop 0.3s ease-out both; }
+.a-latido { -webkit-animation: aLatido 0.22s ease-out; animation: aLatido 0.22s ease-out; }
+.a-nuevo { -webkit-animation: aNuevo 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aNuevo 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+/* Respuesta al tocar: los botones se hunden un poco mientras el dedo está encima */
+html:not(.sin-anim) .cp-in a, html:not(.sin-anim) .cf-mas, html:not(.sin-anim) .cfh-bt a, html:not(.sin-anim) .cf-saldar, html:not(.sin-anim) .cp-fin,
+html:not(.sin-anim) .volver, html:not(.sin-anim) .cp-btn, html:not(.sin-anim) .flechas a, html:not(.sin-anim) .cf-pill, html:not(.sin-anim) .cp-pill,
+html:not(.sin-anim) #cpHoja .ok, html:not(.sin-anim) .cp-nuevo-g { -webkit-transition: -webkit-transform 0.12s ease; transition: transform 0.12s ease; }
+html:not(.sin-anim) .cp-in a:active, html:not(.sin-anim) .cf-mas:active, html:not(.sin-anim) .cfh-bt a:active, html:not(.sin-anim) .cf-saldar:active, html:not(.sin-anim) .cp-fin:active,
+html:not(.sin-anim) .volver:active, html:not(.sin-anim) .cp-btn:active, html:not(.sin-anim) .flechas a:active, html:not(.sin-anim) .cf-pill:active, html:not(.sin-anim) .cp-pill:active,
+html:not(.sin-anim) #cpHoja .ok:active, html:not(.sin-anim) .cp-nuevo-g:active { -webkit-transform: scale(0.94); transform: scale(0.94); }
 /* Modo simple (sin animaciones): todo cambia al instante, salvo la tira de páginas de la portada */
 .sin-anim *:not(.tira), .sin-anim *:before, .sin-anim *:after { -webkit-transition: none !important; transition: none !important; -webkit-animation: none !important; animation: none !important; }
 /* Burbuja del menú: una sola mancha negra que se estira y viaja hasta la opción activa */
 .rail { position: relative; }
-.burbuja { position: absolute; z-index: 0; background: var(--tinta); pointer-events: none; }
-.rail .burbuja { margin: 0 !important; width: 46px; border-radius: 23px; }   /* sin el margen de 4 px que llevan los demás hijos del menú */
-.m-nav .burbuja { top: 8px; height: 48px; border-radius: 24px; }
+.burbuja { position: absolute; z-index: 0; left: 0; top: 0; pointer-events: none; }
+.rail .burbuja { margin: 0 !important; }   /* sin el margen de 4 px que llevan los demás hijos del menú */
+.burbuja i { position: absolute; left: 0; top: 0; display: block; background: var(--tinta); -webkit-transform-origin: 0 0; transform-origin: 0 0; }
 .nav svg { width: 22px; height: 22px; }
 
 /* Contenido */
@@ -436,7 +462,13 @@ body.movil .cp-in a { width: 40px !important; height: 40px !important; border-ra
 .cp-fin { margin: 16px 16px 0; height: 44px; border-radius: 22px; box-shadow: inset 0 0 0 1px var(--tinta); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; cursor: pointer; }
 .cp-fin.seguro { background: var(--tinta); color: var(--widget); }
 /* Hoja (nota, editar básico, nuevo grupo) */
-#cpHoja { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 70; background: rgba(29,29,27,0.35); }
+#cpHoja { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 70; background: rgba(29,29,27,0); -webkit-transition: background-color 0.22s; transition: background-color 0.22s; }
+#cpHoja.ver { background: rgba(29,29,27,0.35); }
+/* La hoja aparece subiendo 16 px; al cerrar, lo mismo al revés y más rápido */
+#cpHoja .h { opacity: 0; -webkit-transition: opacity 0.2s, -webkit-transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); transition: opacity 0.2s, transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); }
+#cpHoja:not(.ver) .h { -webkit-transform: translate(-50%, 16px); transform: translate(-50%, 16px); }
+#cpHoja.ver .h { opacity: 1; }
+#cpHoja.cierra, #cpHoja.cierra .h { -webkit-transition-duration: 0.14s; transition-duration: 0.14s; }
 #cpHoja.on { display: block; }
 #cpHoja .h { position: absolute; left: 50%; top: 96px; width: 420px; max-width: calc(100% - 32px); -webkit-transform: translateX(-50%); transform: translateX(-50%); background: var(--widget); border-radius: 20px; padding: 16px; }
 #cpHoja .rot { font-size: 10px; }
@@ -454,7 +486,13 @@ body.movil.p-compra #mInicio { display: none; }
 body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 .cp-seg { display: flex; height: 44px; padding: 4px; border-radius: 22px; background: var(--widget); box-shadow: inset 0 0 0 1px var(--sep); }
 .cp-seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 18px; cursor: pointer; }
-.cp-seg span.on { background: var(--tinta); color: var(--widget); }
+.cp-seg { position: relative; }
+.cp-seg span { position: relative; z-index: 1; -webkit-transition: color 0.2s; transition: color 0.2s; }
+.cp-seg span.on { color: var(--widget); }
+/* Fondo de la pestaña activa: una sola pieza que se desliza de una a otra */
+.seg-bola { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 18px; background: var(--tinta);
+  -webkit-transition: -webkit-transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.18s; transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.18s; }
+#mCompra.v-bas .seg-bola { -webkit-transform: translateX(100%); transform: translateX(100%); }
 .cp-seg span b { font-family: var(--mono); font-weight: 400; font-size: 10px; margin-left: 6px; opacity: 0.7; }
 #mcLis { margin-top: 16px; }
 #mCompra .cp-cab .cp-in { margin-top: 0; }
@@ -512,6 +550,7 @@ body.p-comer #pagComer { display: flex; }
 .cf-barra { position: relative; flex-shrink: 0; height: 12px; border-radius: 6px; background: var(--pista); margin-top: 24px; }
 .cf-barra i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--tinta); }
 .cf-barra.rapido i { background: var(--aviso); }
+.cf-barra i.crece-a { -webkit-transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s; transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s; }
 .cf-barra .marca { position: absolute; top: -4px; width: 2px; height: 20px; margin-left: -1px; border-radius: 1px; background: var(--tinta); box-shadow: 0 0 0 2px var(--widget); }
 .cf-barra .eti { position: absolute; top: 24px; font-family: var(--mono); font-size: 10px; color: var(--sec); white-space: nowrap; -webkit-transform: translateX(-50%); transform: translateX(-50%); }
 .cf-estado { font-size: 13px; font-weight: 500; margin-top: 36px; }
@@ -617,7 +656,12 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 .cf-seg { display: flex; margin-top: 16px; height: 52px; padding: 4px; border-radius: 26px; background: var(--finde); }
 .cf-seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: var(--sec); border-radius: 22px; cursor: pointer; }
 .cf-seg span svg { margin-right: 8px; color: var(--tinta); }
-.cf-seg span.on { background: var(--acento); color: var(--tinta); }
+.cf-seg { position: relative; }
+.cf-seg span { position: relative; z-index: 1; }
+.cf-seg span.on { color: var(--tinta); }
+.cf-seg .seg-bola { border-radius: 22px; background: var(--acento); opacity: 0; }
+.cf-seg.r .seg-bola, .cf-seg.d .seg-bola { opacity: 1; }
+.cf-seg.d .seg-bola { -webkit-transform: translateX(100%); transform: translateX(100%); }
 /* Carta de abajo: botones a todo el ancho, repartidos a partes iguales */
 .cf-linea + .cf-linea { margin-top: 16px; }
 .cf-linea > .rot { display: block; }
@@ -676,7 +720,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
 
   <nav class="rail" aria-label="Menú">
     <div class="logo">P<span>.</span></div>
-    <span class="burbuja" id="burT"></span>
+    <span class="burbuja" id="burT"><i></i><i></i><i></i></span>
     <div class="esp"></div>
     <a href="#" class="nav activo" id="navInicio" aria-label="Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
     <a href="#calendario" class="nav" id="navCal" aria-label="Calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
@@ -773,7 +817,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
   </div>
   <div id="mCal"><section class="w k-mini" id="kMiniM"></section><section class="w k-dia" id="kDiaM"></section><section class="w k-ag" id="kAgM"></section></div>
   <div id="mCompra" class="v-lista">
-    <div class="cp-seg"><span data-acc="seg" data-v="lista" id="mcSegL">Lista</span><span data-acc="seg" data-v="bas" id="mcSegB">Básicos</span></div>
+    <div class="cp-seg"><i class="seg-bola"></i><span data-acc="seg" data-v="lista" id="mcSegL">Lista</span><span data-acc="seg" data-v="bas" id="mcSegB">Básicos</span></div>
     <div id="mcLis">
       <div class="cp-carta cp-cab"><div class="cp-in"><input id="mcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Añadir a la lista"><a data-acc="mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div>
       <div class="cp-sug" id="mcSug"></div>
@@ -784,7 +828,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
   </div>
   <div id="mComer"></div>
   <nav class="m-nav" aria-label="Menú">
-    <span class="burbuja" id="burM"></span>
+    <span class="burbuja" id="burM"><i></i><i></i><i></i></span>
     <a href="#" aria-label="Inicio" id="mNavInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
     <a href="#calendario" aria-label="Calendario" id="mNavCal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
     <a href="#compra" aria-label="Compra" id="mNavCompra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg></a>
@@ -847,6 +891,12 @@ var YO = /lidia/.test(Q) ? 'L' : /miguel/.test(Q) ? 'M' : null;
 var NOMBRES = { L: 'Lidia', M: 'Miguel' };
 
 function $(id) { return document.getElementById(id); }
+// Lanza una animación de una clase (.a-entra, .a-pop…) sobre un elemento; se quita sola al acabar
+function animar(el, cls) {
+  if (!ANIM || !el || !el.classList) return;
+  el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+  clearTimeout(el['_' + cls]); el['_' + cls] = setTimeout(function () { el.classList.remove(cls); }, 450);
+}
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function diaISO(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
@@ -1189,7 +1239,11 @@ function htmlAgenda(lineas) {
   }
   return tarjetas.join('');
 }
-function pintarPagCal() {
+var KP = { sel: null, mes: null };   // lo último que se pintó (para animar solo lo que cambia por un toque)
+function pintarPagCal(anim) {
+  var cambiaDia = anim && KP.sel !== null && KP.sel !== K.sel;
+  var dirMes = anim && KP.mes !== null && K.mes.getTime() !== KP.mes ? (K.mes.getTime() > KP.mes ? 1 : -1) : 0;
+  KP.sel = K.sel; KP.mes = K.mes.getTime();
   var dia = htmlDia();
   $('kDia').className = dia.cls; $('kDia').innerHTML = dia.html;
   $('kDiaM').className = dia.cls; $('kDiaM').innerHTML = dia.html;
@@ -1197,6 +1251,14 @@ function pintarPagCal() {
   $('kAg').innerHTML = htmlAgenda(0); $('kAgM').innerHTML = htmlAgenda(0);
   var lm = $('kAgM').lastChild; if (lm) lm.className += ' ultima';
   $('kSem').innerHTML = htmlMes();
+  if (cambiaDia) {
+    animar($('kDia'), 'a-entra'); animar($('kDiaM'), 'a-entra');
+    animar($('kMiniM').querySelector('td.sel > span') || $('kMiniM').querySelector('td.khoy > span'), 'a-pop');
+  }
+  if (dirMes) {
+    var c = dirMes > 0 ? 'a-der' : 'a-izq';
+    animar($('kMiniM').querySelector('table'), c); animar($('kSem').querySelector('.k-rej'), c);
+  }
 }
 
 // Toques en la página (un solo escuchador para todo)
@@ -1216,7 +1278,7 @@ function tocarCal(ev) {
   else if (acc === 'mes-' || acc === 'mes+') {
     K.mes = new Date(K.mes.getFullYear(), K.mes.getMonth() + (acc === 'mes+' ? 1 : -1), 1);
   }
-  pintarPagCal();
+  pintarPagCal(true);
   // En el móvil, al tocar un día de la agenda se sube a su tarjeta
   if (MOVIL && dia && /k-bar/.test(t.className)) { var y = $('kDiaM').getBoundingClientRect().top + (window.pageYOffset || 0) - 12; window.scrollTo(0, y); }
 }
@@ -1235,7 +1297,7 @@ function deslizarMes(el) {
     if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
     var nm = new Date(K.mes.getFullYear(), K.mes.getMonth() + (dx < 0 ? 1 : -1), 1);
     if (nm < mesMin() || nm > mesMax()) return;
-    K.mes = nm; pintarPagCal();
+    K.mes = nm; pintarPagCal(true);
   }, false);
 }
 deslizarMes($('kMiniM')); deslizarMes($('kSem'));
@@ -1321,7 +1383,16 @@ function aplicarLocal(a) {
   else if (a.tipo === 'basico_borrar') { for (k = CS.basicos.length - 1; k >= 0; k--) if (CS.basicos[k].id === a.id) CS.basicos.splice(k, 1); }
   else if (a.tipo === 'grupo_nuevo') CS.grupos.push({ id: 'tmp' + nuevoId(), nombre: a.nombre, orden: 999 });
 }
-function accion(a) { cola.push(a); aplicarLocal(a); guardarLocal(); pintarCompra(); enviarCompra(); }
+function accion(a) { CV.tAccion = Date.now(); cola.push(a); aplicarLocal(a); guardarLocal(); pintarCompra(); efectoCompra(a); enviarCompra(); }
+// Pequeños gestos tras una acción propia: el producto nuevo entra, el check hace «pop»
+function efectoCompra(a) {
+  if (!ANIM || !a.id) return;
+  var l = document.querySelectorAll('[data-acc="item"][data-id="' + a.id + '"]'), k;
+  for (k = 0; k < l.length; k++) {
+    if (a.tipo === 'anadir') animar(l[k], 'a-nuevo');
+    if (a.tipo === 'tachar' && a.hecho) animar(l[k].querySelector('.cp-ck'), 'a-pop');
+  }
+}
 
 // Envía la cola (o solo pregunta) y se queda con lo que dice el servidor, más lo que siga pendiente
 function enviarCompra() {
@@ -1344,7 +1415,7 @@ function enviarCompra() {
     for (var i = 0; i < cola.length; i++) aplicarLocal(cola[i]);
     guardarLocal();
     // Solo se repinta si algo ha cambiado: así un toque no se pierde porque la lista se redibuje debajo del dedo
-    if (JSON.stringify(CS) !== antes) pintarCompra();
+    if (JSON.stringify(CS) !== antes) { var esp = 400 - (Date.now() - (CV.tAccion || 0)); if (esp > 0) setTimeout(pintarCompra, esp); else pintarCompra(); }
     if (j.errores && j.errores.length && window.console) console.log('Compra, errores:', j.errores);
     if (cola.length) enviarCompra();
   };
@@ -1530,7 +1601,7 @@ function anadirLibre(t, gid) {
 // ---------- hoja: nota / editar básico / nuevo básico / nuevo grupo ----------
 var HOJA = null;
 function abrirHoja(tipo, ref) {
-  HOJA = { tipo: tipo, ref: ref };
+  HOJA = { tipo: tipo, ref: ref }; $('cpHojaIn').className = 'h';
   var h = '', it, b, g;
   if (tipo === 'nota') {
     it = itemDe(ref); if (!it) return;
@@ -1550,11 +1621,19 @@ function abrirHoja(tipo, ref) {
     h = '<span class="rot">nuevo grupo</span><h2>Grupo de básicos</h2><input id="cpTxt" type="text" placeholder="Por ejemplo: Panadería">' +
       '<div class="bt"><a class="cancelar" data-h="cerrar">Cancelar</a><a class="ok" data-h="ok">Crear</a></div>';
   }
-  $('cpHojaIn').innerHTML = h; $('cpHoja').className = 'on';
+  $('cpHojaIn').innerHTML = h; mostrarHoja();
   setTimeout(function () { var t = $('cpTxt'); if (t) t.focus(); }, 50);
 }
+function mostrarHoja() {
+  var v = $('cpHoja'); clearTimeout(v._t);
+  v.className = 'on'; void v.offsetWidth;   // primero se pinta en el punto de partida, luego se anima
+  v.className = 'on ver';
+}
 function cerrarHoja() {
-  HOJA = null; CFH = null; $('cpHoja').className = ''; $('cpHojaIn').className = 'h';
+  HOJA = null; CFH = null;
+  var v = $('cpHoja'); clearTimeout(v._t);
+  v.className = 'on cierra';
+  v._t = setTimeout(function () { if (!HOJA) { v.className = ''; $('cpHojaIn').className = 'h'; } }, ANIM ? 160 : 0);
   var t = document.activeElement; if (t && t.blur && /INPUT|TEXTAREA/.test(t.tagName)) t.blur();
 }
 $('cpHoja').addEventListener('click', function (e) {
@@ -1590,6 +1669,8 @@ function tocarCompra(e) {
     if (CV.editar) { abrirHoja('basico', bid); return; }
     var ya = pendienteDeBasico(bid);   // si ya está en la lista (sin tachar), el segundo toque lo quita
     if (ya) accion({ tipo: 'quitar', id: ya.id }); else anadirBasico(bid);
+    var pl = document.querySelectorAll('[data-acc="pill"][data-b="' + bid + '"]');
+    for (var q = 0; q < pl.length; q++) animar(pl[q], 'a-latido');
     return;
   }
   else if (acc === 'pill-mas') { abrirHoja('basico-nuevo', gid); return; }
@@ -1693,7 +1774,7 @@ function cfAplicarLocal(a) {
     var v = saldoCF(); if (Math.abs(v) >= 0.01) CF.saldados.push({ id: a.id, fecha: new Date().toISOString(), importe: v, quien: a.quien || null });
   }
 }
-function cfAccion(a) { colaCF.push(a); cfAplicarLocal(a); cfGuardarLocal(); pintarComer(); enviarComer(); }
+function cfAccion(a) { colaCF.push(a); cfAplicarLocal(a); cfGuardarLocal(); CFV.animBarra = a.tipo === 'gasto' || a.tipo === 'borrar' || a.tipo === 'tope'; CFV.tAccion = Date.now(); pintarComer(); CFV.animBarra = false; enviarComer(); }
 
 function enviarComer() {
   var clave = leer('potugapp.clave');
@@ -1714,7 +1795,8 @@ function enviarComer() {
     CF = { gastos: j.gastos, topes: j.topes, saldados: j.saldados };
     for (var i = 0; i < colaCF.length; i++) cfAplicarLocal(colaCF[i]);
     cfGuardarLocal();
-    if (JSON.stringify(CF) !== antes) pintarComer();
+    // Si acabas de tocar algo, se espera a que termine su animación antes de repintar con lo del servidor
+    if (JSON.stringify(CF) !== antes) { var esp = 650 - (Date.now() - (CFV.tAccion || 0)); if (esp > 0) setTimeout(pintarComer, esp); else pintarComer(); }
     if (j.errores && j.errores.length && window.console) console.log('Comer fuera, errores:', j.errores);
     if (colaCF.length) enviarComer();
   };
@@ -1847,7 +1929,21 @@ function pintarWidgetComer() {
     '<div class="cf-estado ' + e.c + '">' + e.t + '</div><div class="crece"></div><div class="cf-debe">' + deb + '</div>';
   pintarWidgetComerT();
 }
+// La barra del mes crece (o decrece) desde donde estaba hasta su nuevo valor tras apuntar, borrar o cambiar el tope
+var BARRAS = ['cfIzq', 'mComer', 'wComerM', 'wComerT'];
+function barraDe(id) { var c = $(id); return c ? c.querySelector('.cf-barra i') : null; }
 function pintarComer() {
+  var antes = {}, k;
+  for (k = 0; k < BARRAS.length; k++) { var b0 = barraDe(BARRAS[k]); antes[BARRAS[k]] = b0 ? b0.style.width : null; }
+  pintarComerYa();
+  if (!ANIM || !CFV.animBarra) return;
+  for (k = 0; k < BARRAS.length; k++) {
+    var b = barraDe(BARRAS[k]), w = b ? b.style.width : null;
+    if (!b || antes[BARRAS[k]] === null || antes[BARRAS[k]] === w) continue;
+    b.style.width = antes[BARRAS[k]]; void b.offsetWidth; b.className = 'crece-a'; b.style.width = w;
+  }
+}
+function pintarComerYa() {
   if (!CFV.mes) CFV.mes = mesHoy();
   var arriba = cfResumen() + cfSaldo(), lista = cfLista(), cab = cfCabLista();
   $('cfIzq').innerHTML = arriba + '<div class="w cf-hist">' + cfMeses(120) + '</div>';
@@ -1886,9 +1982,8 @@ function cfPintarPartes() {
     h += '<span class="cf-pill" data-cfh="sitio" data-i="' + k + '">' + esc(s[k].sitio) + '</span>'; n++;
   }
   $('cfSug').innerHTML = h;
-  var gr = function (i) { return i.replace('width="16" height="16"', 'width="20" height="20"').replace('stroke-width="1.5"', 'stroke-width="1.6"'); };
-  $('cfSeg').innerHTML = '<span data-cfh="clase" data-v="r" class="' + (CFH.clase === 'r' ? 'on' : '') + '">' + gr(ICO_REST) + 'Restaurante</span>' +
-    '<span data-cfh="clase" data-v="d" class="' + (CFH.clase === 'd' ? 'on' : '') + '">' + gr(ICO_DELI) + 'Delivery</span>';
+  $('cfSeg').className = 'cf-seg' + (CFH.clase ? ' ' + CFH.clase : '');
+  $('cfR').className = CFH.clase === 'r' ? 'on' : ''; $('cfD').className = CFH.clase === 'd' ? 'on' : '';
   h = '';
   // Cada uno apunta lo suyo o lo de la común; en la cocina, los tres. Al corregir un gasto del otro, se mantiene su opción
   var ops = YO ? [YO, 'F'] : ['L', 'M', 'F'];
@@ -1911,6 +2006,7 @@ function cfAncho() {
   c.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
   i.style.width = Math.ceil(c.measureText(t).width + (parseFloat(cs.letterSpacing) || 0) * t.length + 8) + 'px';
 }
+function icoGrande(i) { return i.replace('width="16" height="16"', 'width="20" height="20"').replace('stroke-width="1.5"', 'stroke-width="1.6"'); }
 function abrirGasto(id) {
   var g = id ? gastoDe(id) : null;
   if (id && !g) return;
@@ -1921,12 +2017,13 @@ function abrirGasto(id) {
   $('cpHojaIn').innerHTML = '<div class="cfh-a"><span class="rot">' + (g ? 'corregir gasto' : 'nuevo gasto') + '</span>' +
     '<div class="cf-imp-in"><input id="cfImp" type="text" inputmode="decimal" autocomplete="off" placeholder="0,00" value="' + esc(CFH.importe) + '"><span>€</span></div>' +
     '<input id="cfSitio" class="cf-sitio" type="text" autocomplete="off" autocorrect="off" placeholder="Dónde…" value="' + esc(CFH.sitio) + '">' +
-    '<div class="cf-pills" id="cfSug"></div><div class="cf-seg" id="cfSeg"></div></div>' +
+    '<div class="cf-pills" id="cfSug"></div><div class="cf-seg" id="cfSeg"><i class="seg-bola"></i>' +
+    '<span data-cfh="clase" data-v="r" id="cfR">' + icoGrande(ICO_REST) + 'Restaurante</span><span data-cfh="clase" data-v="d" id="cfD">' + icoGrande(ICO_DELI) + 'Delivery</span></div></div>' +
     '<div class="cfh-b"><div class="cf-linea"><span class="rot">paga</span><div class="cf-pills" id="cfPaga"></div></div>' +
     '<div class="cf-linea"><span class="rot">cuándo</span><div class="cf-pills" id="cfCuando"></div></div>' +
     '<div class="cfh-bt"><a class="cfh-cancelar" data-h="cerrar">Cancelar</a><a class="cfh-ok off" data-h="cf-ok" id="cfOk">Guardar</a></div>' +
     (g ? '<a class="cfh-borrar" data-h="cf-borrar" id="cfBorrar">Borrar gasto</a>' : '') + '</div>';
-  $('cpHoja').className = 'on';
+  mostrarHoja();
   cfPintarPartes(); cfAncho();
   $('cfImp').addEventListener('input', function () { cfLeerHoja(); CFH.borrar = false; cfAncho(); cfPintarPartes(); });
   $('cfSitio').addEventListener('input', function () { cfLeerHoja(); CFH.borrar = false; cfPintarPartes(); });
@@ -1940,7 +2037,7 @@ function abrirTope() {
   $('cpHojaIn').innerHTML = '<span class="rot">tope de ' + nombreMes(CFV.mes) + ' en adelante</span><h2>Tope del mes</h2>' +
     '<input id="cpTxt" type="text" inputmode="decimal" autocomplete="off" value="' + String(topeDe(CFV.mes)).replace('.', ',') + '">' +
     '<div class="bt"><a class="cancelar" data-h="cerrar">Cancelar</a><a class="ok" data-h="cf-tope">Guardar</a></div>';
-  $('cpHoja').className = 'on';
+  mostrarHoja();
   setTimeout(function () { var t = $('cpTxt'); if (t) { t.focus(); t.select(); } }, 50);
 }
 function tocarHojaComer(e) {
@@ -2012,15 +2109,29 @@ $('cpHoja').addEventListener('change', function (e) {
    y después recoge el de detrás, con un pequeño rebote: parece que fluye de un icono a otro. */
 function moverBurbuja(bur, el, vertical, anim) {
   if (!bur || !el || !el.offsetWidth) return;
-  var ini = vertical ? 'top' : 'left', tam = vertical ? 'height' : 'width';
-  var a = vertical ? el.offsetTop : el.offsetLeft, t = vertical ? el.offsetHeight : el.offsetWidth, p = bur._p;
-  if (vertical) bur.style.left = el.offsetLeft + 'px'; else bur.style.top = el.offsetTop + 'px';   // el otro eje, centrado sobre el icono
+  // La mancha son dos círculos (inicio y final) y un tramo recto entre ellos. Solo se mueven con transform
+  // (lo barato para el móvil): primero avanza el círculo de delante, luego el de detrás lo alcanza con un rebote.
+  var a = vertical ? el.offsetTop : el.offsetLeft, t = vertical ? el.offsetHeight : el.offsetWidth, p = bur._p, ps = bur.children;
+  if (bur._t0 !== t) {
+    bur._t0 = t;
+    for (var k = 0; k < 2; k++) { ps[k].style.width = ps[k].style.height = t + 'px'; ps[k].style.borderRadius = (t / 2) + 'px'; }
+    ps[2].style.width = vertical ? t + 'px' : '100px'; ps[2].style.height = vertical ? '100px' : t + 'px';
+    ps[2].style[vertical ? 'top' : 'left'] = (t / 2) + 'px';
+  }
+  if (vertical) bur.style.left = el.offsetLeft + 'px'; else bur.style.top = el.offsetTop + 'px';
   clearTimeout(bur._t);
-  function pon(i, n, tr) { bur.style.webkitTransition = bur.style.transition = tr; bur.style[ini] = i + 'px'; bur.style[tam] = n + 'px'; }
-  if (!ANIM || !anim || p === undefined || p === a) { pon(a, t, 'none'); bur._p = a; return; }
-  var curva = ini + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0), ' + tam + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0)';
-  if (a > p) pon(p, a + t - p, curva); else pon(a, p + t - a, curva);
-  bur._t = setTimeout(function () { pon(a, t, ini + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1), ' + tam + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)'); }, 190);
+  function tr(x, esc) { return vertical ? 'translate3d(0,' + x + 'px,0)' + (esc !== undefined ? ' scale(1,' + esc + ')' : '') : 'translate3d(' + x + 'px,0,0)' + (esc !== undefined ? ' scale(' + esc + ',1)' : ''); }
+  function pon(x0, x1, tran) {
+    var v = [tr(x0), tr(x1), tr(x0, Math.max(0.0001, (x1 - x0) / 100))];
+    for (var k = 0; k < 3; k++) { ps[k].style.webkitTransition = ps[k].style.transition = tran; ps[k].style.webkitTransform = ps[k].style.transform = v[k]; }
+  }
+  if (!ANIM || !anim || p === undefined || p === a) { pon(a, a, 'none'); bur._p = a; return; }
+  var ida = '-webkit-transform 0.2s cubic-bezier(0.5, 0, 0.75, 0)', ida2 = 'transform 0.2s cubic-bezier(0.5, 0, 0.75, 0)';
+  pon(Math.min(a, p), Math.max(a, p), ida); ps[0].style.transition = ps[1].style.transition = ps[2].style.transition = ida2;
+  bur._t = setTimeout(function () {
+    pon(a, a, '-webkit-transform 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)');
+    for (var k = 0; k < 3; k++) ps[k].style.transition = 'transform 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)';
+  }, 190);
   bur._p = a;
 }
 function moverBurbujas(anim) {
