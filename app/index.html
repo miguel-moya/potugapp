@@ -69,7 +69,7 @@ a { color: inherit; text-decoration: none; }
 
 /* Portada del iPad: páginas de widgets una al lado de otra; se pasa de una a otra deslizando el dedo o tocando los puntos */
 .portada { flex-grow: 1; min-height: 0; overflow: hidden; position: relative; }
-.tira { position: absolute; left: 0; top: 0; bottom: 0; display: flex; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.tira { position: absolute; left: 0; top: 0; bottom: 0; display: flex; }
 /* El ancho y el alto de cada página los pone irPort() en píxeles: el Safari de iOS 10 no resuelve bien las alturas en % dentro de flex */
 .tira > .filas { flex: 0 0 auto; }
 .tira > .filas + .filas { margin-left: 16px; }
@@ -860,15 +860,23 @@ function modo() {
 }
 
 /* ---------- Escala al tamaño de pantalla ---------- */
-var ESCALA = 1;   // escala del lienzo del iPad (para pasar los píxeles del dedo a los del diseño)
+var ESCALA = 1;
+var TACTIL = 'ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0;   // escala del lienzo del iPad (para pasar los píxeles del dedo a los del diseño)
 function encajar() {
   modo(); if (MOVIL) { rejilla(); if ($('kMiniM')) cuadrarMes(); return; }
   var st = $('stage'), top = window.navigator.standalone ? 20 : 14;
   var vw = window.innerWidth, vh = window.innerHeight - top;
   var s = Math.min(vw / 1024, vh / 768); ESCALA = s;
   st.style.width = (vw / s) + 'px'; st.style.height = (vh / s) + 'px';
-  var t = 'translate(0px,' + top + 'px) scale(' + s + ')';
-  st.style.webkitTransform = t; st.style.transform = t;
+  if (TACTIL) {
+    // iPad: se escala con transform (lo que mejor va en el Safari de iOS 10; su pantalla es retina y el texto sale nítido)
+    var t = 'translate(0px,' + top + 'px) scale(' + s + ')';
+    st.style.webkitTransform = t; st.style.transform = t;
+  } else {
+    // Ordenador: con zoom el navegador vuelve a dibujar el texto a su tamaño final.
+    // Con transform, en pantallas no retina (p. ej. un monitor externo) Safari lo estiraba y salía borroso.
+    st.style.zoom = s; st.style.top = (top / s) + 'px';
+  }
 }
 window.addEventListener('resize', encajar);
 window.addEventListener('orientationchange', function () { setTimeout(encajar, 300); });
@@ -2051,10 +2059,14 @@ function medirPort() {
 }
 // Mueve la tira a una posición (px). Con animación al soltar el dedo; sin ella mientras se arrastra
 function ponerPort(x, anim) {
-  var t = $('tira'), tr = 'translate3d(' + x + 'px, 0, 0)';   // 3d: lo mueve la tarjeta gráfica (más fluido en el iPad viejo)
+  // Mientras se mueve, en 3D (lo mueve la tarjeta gráfica: más fluido en el iPad viejo).
+  // Quieta, en 2D: una capa 3D quieta puede dejar el texto borroso.
+  var t = $('tira'), tr = 'translate3d(' + x + 'px, 0, 0)', tr2 = 'translateX(' + x + 'px)';
+  clearTimeout(t._q);
   t.style.webkitTransition = anim ? '-webkit-transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none';
   t.style.transition = anim ? 'transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1)' : 'none';
   t.style.webkitTransform = tr; t.style.transform = tr;
+  t._q = setTimeout(function () { t.style.webkitTransition = t.style.transition = 'none'; t.style.webkitTransform = tr2; t.style.transform = tr2; }, anim ? 360 : 0);
 }
 function irPort(i, sinAnim) {
   PORT = Math.max(0, Math.min(nPort() - 1, i));
