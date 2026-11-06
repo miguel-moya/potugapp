@@ -4,6 +4,7 @@ Dashboard familiar para el iPad de la cocina y los móviles de casa.
 
 - **App:** `app/` → la publica GitHub Pages (`.github/workflows/pages.yml`) en https://miguel-moya.github.io/potugapp/. `app/index.html` es la pantalla principal.
 - **Diseño:** `app/diseno/marca.html` (manual de marca, fuente de verdad) y las maquetas.
+- **Animaciones:** `app/diseno/animaciones.md` (catálogo de piezas reutilizables y reglas; leer antes de animar algo nuevo).
 - **Datos:** Supabase. La función `supabase/functions/calendario` lee los calendarios de Google.
 
 ## Reglas para iOS 10 (iPad de la cocina)
