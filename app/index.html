@@ -2340,6 +2340,25 @@ window.addEventListener('resize', function () { irPort(PORT, true); });
   document.addEventListener('click', function (e) { if (Date.now() - arrastre < 400) { e.preventDefault(); e.stopPropagation(); } }, true);
 })();
 
+/* ---------- Teclado (ordenador) ----------
+   ← → : páginas de widgets de la portada · ↑ ↓ : herramienta anterior / siguiente del menú (sin dar la vuelta).
+   No actúa escribiendo en un campo, con una hoja abierta ni en reposo. */
+document.addEventListener('keydown', function (e) {
+  var k = e.keyCode;
+  if (k < 37 || k > 40 || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  if (HOJA || reposo || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))) return;
+  var pag = location.hash.slice(1);
+  if (k === 37 || k === 39) {
+    if (MOVIL || pag) return;
+    e.preventDefault(); irPort(PORT + (k === 39 ? 1 : -1)); return;
+  }
+  var i = ORDEN_PAG.indexOf(pag); if (i < 0) i = 0;
+  var j = i + (k === 40 ? 1 : -1);
+  if (j < 0 || j >= ORDEN_PAG.length) return;
+  e.preventDefault();
+  location.hash = ORDEN_PAG[j] ? '#' + ORDEN_PAG[j] : '#';
+});
+
 /* ---------- Tiempo (Open-Meteo, sin registro) ---------- */
 var SOL = '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/>';
 var CLAROS = '<circle cx="9" cy="9" r="3.2"/><path d="M9 3v1.2M3 9h1.2M4.8 4.8l.9.9M13.2 4.8l-.9.9"/><path d="M9.5 19h8a3 3 0 0 0 .3-6 4.5 4.5 0 0 0-8.6 1A2.5 2.5 0 0 0 9.5 19z" fill="#f4f3ef"/>';
