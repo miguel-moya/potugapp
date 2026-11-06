@@ -82,6 +82,13 @@ html:not(.sin-anim) #cpHoja .ok:active, html:not(.sin-anim) .cp-nuevo-g:active {
 @-webkit-keyframes aFunde { from { opacity: 0; } to { opacity: 1; } }
 @keyframes aFunde { from { opacity: 0; } to { opacity: 1; } }
 .a-funde { -webkit-animation: aFunde 0.4s ease-out both; animation: aFunde 0.4s ease-out both; }
+/* Cambio de herramienta en el móvil: la pantalla nueva entra desde un lado */
+@-webkit-keyframes aPagDer { from { opacity: 0.4; -webkit-transform: translateX(28%); } to { opacity: 1; -webkit-transform: none; } }
+@keyframes aPagDer { from { opacity: 0.4; transform: translateX(28%); } to { opacity: 1; transform: none; } }
+@-webkit-keyframes aPagIzq { from { opacity: 0.4; -webkit-transform: translateX(-28%); } to { opacity: 1; -webkit-transform: none; } }
+@keyframes aPagIzq { from { opacity: 0.4; transform: translateX(-28%); } to { opacity: 1; transform: none; } }
+.a-pag-der { -webkit-animation: aPagDer 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aPagDer 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.a-pag-izq { -webkit-animation: aPagIzq 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation: aPagIzq 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 /* Modo simple (sin animaciones): todo cambia al instante, salvo la tira de páginas de la portada */
 .sin-anim *:not(.tira), .sin-anim *:before, .sin-anim *:after { -webkit-transition: none !important; transition: none !important; -webkit-animation: none !important; animation: none !important; }
 /* Burbuja del menú: una sola mancha negra que se estira y viaja hasta la opción activa */
@@ -239,7 +246,7 @@ body.movil { overflow: auto; height: auto; -webkit-overflow-scrolling: touch; }
 html.movil { overflow: auto; height: auto; }
 body.movil #stage { display: none; }
 /* Arriba: solo el hueco de la barra de estado del teléfono (0 en el navegador). Abajo: sitio para el menú flotante */
-body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe-area-inset-top); min-height: 101vh; }   /* páginas cortas: que haya algo de scroll, como en las largas (si no, iOS deja el menú más arriba) */
+body.movil #movil { overflow-x: hidden; display: block; padding: 0 16px 112px; padding-top: env(safe-area-inset-top); min-height: 101vh; }   /* páginas cortas: que haya algo de scroll, como en las largas (si no, iOS deja el menú más arriba) */
 .m-top { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
 .m-top .logo { font-size: 22px; height: auto; margin: 0; }
 .m-fecha { font-size: 13px; color: var(--sec); margin-top: 2px; }
@@ -475,16 +482,17 @@ body.movil .cp-in a { width: 40px !important; height: 40px !important; border-ra
 .cp-fin.seguro { background: var(--tinta); color: var(--widget); }
 /* Hoja (nota, editar básico, nuevo grupo) */
 #cpHoja { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 70; background: rgba(29,29,27,0); -webkit-transition: background-color 0.22s; transition: background-color 0.22s; }
-#cpHoja.ver { background: rgba(29,29,27,0.35); }
+#cpHoja.ver { background: rgba(29,29,27,0.55); }
 /* La hoja aparece subiendo 16 px; al cerrar, lo mismo al revés y más rápido */
 #cpHoja .h { opacity: 0; -webkit-transition: opacity 0.24s, -webkit-transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1); transition: opacity 0.24s, transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1); }
-#cpHoja:not(.ver) .h { -webkit-transform: translate(-50%, 32px) scale(0.97); transform: translate(-50%, 32px) scale(0.97); }
+#cpHoja:not(.ver) .h { -webkit-transform: translate(-50%, -50%) translateY(32px) scale(0.97); transform: translate(-50%, -50%) translateY(32px) scale(0.97); }
+#cpHoja.teclado:not(.ver) .h { -webkit-transform: translateX(-50%) translateY(32px) scale(0.97); transform: translateX(-50%) translateY(32px) scale(0.97); }
 #cpHoja.ver .h { opacity: 1; }
 /* Al cerrar: baja y se funde, algo más rápido que al abrir (con una curva que acelera al irse) */
 #cpHoja.cierra { -webkit-transition-duration: 0.22s; transition-duration: 0.22s; }
 #cpHoja.cierra .h { -webkit-transition: opacity 0.2s ease-in, -webkit-transform 0.22s cubic-bezier(0.4, 0, 1, 1); transition: opacity 0.2s ease-in, transform 0.22s cubic-bezier(0.4, 0, 1, 1); }
 #cpHoja.on { display: block; }
-#cpHoja .h { position: absolute; left: 50%; top: 96px; width: 420px; max-width: calc(100% - 32px); -webkit-transform: translateX(-50%); transform: translateX(-50%); background: var(--widget); border-radius: 20px; padding: 16px; }
+#cpHoja .h { position: absolute; left: 50%; top: 50%; width: 420px; max-width: calc(100% - 32px); max-height: calc(100% - 32px); overflow-y: auto; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); background: var(--widget); border-radius: 20px; padding: 16px; }
 #cpHoja .rot { font-size: 10px; }
 #cpHoja h2 { margin: 4px 0 0; font-size: 18px; font-weight: 600; }
 #cpHoja textarea, #cpHoja input { display: block; width: 100%; margin-top: 12px; min-height: 48px; padding: 12px 16px; border: 0; border-radius: 16px; background: var(--fondo); font: inherit; font-size: 16px; color: var(--tinta); -webkit-appearance: none; -webkit-user-select: text; user-select: text; resize: none; }
@@ -654,7 +662,8 @@ body.movil.p-comer #mComer { display: block; margin-top: 16px; }
 .cf-mlista .cf-items { overflow: visible; padding-bottom: 0; }
 /* Hoja: apuntar o corregir un gasto. Dos cartas en baraja: qué y dónde (arriba), quién y cuándo + botones (debajo) */
 #cpHoja .h.cf { padding: 0; background: transparent; }
-body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px); }
+/* Con el teclado abierto (móvil o iPad), la hoja sube arriba para que el teclado no la tape */
+#cpHoja.teclado .h { top: 12px; top: calc(env(safe-area-inset-top) + 12px); -webkit-transform: translateX(-50%); transform: translateX(-50%); }
 .cfh-a { position: relative; z-index: 2; background: var(--widget); border-radius: 20px; padding: 16px 16px 20px; box-shadow: inset 0 -1px 0 var(--sep); }
 .cfh-b { position: relative; z-index: 1; margin-top: -40px; padding: 56px 16px 16px; background: var(--finde); border-radius: 20px; }
 #cpHoja .cf-imp-in { display: flex; align-items: baseline; margin-top: 8px; }
@@ -723,6 +732,14 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
 .aj-carta + .aj-carta { margin-top: 16px; }
 .aj-fila { display: flex; align-items: center; justify-content: space-between; min-height: 52px; font-size: 14px; }
 .aj-fila + .aj-fila { box-shadow: inset 0 1px 0 var(--sep); }
+/* Estado: las líneas de la tabla llegan a los bordes; los botones van en una segunda carta en baraja */
+.aj-baraja { display: block; }
+.aj-carta + .aj-baraja, #mAjustes .aj-baraja { margin-top: 16px; }
+.aj-a { position: relative; z-index: 2; background: var(--widget); border-radius: 20px; padding: 16px 0 4px; box-shadow: inset 0 -1px 0 var(--sep); }
+.aj-a .cp-tit { padding: 0 16px; }
+.aj-a .aj-fila { padding: 0 16px; }
+.aj-b { position: relative; z-index: 1; margin-top: -40px; padding: 56px 16px 16px; background: var(--finde); border-radius: 20px; }
+.aj-b .aj-btn { margin-top: 0; background: var(--widget); }
 .aj-fila .v { font-size: 13px; color: var(--sec); text-align: right; margin-left: 12px; }
 .aj-fila .v.mal { color: var(--aviso); }
 .aj-bloque { margin-top: 16px; }
@@ -824,7 +841,7 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
     <!-- Página Ajustes -->
     <div class="pagina" id="pagAjustes">
       <div class="aj-col"><section class="w aj-carta" id="ajQuien"></section><section class="w aj-carta" id="ajPref"></section></div>
-      <div class="aj-col"><section class="w aj-carta" id="ajEst"></section></div>
+      <div class="aj-col"><section class="aj-baraja" id="ajEst"></section></div>
     </div>
 
     <!-- Página Compra -->
@@ -885,7 +902,7 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
     <section class="cp-bas" id="mcBas"></section>
   </div>
   <div id="mComer"></div>
-  <div id="mAjustes"><section class="w aj-carta" id="ajQuienM"></section><section class="w aj-carta" id="ajPrefM"></section><section class="w aj-carta" id="ajEstM"></section></div>
+  <div id="mAjustes"><section class="w aj-carta" id="ajQuienM"></section><section class="w aj-carta" id="ajPrefM"></section><section class="aj-baraja" id="ajEstM"></section></div>
   <nav class="m-nav" aria-label="Menú">
     <span class="burbuja" id="burM"></span>
     <a href="#" aria-label="Inicio" id="mNavInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
@@ -1739,14 +1756,19 @@ function abrirHoja(tipo, ref) {
 }
 function mostrarHoja() {
   var v = $('cpHoja'); clearTimeout(v._t);
-  v.className = 'on'; void v.offsetWidth;   // primero se pinta en el punto de partida, luego se anima
-  v.className = 'on ver';
+  v.className = 'on' + hojaTeclado(); void v.offsetWidth;   // primero se pinta en el punto de partida, luego se anima
+  v.className = 'on ver' + hojaTeclado();
 }
+// En pantallas táctiles, mientras se escribe en la hoja, va arriba (si no, el teclado la tapa)
+function hojaTeclado() { var a = document.activeElement; return TACTIL && a && /INPUT|TEXTAREA/.test(a.tagName) && $('cpHoja').contains(a) ? ' teclado' : ''; }
+$('cpHoja').addEventListener('focusin', function () { if (HOJA) this.className = 'on ver' + hojaTeclado(); });
+$('cpHoja').addEventListener('focusout', function () { var v = this; setTimeout(function () { if (HOJA) v.className = 'on ver' + hojaTeclado(); }, 50); });
 function cerrarHoja() {
   HOJA = null; CFH = null;
   var v = $('cpHoja'); clearTimeout(v._t);
-  v.className = 'on ver cierra'; void v.offsetWidth;   // primero se fija la curva de salida, luego se quita «ver»
-  v.className = 'on cierra';
+  var tec = /teclado/.test(v.className) ? ' teclado' : '';   // se cierra desde donde está (arriba si había teclado)
+  v.className = 'on ver cierra' + tec; void v.offsetWidth;   // primero se fija la curva de salida, luego se quita «ver»
+  v.className = 'on cierra' + tec;
   v._t = setTimeout(function () { if (!HOJA) { v.className = ''; $('cpHojaIn').className = 'h'; } }, ANIM ? 240 : 0);
   var t = document.activeElement; if (t && t.blur && /INPUT|TEXTAREA/.test(t.tagName)) t.blur();
 }
@@ -2292,7 +2314,9 @@ function ajSeg(id, ops, val) {
 }
 // Mueve el fondo de un segmentado sin repintar (para que se vea deslizarse)
 function ajMover(seg, val) {
-  var l = seg.querySelectorAll('span'), b = seg.querySelector('.seg-bola'), k, i = -1;
+  // Solo las opciones (hijos directos con data-v); los puntos de color de dentro no cuentan
+  var l = [], b = seg.querySelector('.seg-bola'), k, i = -1;
+  for (k = 0; k < seg.children.length; k++) if (seg.children[k].getAttribute('data-v')) l.push(seg.children[k]);
   for (k = 0; k < l.length; k++) { var on = l[k].getAttribute('data-v') === val; l[k].className = on ? 'on' : ''; if (on) i = k; }
   if (i < 0) { b.style.opacity = 0; return; }
   b.style.opacity = 1; b.style.webkitTransform = b.style.transform = 'translateX(' + (i * 100) + '%)';
@@ -2322,12 +2346,12 @@ function htmlEst() {
   var pend = cola.length + colaCF.length, v = versionVista ? versionVista.replace(/^potugapp\s*/, '') : '—', d;
   if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)) { d = new Date(v.replace('Z', ':00Z')); if (!isNaN(d)) v = d.getDate() + ' ' + MESES3[d.getMonth()] + ' · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
   function fila(t, ok, err) { return '<div class="aj-fila"><span>' + t + '</span><span class="v' + (err && (!ok || err > ok) ? ' mal' : '') + '">' + (err && (!ok || err > ok) ? 'falla · ' + hace(err) : hace(ok)) + '</span></div>'; }
-  return '<div class="cp-tit"><h1>Estado</h1><span class="sub">' + esc(v) + '</span></div><div class="aj-bloque">' +
+  return '<div class="aj-a"><div class="cp-tit"><h1>Estado</h1><span class="sub">' + esc(v) + '</span></div><div class="aj-bloque">' +
     fila('Calendario', OK.cal, ERR.cal) + fila('Lista de la compra', OK.compra, ERR.compra) + fila('Comer fuera', OK.comer, ERR.comer) + fila('Tiempo', OK.tiempo, ERR.tiempo) +
-    '<div class="aj-fila"><span>Pendiente de enviar</span><span class="v' + (pend ? ' mal' : '') + '">' + (pend ? pend + (pend === 1 ? ' cambio' : ' cambios') : 'nada') + '</span></div></div>' +
-    '<a class="aj-btn" data-aj="recargar">Recargar la app</a>' +
+    '<div class="aj-fila"><span>Pendiente de enviar</span><span class="v' + (pend ? ' mal' : '') + '">' + (pend ? pend + (pend === 1 ? ' cambio' : ' cambios') : 'nada') + '</span></div></div></div>' +
+    '<div class="aj-b"><a class="aj-btn" data-aj="recargar">Recargar la app</a>' +
     '<a class="aj-peligro' + (AJ.clave ? ' seguro' : '') + '" data-aj="clave">' + (AJ.clave ? 'Toca otra vez para olvidar la clave' : 'Olvidar la clave familiar en este aparato') + '</a>' +
-    '<a class="aj-peligro' + (AJ.borrar ? ' seguro' : '') + '" data-aj="borrar">' + (AJ.borrar ? (pend ? 'Toca otra vez · se perderán ' + pend + (pend === 1 ? ' cambio sin enviar' : ' cambios sin enviar') : 'Toca otra vez para borrarlos') : 'Borrar los datos guardados en este aparato') + '</a>';
+    '<a class="aj-peligro' + (AJ.borrar ? ' seguro' : '') + '" data-aj="borrar">' + (AJ.borrar ? (pend ? 'Toca otra vez · se perderán ' + pend + (pend === 1 ? ' cambio sin enviar' : ' cambios sin enviar') : 'Toca otra vez para borrarlos') : 'Borrar los datos guardados en este aparato') + '</a></div>';
 }
 function pintarAjustes(parte) {
   if (!parte || parte === 'q') { var q = htmlQuien(); $('ajQuien').innerHTML = q; $('ajQuienM').innerHTML = q; }
@@ -2446,7 +2470,16 @@ function irPagina() {
   if (c === 'p-ajustes') { AJ.otra = false; AJ.gpsMal = false; AJ.clave = AJ.borrar = false; pintarAjustes(); }
   marcarAjustes();
   window.scrollTo(0, 0);
+  // Móvil: la pantalla nueva entra deslizándose desde el lado (según el orden del menú o la dirección del dedo)
+  var nueva = ORDEN_PAG.indexOf(location.hash.slice(1)); if (location.hash === '#ajustes') nueva = ORDEN_PAG.length;
+  if (MOVIL && PAG_ANT !== null && nueva !== PAG_ANT) {
+    var dir = DIR_DEDO || (nueva > PAG_ANT ? 1 : -1);
+    var cont = { 'p-cal': 'mCal', 'p-compra': 'mCompra', 'p-comer': 'mComer', 'p-ajustes': 'mAjustes' }[c] || 'mInicio';
+    animar($(cont), dir > 0 ? 'a-pag-der' : 'a-pag-izq');
+  }
+  PAG_ANT = nueva; DIR_DEDO = 0;
 }
+var PAG_ANT = null, DIR_DEDO = 0;
 window.addEventListener('hashchange', irPagina);
 
 /* ---------- Deslizar el dedo de lado: pasar a la página siguiente o anterior (en bucle) ----------
@@ -2543,6 +2576,7 @@ window.addEventListener('resize', function () { irPort(PORT, true); });
     if (Math.abs(dx) < 70) return;
     var i = ORDEN_PAG.indexOf(location.hash.slice(1)); if (i < 0) i = 0;
     i = (i + (dx < 0 ? 1 : -1) + ORDEN_PAG.length) % ORDEN_PAG.length;
+    DIR_DEDO = dx < 0 ? 1 : -1;   // la pantalla entra por el lado hacia el que va el dedo (también al dar la vuelta)
     location.hash = ORDEN_PAG[i] ? '#' + ORDEN_PAG[i] : '#';
   }, true);
   document.addEventListener('touchcancel', function () { if (x0 !== null && enPortada && modo === 'h') irPort(PORT); x0 = null; }, true);
