@@ -2441,6 +2441,14 @@ document.addEventListener('touchstart', function () { if (!reposo) vigilar(); },
 document.addEventListener('mousedown', function () { if (!reposo) vigilar(); }, true);
 $('standby').addEventListener('touchend', function (e) { e.preventDefault(); despertar(); });
 $('standby').addEventListener('click', despertar);
+// Al volver de un bloqueo de iOS (pantalla apagada por el bloqueo automático del iPad), se entra directo en la app:
+// sin pasar por el salvapantallas, así basta con despertar y desbloquear el iPad (sin un tercer toque).
+// Se detecta de dos formas: la página deja de verse y vuelve, o el reloj ha saltado (el iPad dormido para el código).
+var ultimoLatido = Date.now();
+function volverDeBloqueo() { if (COCINA && reposo) despertar(); }
+document.addEventListener('visibilitychange', function () { if (!document.hidden) volverDeBloqueo(); });
+window.addEventListener('pageshow', volverDeBloqueo);
+setInterval(function () { var t = Date.now(); if (t - ultimoLatido > 60 * 1000) volverDeBloqueo(); ultimoLatido = t; }, 5000);
 
 /* ---------- Arranque ---------- */
 ponerYo(); encajar(); ultimoDia = diaISO(new Date()); reloj(); pintarCal(); pintarCompra(); pintarComer(); irPagina(); irPort(0, true); sincCompra(true); sincComer(true);
