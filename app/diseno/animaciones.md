@@ -41,8 +41,8 @@ Para 3 opciones: ancho `calc(33.33% - 4px)` y `translateX(100%)` / `translateX(2
 
 ### Hojas (ventanas)
 Usar siempre `mostrarHoja()` y `cerrarHoja()` (nunca cambiar `#cpHoja.className` a mano).
-Centradas en vertical; en pantallas táctiles, mientras se escribe, suben arriba (clase `.teclado`) para que no las tape el teclado.
-Entrada: velo de 0 a 55 % de oscuridad y hoja que sube 32 px con escala 0,97 → 1 (0,34 s). Salida: baja y se funde con curva que acelera (0,22 s).
+Posición: en el móvil, siempre arriba (clase `.teclado`); en el iPad, centradas y arriba solo mientras se escribe; en el ordenador, centradas.
+Entrada: velo negro de 0 a 75 % y hoja que sube 32 px con escala 0,97 → 1 (0,34 s). Salida: baja y se funde con curva que acelera (0,22 s).
 Cualquier hoja nueva se pinta dentro de `#cpHojaIn` y hereda la animación.
 
 ### Lista que se recoloca (técnica FLIP)

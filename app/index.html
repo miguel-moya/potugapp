@@ -482,7 +482,7 @@ body.movil .cp-in a { width: 40px !important; height: 40px !important; border-ra
 .cp-fin.seguro { background: var(--tinta); color: var(--widget); }
 /* Hoja (nota, editar básico, nuevo grupo) */
 #cpHoja { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; z-index: 70; background: rgba(29,29,27,0); -webkit-transition: background-color 0.22s; transition: background-color 0.22s; }
-#cpHoja.ver { background: rgba(29,29,27,0.55); }
+#cpHoja.ver { background: rgba(0,0,0,0.75); }
 /* La hoja aparece subiendo 16 px; al cerrar, lo mismo al revés y más rápido */
 #cpHoja .h { opacity: 0; -webkit-transition: opacity 0.24s, -webkit-transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1); transition: opacity 0.24s, transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1); }
 #cpHoja:not(.ver) .h { -webkit-transform: translate(-50%, -50%) translateY(32px) scale(0.97); transform: translate(-50%, -50%) translateY(32px) scale(0.97); }
@@ -739,7 +739,7 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
 .aj-a .cp-tit { padding: 0 16px; }
 .aj-a .aj-fila { padding: 0 16px; }
 .aj-b { position: relative; z-index: 1; margin-top: -40px; padding: 56px 16px 16px; background: var(--finde); border-radius: 20px; }
-.aj-b .aj-btn { margin-top: 0; background: var(--widget); }
+.aj-b .aj-btn { margin-top: 0; background: transparent; }
 .aj-fila .v { font-size: 13px; color: var(--sec); text-align: right; margin-left: 12px; }
 .aj-fila .v.mal { color: var(--aviso); }
 .aj-bloque { margin-top: 16px; }
@@ -1760,7 +1760,9 @@ function mostrarHoja() {
   v.className = 'on ver' + hojaTeclado();
 }
 // En pantallas táctiles, mientras se escribe en la hoja, va arriba (si no, el teclado la tapa)
-function hojaTeclado() { var a = document.activeElement; return TACTIL && a && /INPUT|TEXTAREA/.test(a.tagName) && $('cpHoja').contains(a) ? ' teclado' : ''; }
+// Móvil: todas las hojas van siempre arriba (casi todas abren el teclado; así ninguna salta de sitio).
+// iPad: centradas, y arriba solo mientras se escribe. Ordenador: siempre centradas.
+function hojaTeclado() { if (MOVIL) return ' teclado'; var a = document.activeElement; return TACTIL && a && /INPUT|TEXTAREA/.test(a.tagName) && $('cpHoja').contains(a) ? ' teclado' : ''; }
 $('cpHoja').addEventListener('focusin', function () { if (HOJA) this.className = 'on ver' + hojaTeclado(); });
 $('cpHoja').addEventListener('focusout', function () { var v = this; setTimeout(function () { if (HOJA) v.className = 'on ver' + hojaTeclado(); }, 50); });
 function cerrarHoja() {
