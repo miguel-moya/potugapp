@@ -74,6 +74,14 @@ html:not(.sin-anim) #cpHoja .ok, html:not(.sin-anim) .cp-nuevo-g { -webkit-trans
 html:not(.sin-anim) .cp-in a:active, html:not(.sin-anim) .cf-mas:active, html:not(.sin-anim) .cfh-bt a:active, html:not(.sin-anim) .cf-saldar:active, html:not(.sin-anim) .cp-fin:active,
 html:not(.sin-anim) .volver:active, html:not(.sin-anim) .cp-btn:active, html:not(.sin-anim) .flechas a:active, html:not(.sin-anim) .cf-pill:active, html:not(.sin-anim) .cp-pill:active,
 html:not(.sin-anim) #cpHoja .ok:active, html:not(.sin-anim) .cp-nuevo-g:active { -webkit-transform: scale(0.94); transform: scale(0.94); }
+/* Esqueleto de carga (solo la primera vez en un aparato): barras grises que laten */
+@-webkit-keyframes aLate { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes aLate { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.esq { display: block; height: 12px; margin-top: 8px; border-radius: 6px; background: rgba(29,29,27,0.08); -webkit-animation: aLate 1.4s ease-in-out infinite; animation: aLate 1.4s ease-in-out infinite; }
+.ev .esq { margin-top: 0; }
+@-webkit-keyframes aFunde { from { opacity: 0; } to { opacity: 1; } }
+@keyframes aFunde { from { opacity: 0; } to { opacity: 1; } }
+.a-funde { -webkit-animation: aFunde 0.4s ease-out both; animation: aFunde 0.4s ease-out both; }
 /* Modo simple (sin animaciones): todo cambia al instante, salvo la tira de páginas de la portada */
 .sin-anim *:not(.tira), .sin-anim *:before, .sin-anim *:after { -webkit-transition: none !important; transition: none !important; -webkit-animation: none !important; animation: none !important; }
 /* Burbuja del menú: una sola mancha negra que se estira y viaja hasta la opción activa */
@@ -755,7 +763,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
         </a>
       </div>
       <div class="fila">
-        <a href="#" class="w tiempo" id="tiempo"><div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div><span class="t12">Cargando…</span></div></a>
+        <a href="#" class="w tiempo" id="tiempo"><div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy · marratxí</span></div><span class="esq" style="width:40%;height:40px;margin-top:20px"></span><span class="esq" style="width:70%"></span><span class="esq" style="width:55%"></span></div></a>
         <div class="wc" id="wCompra"><div class="cp-carta wc-a"><div id="wcTop" data-acc="ir"></div><div class="cp-in"><input id="wcInT" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"><a data-acc="wc-mas" aria-label="Añadir"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a></div></div><div class="cp-carta wc-b" data-acc="ir"><span class="rot">habituales</span><div class="wc-pills" id="wcP"></div></div></div>
         <div class="w pend">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
@@ -813,7 +821,7 @@ body.movil #cpHoja .h.cf { top: 12px; top: calc(env(safe-area-inset-top) + 12px)
   <div id="mInicio">
   <a href="#calendario" class="w m-cal m-g" id="calM" style="margin-top:16px"></a>
   <div class="m-fila">
-    <a href="#" class="w m-tiempo m-p" id="tiempoM"><div class="t-hoy"><span class="rot">hoy · marratxí</span><span class="t12">Cargando…</span></div></a>
+    <a href="#" class="w m-tiempo m-p" id="tiempoM"><div class="t-hoy"><span class="rot">hoy · marratxí</span><span class="esq" style="width:45%;height:32px;margin-top:12px"></span><span class="esq" style="width:75%"></span></div></a>
     <div class="w cf-w m-p" id="wComerM"></div>
   </div>
   <div class="wc m-m" id="wCompraM"><div class="cp-carta wc-a"><div class="wc-cab" data-acc="ir"><h2 class="w-tit">Lista de la compra</h2><span class="wc-n" id="wcNM"></span></div>
@@ -986,6 +994,13 @@ function estado(msg) { $('estado').innerHTML = $('estadoM').innerHTML = msg ? es
 /* ---------- Calendario ---------- */
 var eventos = [];
 var RANGO = { desde: null, hasta: null };   // días con datos (hasta excluido)
+// Al abrir, se pinta lo último que se descargó (y se actualiza en segundo plano): así no aparece vacío
+var CAL_LISTO = false;
+(function () {
+  try { var c = JSON.parse(leer('potugapp.cal')); if (c && c.eventos) { eventos = c.eventos; RANGO.desde = c.desde; RANGO.hasta = c.hasta; CAL_LISTO = true; } } catch (e) {}
+})();
+// Mientras no hay datos (solo la primera vez en un aparato): barras grises en lugar de «Nada previsto»
+function esq(ancho) { return '<span class="esq" style="width:' + (ancho || 60) + '%"></span>'; }
 function cargarCal() {
   var clave = leer('potugapp.clave');
   if (!clave) { mostrarPuerta(); return; }
@@ -997,6 +1012,8 @@ function cargarCal() {
     }
     eventos = j.eventos || [];
     if (j.hasta) { RANGO.desde = j.desde; RANGO.hasta = j.hasta; }
+    guardar('potugapp.cal', JSON.stringify({ eventos: eventos, desde: RANGO.desde, hasta: RANGO.hasta }));
+    if (!CAL_LISTO) { CAL_LISTO = true; setTimeout(function () { animar($('cal'), 'a-funde'); animar($('calM'), 'a-funde'); }, 0); }
     var d = new Date(); calOk = pad(d.getHours()) + ':' + pad(d.getMinutes());
     var NOM = { CAL_LIDIA: 'Lidia', CAL_MIGUEL: 'Miguel', CAL_BRUNO: 'Bruno', CAL_FAMILIA: 'Familia', CAL_FESTIVOS: 'Festivos' }, fallan = [];
     for (var z = 0; j.errores && z < j.errores.length; z++) { var s0 = j.errores[z].split(':')[0], mot = j.errores[z].slice(s0.length + 1).replace(/^\s+/, '').slice(0, 40); fallan.push((NOM[s0] || s0) + ' (' + mot + ')'); }
@@ -1035,7 +1052,7 @@ function pintarCal() {
   if (fest) html += '<div class="hoy-fest">' + esc(fest.titulo) + '</div>';
   html += '<div class="crece"></div><div class="hoy-lista">';
   var visibles = normales.length > MAX_HOY ? MAX_HOY - 1 : normales.length;
-  if (!normales.length) html += '<div class="vacio-hoy">Nada previsto :)</div>';
+  if (!normales.length) html += CAL_LISTO ? '<div class="vacio-hoy">Nada previsto :)</div>' : '<div class="ev">' + esq(70) + '</div><div class="ev">' + esq(45) + '</div>';
   for (i = 0; i < visibles; i++) {
     e = normales[i];
     html += '<div class="ev"><span class="h">' + (e.todoElDia ? 'día' : e.hora) + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
@@ -1062,7 +1079,7 @@ function pintarCal() {
       html += '<div class="it"><span class="rot">' + (e.todoElDia ? 'día' : e.hora) + '</span><span class="t">' + puntos(e.quienes) + esc(e.titulo) + '</span></div>';
     }
     if (nor.length > cab) html += '<span class="mas">+' + (nor.length - cab) + ' más</span>';
-    if (!nor.length && !f) html += '<span class="nada">—</span>';
+    if (!nor.length && !f) html += CAL_LISTO ? '<span class="nada">—</span>' : esq(80);
     html += '</div>';
   }
   if (FILAS2) html += '</div></div>';
@@ -1077,7 +1094,7 @@ function pintarCalMovil(porDia, hoy, fest, normales) {
     '<span class="rot">hoy' + (fest ? ' [F]' : '') + '</span></div>';
   if (fest) h += '<div class="hoy-fest">' + esc(fest.titulo) + '</div>';
   h += '<div class="hoy-lista">';
-  if (!normales.length) h += '<div class="vacio-hoy">Nada previsto :)</div>';
+  if (!normales.length) h += CAL_LISTO ? '<div class="vacio-hoy">Nada previsto :)</div>' : '<div class="ev">' + esq(70) + '</div>';
   for (var i = 0; i < visibles; i++) {
     var e = normales[i];
     h += '<div class="ev"><span class="h">' + (e.todoElDia ? 'día' : e.hora) + '</span><span class="t">' + esc(e.titulo) + '</span>' + burbujas(e.quienes) + '</div>';
@@ -1093,7 +1110,7 @@ function pintarCalMovil(porDia, hoy, fest, normales) {
     var resto = nor.length;
     if (f) h += '<span class="t fest">[F] ' + esc(f.titulo) + '</span>';
     else if (nor.length) { e = nor[0]; resto--; h += '<span class="t"><span class="h">' + (e.todoElDia ? 'día' : e.hora) + '</span>' + puntos(e.quienes) + esc(e.titulo) + '</span>'; }
-    else h += '<span class="t nada">—</span>';
+    else h += CAL_LISTO ? '<span class="t nada">—</span>' : '<span class="t">' + esq(50) + '</span>';
     if (resto > 0) h += '<span class="mas">+' + resto + ' más</span>';
     h += '</div>';
   }
@@ -1389,7 +1406,7 @@ function aplicarLocal(a) {
   else if (a.tipo === 'basico_borrar') { for (k = CS.basicos.length - 1; k >= 0; k--) if (CS.basicos[k].id === a.id) CS.basicos.splice(k, 1); }
   else if (a.tipo === 'grupo_nuevo') CS.grupos.push({ id: 'tmp' + nuevoId(), nombre: a.nombre, orden: 999 });
 }
-function accion(a) { CV.tAccion = Date.now(); cola.push(a); aplicarLocal(a); guardarLocal(); pintarCompra(); efectoCompra(a); enviarCompra(); }
+function accion(a) { CV.tAccion = Date.now(); cola.push(a); aplicarLocal(a); guardarLocal(); CV.flip = /^(anadir|tachar|quitar|terminar)$/.test(a.tipo); pintarCompra(); CV.flip = false; efectoCompra(a); enviarCompra(); }
 // Pequeños gestos tras una acción propia: el producto nuevo entra, el check hace «pop»
 function efectoCompra(a) {
   if (!ANIM || !a.id) return;
@@ -1500,7 +1517,38 @@ function htmlLista() {
   }
   return h;
 }
+// La lista se recoloca con suavidad: cada fila se desliza desde donde estaba hasta su nuevo sitio
+function clavesLista(cont) {
+  var m = {}, l = cont.children, k, c;
+  for (k = 0; k < l.length; k++) {
+    c = l[k].getAttribute('data-id') ? 'i' + l[k].getAttribute('data-id') : /cp-fr/.test(l[k].className) ? 'f' + l[k].textContent : /cp-fin/.test(l[k].className) ? 'fin' : null;
+    if (c) m[c] = l[k];
+  }
+  return m;
+}
+function medirLista(cont) { var m = clavesLista(cont), r = {}; for (var c in m) r[c] = m[c].getBoundingClientRect().top; return r; }
+function deslizarLista(cont, antes) {
+  var m = clavesLista(cont), c, el, mov = [];
+  for (c in m) {
+    el = m[c];
+    if (antes[c] === undefined) { animar(el, 'a-nuevo'); continue; }
+    var dy = antes[c] - el.getBoundingClientRect().top;
+    if (Math.abs(dy) < 1) continue;
+    el.style.webkitTransition = el.style.transition = 'none';
+    el.style.webkitTransform = el.style.transform = 'translateY(' + dy + 'px)';
+    el.style.position = 'relative'; el.style.zIndex = /^i/.test(c) ? 2 : 1;
+    mov.push(el);
+  }
+  if (!mov.length) return;
+  void cont.offsetWidth;
+  for (var k = 0; k < mov.length; k++) {
+    mov[k].style.webkitTransition = '-webkit-transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    mov[k].style.transition = 'transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    mov[k].style.webkitTransform = mov[k].style.transform = '';
+  }
+}
 function pintarCompra() {
+  var flip = ANIM && CV.flip, aC = flip ? medirLista($('cItems')) : null, aM = flip ? medirLista($('mcItems')) : null;
   var pend = 0;
   for (var i = 0; i < CS.lista.length; i++) if (!CS.lista[i].hecho) pend++;
   if (CV.abierto === null && CS.grupos.length) CV.abierto = gruposOrden()[0].id;
@@ -1508,6 +1556,7 @@ function pintarCompra() {
   $('cBas').innerHTML = bas; $('mcBas').innerHTML = bas;
   $('cBas').className = 'cp-bas' + (CV.editar ? ' editando' : ''); $('mcBas').className = $('cBas').className;
   $('cItems').innerHTML = lis; $('mcItems').innerHTML = lis;
+  if (flip) { if ($('cItems').offsetWidth) deslizarLista($('cItems'), aC); if ($('mcItems').offsetWidth) deslizarLista($('mcItems'), aM); }
   $('cCuenta').innerHTML = (pend ? pend + ' por comprar' : '') + (enElSuper().length ? ' · en el súper' : '');
   $('mcSuper').innerHTML = enSuper() ? 'en el súper · se actualiza cada 10 s' : '';
   $('mcSegL').innerHTML = 'Lista' + (pend ? '<b>' + pend + '</b>' : '');
@@ -2155,7 +2204,7 @@ function moverBurbuja(bur, el, vertical, anim) {
   if (!ANIM || !anim || p === undefined || p === a) { pon(a, t, 'none'); bur._p = a; return; }
   var curva = ini + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0), ' + tam + ' 0.2s cubic-bezier(0.5, 0, 0.75, 0)';
   if (a > p) pon(p, a + t - p, curva); else pon(a, p + t - a, curva);
-  bur._t = setTimeout(function () { pon(a, t, ini + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1), ' + tam + ' 0.34s cubic-bezier(0.3, 1.5, 0.5, 1)'); }, 190);
+  bur._t = setTimeout(function () { pon(a, t, ini + ' 0.3s cubic-bezier(0.3, 1.12, 0.5, 1), ' + tam + ' 0.3s cubic-bezier(0.3, 1.12, 0.5, 1)'); }, 190);   // rebote suave
   bur._p = a;
 }
 function moverBurbujas(anim) {
@@ -2321,6 +2370,18 @@ function cargarTiempo() {
     '&timezone=Europe%2FMadrid&forecast_days=3';
   pedir(url, {}, function (err, d) {
     if (err || !d || !d.daily) return;
+    guardar('potugapp.tiempo', JSON.stringify(d));
+    var primera = !$('tiempo').getAttribute('data-ok');
+    pintarTiempo(d);
+    if (primera) { animar($('tiempo'), 'a-funde'); animar($('tiempoM'), 'a-funde'); }
+  });
+}
+// El tiempo guardado sirve al arrancar si es de hoy (si no, se espera a la descarga)
+function tiempoGuardado() {
+  try { var d = JSON.parse(leer('potugapp.tiempo')); if (d && d.daily && d.daily.time[0] === diaISO(new Date())) pintarTiempo(d); } catch (e) {}
+}
+function pintarTiempo(d) {
+  {
     var dl = d.daily, viento = 0, k;
     for (k = 0; k < 24 && k < d.hourly.wind_speed_10m.length; k++) viento += d.hourly.wind_speed_10m[k];
     viento = Math.round(viento / Math.min(24, d.hourly.wind_speed_10m.length));
@@ -2353,7 +2414,8 @@ function cargarTiempo() {
         '<span>' + Math.round(dl.temperature_2m_max[k]) + '° · ' + dl.precipitation_probability_max[k] + '%</span></div>';
     }
     $('tiempoM').innerHTML = hm;
-  });
+    $('tiempo').setAttribute('data-ok', '1');
+  }
 }
 
 /* ---------- Puerta (clave familiar) ---------- */
@@ -2384,7 +2446,7 @@ $('standby').addEventListener('click', despertar);
 ponerYo(); encajar(); ultimoDia = diaISO(new Date()); reloj(); pintarCal(); pintarCompra(); pintarComer(); irPagina(); irPort(0, true); sincCompra(true); sincComer(true);
 setInterval(reloj, 10000);
 cargarCal(); setInterval(function () { if (!reposo) cargarCal(); }, CAL_MS);
-cargarTiempo(); setInterval(cargarTiempo, 30 * 60 * 1000);
+tiempoGuardado(); cargarTiempo(); setInterval(cargarTiempo, 30 * 60 * 1000);
 vigilar();
 setTimeout(function () { location.reload(); }, 6 * 60 * 60 * 1000);
 
