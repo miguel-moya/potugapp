@@ -220,11 +220,12 @@ html:not(.sin-anim) #cpHoja .ok:active, html:not(.sin-anim) .cp-nuevo-g:active {
 .prev.finde { background: var(--finde); box-shadow: inset 0 -1px 0 var(--sep-finde); }
 .prev.ultima { box-shadow: none; }
 .prev .rot { width: 44px; flex-shrink: 0; font-size: 11px; }   /* mismo tamaño que «hoy · marratxí» */
-.prev .tt { font-size: 14px; font-weight: 300; width: 36px; flex-shrink: 0; }
+.prev .centro, .m-tiempo .sig .centro { -webkit-flex: 1 1 0; flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; }
+.prev .tt { font-size: 14px; font-weight: 300; }
 /* izquierda: día · temperatura · lluvia · viento; derecha: el icono del día, bajo el de hoy */
-.prev .pp { display: flex; align-items: center; font-size: 12px; line-height: 1; margin-left: 8px; }
-.prev .pp + .pp { margin-left: 12px; }
-.prev .ico-dia { margin-left: auto; margin-right: 6px; flex-shrink: 0; }   /* centrado bajo el icono de hoy (34 px) */
+.prev .pp { display: flex; align-items: center; font-size: 12px; line-height: 1; margin-left: 16px; }
+.prev .pp + .pp { margin-left: 16px; }
+.prev .ico-dia { margin-right: 6px; flex-shrink: 0; }   /* centrado bajo el icono de hoy (34 px) */
 .prev .pp .n { min-width: 26px; }
 .prev .pp svg { margin-right: 4px; display: block; }
 
@@ -301,6 +302,11 @@ body.movil #movil { display: block; padding: 0 16px 112px; padding-top: env(safe
 .m-tiempo .sig.sig1 { z-index: 2; box-shadow: inset 0 -1px 0 var(--sep); }
 .m-tiempo .sig.sig2 { z-index: 1; }
 .m-tiempo .sig + .sig { margin-top: -40px; }
+.m-tiempo .sig .rot { width: 28px; flex-shrink: 0; }
+.m-tiempo .sig .tt { font-weight: 300; }
+.m-tiempo .sig .pp { display: flex; align-items: center; margin-left: 8px; line-height: 1; }
+.m-tiempo .sig .pp svg { width: 11px; height: 11px; margin-right: 2px; display: block; }
+.m-tiempo .sig .ico-dia { flex-shrink: 0; }
 #movil .pend { padding: 12px; }
 /* Menú flotante: píldora blanca a 16 px de los lados y del fondo; 8 px entre el círculo activo y el borde */
 .m-nav { position: fixed; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 8px; background: var(--widget); color: var(--tinta); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; z-index: 20; box-shadow: 0 8px 32px rgba(29,29,27,0.16), 0 1px 4px rgba(29,29,27,0.06); }
@@ -589,7 +595,7 @@ body.p-comer #pagComer { display: flex; }
 #mComer .cf-datos > div { flex: 0 0 50%; }
 #mComer .cf-datos > div:nth-child(n+3) { margin-top: 16px; }
 /* Saldo */
-.cf-sal { display: flex; align-items: baseline; justify-content: space-between; margin-top: 12px; }
+.cf-sal { display: flex; align-items: baseline; justify-content: space-between; }
 .cf-sal .t { font-size: 14px; }
 .cf-sal b { font-size: 28px; font-weight: 300; letter-spacing: -1px; white-space: nowrap; margin-left: 12px; }
 .cf-carta .flechas a.off { cursor: default; }
@@ -658,7 +664,7 @@ html:not(.sin-anim) .fab:active { -webkit-transform: scale(0.92); transform: sca
 .cf-w .w-cab { align-items: baseline; }
 .cf-w .cf-mas { width: 40px; height: 40px; border-radius: 20px; background: transparent; color: var(--tinta); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: inset 0 0 0 1px var(--sep-fuerte);   /* dentro de un widget: borde gris, + negro, sin sombra */ margin: -4px -4px -4px 8px; }
 .cf-w .cf-pie { display: flex; align-items: flex-end; justify-content: space-between; }
-.cf-w .cf-cifra { margin-top: 4px; flex-shrink: 0; }
+.cf-w .cf-cifra { margin-top: 12px; flex-shrink: 0; }
 .cf-w .cf-cifra b { font-size: 28px; letter-spacing: -1px; }
 .cf-w .cf-cifra .de { font-size: 12px; margin-left: 4px; }
 .cf-w .cf-barra { height: 6px; border-radius: 3px; margin-top: 12px; }
@@ -2026,17 +2032,17 @@ function cfDebe() { var v = saldoCF(); if (Math.abs(v) < 0.01) return null; retu
 // Frase del saldo: personal desde el móvil de cada uno, genérica desde la cocina
 function cfFraseDebe(d) {
   if (YO === d.a) return NOMBRE_PAGA[d.de] + ' te debe';
-  if (YO === d.de) return 'Le debes a ' + NOMBRE_PAGA[d.a];
+  if (YO === d.de) return 'Debes a ' + NOMBRE_PAGA[d.a];
   return NOMBRE_PAGA[d.de] + ' debe a ' + NOMBRE_PAGA[d.a];
 }
 // Cuatro datos al mismo nivel: ritmo (o tope), quedan, días, veces
 function cfDatos(r) {
   var act = r.m === mesHoy(), l = gastosDe(r.m), nd = 0, k, d = [];
   for (k = 0; k < l.length; k++) if (l[k].tipo === 'd') nd++;
-  if (r.total > r.tope) d.push(['sobre el tope', eur(r.total - r.tope), 'rapido']);
-  else if (r.esp === null) d.push(['bajo el tope', eur(r.tope - r.total), 'bien']);
-  else if (r.total > r.esp) d.push(['sobre el ritmo', eur(Math.round(r.total - r.esp)), 'rapido']);
-  else d.push(['bajo el ritmo', eur(Math.round(r.esp - r.total)), 'bien']);
+  if (r.total > r.tope) d.push(['tope', eur(Math.round(r.total - r.tope)) + ' por encima', 'rapido']);
+  else if (r.esp === null) d.push(['tope', eur(Math.round(r.tope - r.total)) + ' por debajo', 'bien']);
+  else if (r.total > r.esp) d.push(['ritmo', eur(Math.round(r.total - r.esp)) + ' por encima', 'rapido']);
+  else d.push(['ritmo', eur(Math.round(r.esp - r.total)) + ' por debajo', 'bien']);
   if (act) { d.push(['quedan', eur(Math.max(0, r.tope - r.total))]); d.push(['días', String(diasDelMes(r.m) - new Date().getDate())]); }
   d.push(['veces', l.length + (nd ? ' · ' + nd + ' delivery' : '')]);
   var h = '<div class="cf-datos">';
@@ -2050,11 +2056,14 @@ function cfResumen() {
     '<a data-cf="mes+" class="' + (m < mesHoy() ? '' : 'off') + '" aria-label="Mes siguiente">' + FLECHA_D + '</a></div></div>' +
     '<div class="cf-cifra"><b>' + eur(r.total) + '</b><span class="de" data-cf="tope">de ' + eur(r.tope) + LAPIZ_P + '</span></div>' + cfBarra(r) + cfDatos(r) + '</div>';
 }
+// A 0 solo se llega saldando: «Saldo liquidado (15 nov)»
+function cfLiquidado() {
+  var ult = CF.saldados.length ? CF.saldados[CF.saldados.length - 1].fecha : null, f = ult ? new Date(ult) : null;
+  return 'Saldo liquidado' + (f ? ' (' + f.getDate() + ' ' + MESES3[f.getMonth()] + ')' : '');
+}
 function cfSaldo() {
-  var d = cfDebe(), ult = CF.saldados.length ? CF.saldados[CF.saldados.length - 1].fecha : null, cab = 'saldo entre los dos';
-  if (ult) { var f = new Date(ult); cab += ' · saldado el ' + f.getDate() + ' ' + MESES3[f.getMonth()]; }
-  var h = '<div class="cf-carta cf-saldo" style="z-index:1"><span class="rot">' + cab + '</span>';
-  if (!d) return h + '<div class="cf-sal"><span class="t">Estáis en paz</span><b>0 €</b></div></div>';
+  var d = cfDebe(), h = '<div class="cf-carta cf-saldo" style="z-index:1">';
+  if (!d) return h + '<div class="cf-sal"><span class="t">' + cfLiquidado() + '</span><b>0 €</b></div></div>';
   return h + '<div class="cf-sal"><span class="t">' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b></div>' +
     '<a class="cf-saldar' + (CFV.saldar ? ' seguro' : '') + '" data-cf="saldar">' + (CFV.saldar ? 'Toca otra vez para dejarlo a 0' : 'Saldar cuentas') + '</a></div>';
 }
@@ -2108,15 +2117,15 @@ function pintarWidgetComerT() {
     '<div class="cf-estado ' + e.c + '">' + e.t + '</div><div class="crece"></div>';
   for (k = 0; k < l.length && k < 2; k++) h += '<div class="ult"><span class="pto ' + l[k].paga + '"></span><span class="n1">' + esc(l[k].sitio) + '</span><span class="imp">' + eur(l[k].importe, true) + '</span></div>';
   h += '</div><div class="cf-carta cf-saldo" style="z-index:1"><div class="t">' +
-    (d ? '<span>' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b>' : '<span>saldo entre los dos</span><b>Estáis en paz</b>') +
+    (d ? '<span>' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b>' : '<span>' + cfLiquidado() + '</span><b>0 €</b>') +
     '</div><a class="cf-mas" data-cf="nuevo" aria-label="Apuntar gasto">' + MAS + '</a></div>';
   $('wComerT').innerHTML = h;
 }
 function pintarWidgetComer() {
   var r = cfRitmo(mesHoy()), e = cfEstado(r), d = cfDebe(), deb;
-  if (!d) deb = 'en paz';
+  if (!d) deb = '0 € · liquidado';
   else if (YO === d.a) deb = '<span class="pto ' + d.de + '"></span>te debe ' + eur(d.v, true);
-  else if (YO === d.de) deb = '<span class="pto ' + d.a + '"></span>le debes ' + eur(d.v, true);
+  else if (YO === d.de) deb = '<span class="pto ' + d.a + '"></span>debes ' + eur(d.v, true);
   else deb = '<span class="pto ' + d.de + '"></span>debe ' + eur(d.v, true);
   $('wComerM').innerHTML = '<div class="w-cab"><h2 class="w-tit">Comer fuera</h2></div>' +
     '<div class="cf-cifra"><b>' + eur(Math.round(r.total)) + '</b><span class="de">/ ' + r.tope + '</span></div>' + cfBarra(r) +
@@ -2717,8 +2726,8 @@ var NUBES = '<path d="M7 17h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 11 3 3 0 0 0
 var LLUVIA = '<path d="M7 14h10a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 6.8 8 3 3 0 0 0 7 14z"/><path d="M9 17l-1 3M13 17l-1 3M17 17l-1 3"/>';
 var NIEVE = '<path d="M12 12L12.0 3.0M12.0 6.0L10.3 4.0M12.0 6.0L13.7 4.0M12 12L4.2 7.5M6.8 9.0L4.2 9.5M6.8 9.0L5.9 6.6M12 12L4.2 16.5M6.8 15.0L5.9 17.4M6.8 15.0L4.2 14.5M12 12L12.0 21.0M12.0 18.0L13.7 20.0M12.0 18.0L10.3 20.0M12 12L19.8 16.5M17.2 15.0L19.8 14.5M17.2 15.0L18.1 17.4M12 12L19.8 7.5M17.2 9.0L18.1 6.6M17.2 9.0L19.8 9.5"/>';
 var RAYO = '<path d="M13.5 2.5L6 13.5h5.5L10.5 21.5 18 10.5h-5.5z"/>';
-var VIENTO = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h16a3 3 0 1 1-3 3"/><path d="M3 16h7"/></svg>';
-var GOTA = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5c3.4 4.4 5.5 7.4 5.5 10.6a5.5 5.5 0 0 1-11 0c0-3.2 2.1-6.2 5.5-10.6z"/></svg>';
+var VIENTO = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><g transform="translate(0 1.85)"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h16a3 3 0 1 1-3 3"/><path d="M3 16h7"/></g></svg>';
+var GOTA = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1d1d1b" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><g transform="translate(0 1.85)"><path d="M12 2.5c3.4 4.4 5.5 7.4 5.5 10.6a5.5 5.5 0 0 1-11 0c0-3.2 2.1-6.2 5.5-10.6z"/></g></svg>';
 function icono(c, tam, cls, trazo) {
   // Códigos WMO de Open-Meteo: 71-77 y 85-86 nieve, 95-99 tormenta
   var p = c <= 1 ? SOL : c === 2 ? CLAROS : (c === 3 || c === 45 || c === 48) ? NUBES :
@@ -2746,7 +2755,7 @@ function cargarTiempo() {
 }
 function descargarTiempo() {
   var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON +
-    '&current=temperature_2m,weather_code,relative_humidity_2m&hourly=wind_speed_10m' +
+    '&current=temperature_2m,weather_code,relative_humidity_2m&hourly=wind_speed_10m,temperature_2m' +
     '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_gusts_10m_max' +
     '&timezone=auto&forecast_days=3';
   pedir(url, {}, function (err, d) {
@@ -2762,6 +2771,12 @@ function descargarTiempo() {
 // El tiempo guardado sirve al arrancar si es de hoy (si no, se espera a la descarga)
 function tiempoGuardado() {
   try { var d = JSON.parse(leer('potugapp.tiempo')); if (d && d.daily && d.daily.time[0] === diaISO(new Date()) && d.lugar === nombreLugar()) pintarTiempo(d); } catch (e) {}
+}
+// Temperatura media de un día: media de sus 24 horas (o de máxima y mínima si no hay horas guardadas)
+function tempMedia(d, k) {
+  var t = d.hourly && d.hourly.temperature_2m, s = 0, n = 0, h;
+  if (t) for (h = k * 24; h < k * 24 + 24 && h < t.length; h++) { s += t[h]; n++; }
+  return Math.round(n ? s / n : (d.daily.temperature_2m_max[k] + d.daily.temperature_2m_min[k]) / 2);
 }
 function pintarTiempo(d) {
   {
@@ -2783,9 +2798,10 @@ function pintarTiempo(d) {
       // Viento medio del día: media de sus 24 horas
       var vk = 0, nk = 0, hh;
       for (hh = k * 24; hh < k * 24 + 24 && hh < d.hourly.wind_speed_10m.length; hh++) { vk += d.hourly.wind_speed_10m[hh]; nk++; }
+      // izquierda: el día · centro: temperatura media, lluvia y viento · derecha: el icono del día
       h += '<div class="prev' + (fds ? ' finde' : '') + (k === 2 ? ' ultima' : '') + '" style="z-index:' + (3 - k) + '"><span class="rot">' + DIAS3[fd.getDay()] + '</span>' +
-        '<span class="tt">' + Math.round(dl.temperature_2m_max[k]) + '°</span><span class="pp">' + GOTA + pct(dl.precipitation_probability_max[k]) + '</span>' +
-        '<span class="pp">' + VIENTO + (nk ? Math.round(vk / nk) : '—') + ' km/h</span>' + icono(dl.weather_code[k], 22, 'ico-dia') + '</div>';
+        '<span class="centro"><span class="tt">' + tempMedia(d, k) + '°</span><span class="pp">' + GOTA + pct(dl.precipitation_probability_max[k]) + '</span>' +
+        '<span class="pp">' + VIENTO + (nk ? Math.round(vk / nk) : '—') + ' km/h</span></span>' + icono(dl.weather_code[k], 22, 'ico-dia') + '</div>';
     }
     $('tiempo').innerHTML = h;
     var p1 = dl.time[1].split('-'), f1 = new Date(+p1[0], +p1[1] - 1, +p1[2]);
@@ -2793,8 +2809,8 @@ function pintarTiempo(d) {
       '<b>' + ahora + '°</b><span class="t12">' + Math.round(dl.temperature_2m_min[0]) + '° / ' + Math.round(dl.temperature_2m_max[0]) + '° · ' + dl.precipitation_probability_max[0] + '%</span></div>';
     for (k = 1; k <= 2; k++) {
       var pk = dl.time[k].split('-'), fk = new Date(+pk[0], +pk[1] - 1, +pk[2]);
-      hm += '<div class="sig sig' + k + (fk.getDay() === 0 || fk.getDay() === 6 ? ' finde' : '') + '"><span class="rot">' + DIAS3[fk.getDay()] + '</span>' + icono(dl.weather_code[k], 16) +
-        '<span>' + Math.round(dl.temperature_2m_max[k]) + '° · ' + dl.precipitation_probability_max[k] + '%</span></div>';
+      hm += '<div class="sig sig' + k + (fk.getDay() === 0 || fk.getDay() === 6 ? ' finde' : '') + '"><span class="rot">' + DIAS3[fk.getDay()] + '</span>' +
+        '<span class="centro"><span class="tt">' + tempMedia(d, k) + '°</span><span class="pp">' + GOTA + dl.precipitation_probability_max[k] + '%</span></span>' + icono(dl.weather_code[k], 16, 'ico-dia') + '</div>';
     }
     $('tiempoM').innerHTML = hm;
     $('tiempo').setAttribute('data-ok', '1');
