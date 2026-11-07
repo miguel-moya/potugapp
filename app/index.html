@@ -2376,7 +2376,13 @@ function moverBurbujas(anim) {
   if (!t && !m) return;
   if (MOVIL) moverBurbuja($('burM'), $(m), false, anim && $('burM').style.opacity !== '0'); else moverBurbuja($('burT'), $(t), true, anim);
 }
-window.addEventListener('resize', function () { moverBurbujas(false); });
+// Al girar el móvil (por ejemplo, en el bolsillo) iOS avisa antes de recolocar el menú: se vuelve a medir
+// un poco después; si no, la burbuja se quedaba en la posición del menú apaisado (tapando «···»)
+function remedirBurbujas() { moverBurbujas(false); setTimeout(function () { moverBurbujas(false); }, 350); setTimeout(function () { moverBurbujas(false); }, 900); }
+window.addEventListener('resize', remedirBurbujas);
+window.addEventListener('orientationchange', remedirBurbujas);
+document.addEventListener('visibilitychange', function () { if (!document.hidden) remedirBurbujas(); });
+window.addEventListener('pageshow', remedirBurbujas);
 
 /* ================= AJUSTES (#ajustes) =================
    Solo de este aparato (localStorage): quién soy, animaciones, ubicación del tiempo; estado y mantenimiento. */
@@ -2703,6 +2709,17 @@ function actualizarTodo(fin) {
     actualizarTodo(function () { el.className = 'vuelve'; pon(0); ocupado = false; });
   }, true);
 })();
+
+/* ---------- Móvil: el campo de texto no se queda activo sin querer ----------
+   Con un campo activo, agitar el iPhone (en el bolsillo) abre «Deshacer texto escrito».
+   Se suelta el campo al tocar cualquier otra cosa y al salir de la app. */
+document.addEventListener('touchstart', function (e) {
+  var a = document.activeElement;
+  if (!MOVIL || !a || !/INPUT|TEXTAREA/.test(a.tagName) || a === e.target || HOJA) return;
+  var t = e.target; while (t && t !== document) { if (t.getAttribute && (t.getAttribute('data-acc') === 'sug' || /cp-s/.test(t.className || ''))) return; t = t.parentNode; }
+  a.blur();
+}, true);
+document.addEventListener('visibilitychange', function () { var a = document.activeElement; if (document.hidden && a && /INPUT|TEXTAREA/.test(a.tagName)) a.blur(); });
 
 /* ---------- Teclado (ordenador) ----------
    ← → : páginas de widgets de la portada · ↑ ↓ : herramienta anterior / siguiente del menú (sin dar la vuelta).
