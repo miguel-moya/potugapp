@@ -527,7 +527,10 @@ body.movil.p-compra #mCompra { display: block; margin-top: 16px; }
 .cp-seg span b { font-family: var(--mono); font-weight: 400; font-size: 10px; margin-left: 6px; opacity: 0.7; }
 #mcLis { margin-top: 16px; }
 #mCompra .cp-cab .cp-in { margin-top: 0; }
-#mCompra .cp-lcarta { padding-bottom: 8px; }
+#mCompra .cp-lcarta { padding-bottom: 0; }
+#mCompra .cp-items { padding-bottom: 0; }
+#mCompra .cp-fin { margin-bottom: 16px; }
+#mComer .cf-mlista .cp-items { margin-top: 0; padding-bottom: 0; }
 #mCompra .cp-items { overflow: visible; }
 #mCompra .cp-bas { margin-top: 16px; overflow: visible; }
 .cp-super { font-family: var(--mono); font-size: 10px; color: var(--ok); margin: 12px 4px 0; }
@@ -570,6 +573,8 @@ body.p-comer #pagComer { display: flex; }
 /* Baraja vertical: resumen del mes encima, saldo debajo (se mete 40 px) */
 .cf-carta { position: relative; flex-shrink: 0; background: var(--widget); border-radius: 20px; padding: 16px; box-shadow: inset 0 -1px 0 var(--sep); }
 .cf-carta + .cf-carta { margin-top: -40px; padding-top: 56px; }
+.cf-carta.cf-saldo { padding-top: 52px; padding-bottom: 12px; }
+.cf-saldo .cf-saldar { margin-top: 12px; margin-bottom: 4px; }
 .cf-carta.cf-saldo { background: var(--finde); box-shadow: none; }
 .cf-mes { display: flex; align-items: center; justify-content: space-between; height: 36px; }
 .cf-mes .flechas a { width: 36px; height: 36px; }
@@ -587,7 +592,7 @@ body.p-comer #pagComer { display: flex; }
 .cf-estado { font-size: 13px; font-weight: 500; margin-top: 36px; }
 .cf-estado.sin-marca { margin-top: 16px; }
 .cf-estado.bien { color: var(--ok); } .cf-estado.rapido { color: var(--aviso); } .cf-estado.neutro { color: var(--sec); }
-.cf-datos { display: flex; flex-wrap: wrap; margin-top: 24px; }
+.cf-datos { display: flex; flex-wrap: wrap; margin-top: 24px; margin-bottom: 8px; }
 .cf-datos > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding-right: 12px; }
 .cf-datos .v { font-size: 14px; margin-top: 4px; white-space: nowrap; }
 .cf-datos .v.rapido { color: var(--aviso); font-weight: 600; } .cf-datos .v.bien { color: var(--ok); font-weight: 600; }
@@ -597,6 +602,7 @@ body.p-comer #pagComer { display: flex; }
 /* Saldo */
 .cf-sal { display: flex; align-items: baseline; justify-content: space-between; }
 .cf-sal .t { font-size: 14px; }
+.cf-sal .t .pto, .wct .cf-saldo .t .pto { margin-right: 8px; vertical-align: 1px; }
 .cf-sal b { font-size: 28px; font-weight: 300; letter-spacing: -1px; white-space: nowrap; margin-left: 12px; }
 .cf-carta .flechas a.off { cursor: default; }
 .cf-pill.off { opacity: 0.25; cursor: default; }
@@ -2030,10 +2036,10 @@ function cfBarra(r) {
 }
 function cfDebe() { var v = saldoCF(); if (Math.abs(v) < 0.01) return null; return v > 0 ? { de: 'M', a: 'L', v: v } : { de: 'L', a: 'M', v: -v }; }
 // Frase del saldo: personal desde el móvil de cada uno, genérica desde la cocina
+// No hablamos de deudas: el saldo dice a quién le toca invitar la próxima vez para que vuelva a estar igualado
 function cfFraseDebe(d) {
-  if (YO === d.a) return NOMBRE_PAGA[d.de] + ' te debe';
-  if (YO === d.de) return 'Debes a ' + NOMBRE_PAGA[d.a];
-  return NOMBRE_PAGA[d.de] + ' debe a ' + NOMBRE_PAGA[d.a];
+  if (YO === d.de) return 'Te toca invitar';
+  return 'Le toca invitar a ' + NOMBRE_PAGA[d.de];
 }
 // Cuatro datos al mismo nivel: ritmo (o tope), quedan, días, veces
 function cfDatos(r) {
@@ -2044,7 +2050,7 @@ function cfDatos(r) {
   else if (r.total > r.esp) d.push(['ritmo', eur(Math.round(r.total - r.esp)) + ' por encima', 'rapido']);
   else d.push(['ritmo', eur(Math.round(r.esp - r.total)) + ' por debajo', 'bien']);
   if (act) { d.push(['quedan', eur(Math.max(0, r.tope - r.total))]); d.push(['días', String(diasDelMes(r.m) - new Date().getDate())]); }
-  d.push(['veces', l.length + (nd ? ' · ' + nd + ' delivery' : '')]);
+  d.push(['veces', l.length + (nd ? ' (' + nd + ' delivery)' : '')]);
   var h = '<div class="cf-datos">';
   for (k = 0; k < d.length; k++) h += '<div><span class="rot">' + d[k][0] + '</span><span class="v' + (d[k][2] ? ' ' + d[k][2] : '') + '">' + d[k][1] + '</span></div>';
   return h + '</div>';
@@ -2056,16 +2062,16 @@ function cfResumen() {
     '<a data-cf="mes+" class="' + (m < mesHoy() ? '' : 'off') + '" aria-label="Mes siguiente">' + FLECHA_D + '</a></div></div>' +
     '<div class="cf-cifra"><b>' + eur(r.total) + '</b><span class="de" data-cf="tope">de ' + eur(r.tope) + LAPIZ_P + '</span></div>' + cfBarra(r) + cfDatos(r) + '</div>';
 }
-// A 0 solo se llega saldando: «Saldo liquidado (15 nov)»
+// A 0 solo se llega igualando: «Igualados (15 nov)»
 function cfLiquidado() {
   var ult = CF.saldados.length ? CF.saldados[CF.saldados.length - 1].fecha : null, f = ult ? new Date(ult) : null;
-  return 'Saldo liquidado' + (f ? ' (' + f.getDate() + ' ' + MESES3[f.getMonth()] + ')' : '');
+  return 'Igualados' + (f ? ' (' + f.getDate() + ' ' + MESES3[f.getMonth()] + ')' : '');
 }
 function cfSaldo() {
   var d = cfDebe(), h = '<div class="cf-carta cf-saldo" style="z-index:1">';
   if (!d) return h + '<div class="cf-sal"><span class="t">' + cfLiquidado() + '</span><b>0 €</b></div></div>';
-  return h + '<div class="cf-sal"><span class="t">' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b></div>' +
-    '<a class="cf-saldar' + (CFV.saldar ? ' seguro' : '') + '" data-cf="saldar">' + (CFV.saldar ? 'Toca otra vez para dejarlo a 0' : 'Saldar cuentas') + '</a></div>';
+  return h + '<div class="cf-sal"><span class="t"><span class="pto ' + d.de + '"></span>' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b></div>' +
+    '<a class="cf-saldar' + (CFV.saldar ? ' seguro' : '') + '" data-cf="saldar">' + (CFV.saldar ? 'Toca otra vez para igualar' : 'Igualar') + '</a></div>';
 }
 // Últimos 6 meses. Hasta octubre de 2026 son totales fijos (CF_HIST); desde noviembre, los gastos apuntados
 function totalMes(m) { return m < CF_INICIO ? (CF_HIST[m] || 0) : totalDe(m); }
@@ -2117,16 +2123,15 @@ function pintarWidgetComerT() {
     '<div class="cf-estado ' + e.c + '">' + e.t + '</div><div class="crece"></div>';
   for (k = 0; k < l.length && k < 2; k++) h += '<div class="ult"><span class="pto ' + l[k].paga + '"></span><span class="n1">' + esc(l[k].sitio) + '</span><span class="imp">' + eur(l[k].importe, true) + '</span></div>';
   h += '</div><div class="cf-carta cf-saldo" style="z-index:1"><div class="t">' +
-    (d ? '<span>' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b>' : '<span>' + cfLiquidado() + '</span><b>0 €</b>') +
+    (d ? '<span><span class="pto ' + d.de + '"></span>' + cfFraseDebe(d) + '</span><b>' + eur(d.v, true) + '</b>' : '<span>' + cfLiquidado() + '</span><b>0 €</b>') +
     '</div><a class="cf-mas" data-cf="nuevo" aria-label="Apuntar gasto">' + MAS + '</a></div>';
   $('wComerT').innerHTML = h;
 }
 function pintarWidgetComer() {
   var r = cfRitmo(mesHoy()), e = cfEstado(r), d = cfDebe(), deb;
-  if (!d) deb = '0 € · liquidado';
-  else if (YO === d.a) deb = '<span class="pto ' + d.de + '"></span>te debe ' + eur(d.v, true);
-  else if (YO === d.de) deb = '<span class="pto ' + d.a + '"></span>debes ' + eur(d.v, true);
-  else deb = '<span class="pto ' + d.de + '"></span>debe ' + eur(d.v, true);
+  // El punto es de quien le toca invitar
+  if (!d) deb = 'igualados';
+  else deb = '<span class="pto ' + d.de + '"></span>' + (YO === d.de ? 'te toca' : 'le toca') + ' · ' + eur(d.v, true);
   $('wComerM').innerHTML = '<div class="w-cab"><h2 class="w-tit">Comer fuera</h2></div>' +
     '<div class="cf-cifra"><b>' + eur(Math.round(r.total)) + '</b><span class="de">/ ' + r.tope + '</span></div>' + cfBarra(r) +
     '<div class="cf-estado ' + e.c + '">' + e.t + '</div><div class="crece"></div>' +
