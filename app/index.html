@@ -839,7 +839,10 @@ body.p-tareas #pagTareas { display: flex; }
 .ta-it + .ta-it { box-shadow: inset 0 1px 0 var(--sep); }
 .ta-ck { width: 24px; height: 24px; border-radius: 12px; box-shadow: inset 0 0 0 1.3px #b9b6ae; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--widget); }
 .ta-it.e-atr .ta-ck { box-shadow: inset 0 0 0 1.6px var(--aviso); }
-.ta-it.hecha .ta-ck { background: var(--tinta); box-shadow: none; }
+.ta-it.hecha .ta-ck, .ta-it.e-hoy .ta-ck { background: var(--tinta); box-shadow: none; }
+.ta-it.e-hoy .ta-ck:after { content: ''; width: 10px; height: 5px; margin-top: -3px; border-left: 2px solid var(--widget); border-bottom: 2px solid var(--widget); -webkit-transform: rotate(-45deg); transform: rotate(-45deg); }
+.ta-it.e-hoy .ta-pts { color: var(--tinta); }
+.ta-it.e-ok .ta-ck { box-shadow: inset 0 0 0 1.3px var(--sep-fuerte); }
 .ta-it.hecha .ta-ck:after { content: ''; width: 10px; height: 5px; margin-top: -3px; border-left: 2px solid var(--widget); border-bottom: 2px solid var(--widget); -webkit-transform: rotate(-45deg); transform: rotate(-45deg); }
 .ta-it.hecha .ta-nom b { color: var(--ter); text-decoration: line-through; }
 .ta-nom { flex-grow: 1; min-width: 0; margin-left: 12px; padding: 8px 0; }
@@ -862,6 +865,9 @@ body.p-tareas #pagTareas { display: flex; }
 .ta-sem-cab { display: flex; align-items: center; justify-content: space-between; height: 36px; }
 .ta-sem-cab h1 { margin: 0; font-size: 16px; font-weight: 600; }
 .ta-sem-cab .flechas a.off { opacity: 0.25; cursor: default; }
+.ta-frase { margin-top: 12px; font-size: 32px; font-weight: 300; letter-spacing: -1px; line-height: 1.1; }
+.ta-frase-d { margin-top: 8px; }
+.ta-antes span + span:before { content: '·'; margin-right: 16px; color: var(--ter); }
 .ta-nota { display: flex; align-items: center; margin-top: 12px; }
 .ta-estr { display: flex; align-items: center; }
 .ta-estr svg + svg { margin-left: 4px; }
@@ -2514,18 +2520,6 @@ var TAH = null;   // hoja abierta (marcar, editar o un registro)
 var ICO_ALERTA = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.01"/></svg>';
 var MENOS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/></svg>';
 var EQUIS = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-function taEstrella(llena, t) {
-  // Media estrella: la mitad izquierda rellena (sin clipPath, que el iPad de 2012 pinta mal dentro de innerHTML)
-  var d = 'M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z';
-  var izq = 'M12 2.8L9.2 8.7l-6.4.8 4.7 4.4-1.2 6.4L12 17.2z';
-  return '<svg width="' + t + '" height="' + t + '" viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '" fill="' + (llena === 1 ? 'var(--tinta)' : 'var(--pista)') + '"/>' +
-    (llena === 0.5 ? '<path d="' + izq + '" fill="var(--tinta)"/>' : '') + '</svg>';
-}
-function taEstrellas(n, t) {
-  var h = '<span class="ta-estr" aria-label="' + (n === null ? 'sin nota' : String(n).replace('.', ',') + ' de 5') + '">';
-  for (var k = 0; k < 5; k++) h += taEstrella(n !== null && n >= k + 1 ? 1 : n !== null && n >= k + 0.5 ? 0.5 : 0, t);
-  return h + '</span>';
-}
 function coma(n) { return String(n).replace('.', ','); }
 
 function tareaDe(id) { for (var i = 0; i < TA.tareas.length; i++) if (TA.tareas[i].id === id) return TA.tareas[i]; return null; }
@@ -2554,6 +2548,11 @@ function taUltima(id) {
   for (var i = 0; i < TA.hechas.length; i++) { var h = TA.hechas[i]; if (h.tarea_id === id && (!u || h.dia > u.dia || (h.dia === u.dia && h.creado > u.creado))) u = h; }
   return u;
 }
+function taHoy(id) {
+  var hoy = diaISO(new Date()), l = [];
+  for (var i = 0; i < TA.hechas.length; i++) if (TA.hechas[i].tarea_id === id && TA.hechas[i].dia === hoy) l.push(TA.hechas[i]);
+  return l.sort(function (a, b) { return a.creado < b.creado ? -1 : 1; });
+}
 function taDiasTxt(d) { return d <= 0 ? 'hoy' : d === 1 ? 'ayer' : 'hace ' + d + ' días'; }
 function taEnDias(n) { return n === 1 ? '1 día' : n + ' días'; }
 // Estado de una tarea hoy: atr (atrasada), pend (pendiente), ok (al día), pausa
@@ -2563,6 +2562,15 @@ function taInfo(t) {
   if (t.pospuesta && t.pospuesta > hoy) {
     var dd = diasEntre(hoy, t.pospuesta);
     r.e = 'ok'; r.sub = 'pospuesta hasta ' + (dd === 1 ? 'mañana' : DIAS3[deISO(t.pospuesta).getDay()] + ' ' + deISO(t.pospuesta).getDate()); r.corta = r.sub; r.orden = dd; return r;
+  }
+  // Hecha hoy (una o varias veces): va aparte, con el círculo marcado; tocarla permite desmarcar o repetir
+  var hoyL = taHoy(t.id);
+  if (hoyL.length) {
+    var qs = [], pts = 0;
+    for (var q = 0; q < hoyL.length; q++) { pts += +hoyL[q].puntos; if (qs.indexOf(NOMBRES[hoyL[q].quien]) < 0) qs.push(NOMBRES[hoyL[q].quien]); }
+    r.e = 'hoy'; r.n = hoyL.length; r.pts = pts; r.orden = 0;
+    r.sub = (hoyL.length > 1 ? hoyL.length + ' veces · ' : '') + qs.join(' y ') + (hoyL[hoyL.length - 1].forma ? ' · ' + hoyL[hoyL.length - 1].forma.toLowerCase() : '');
+    r.corta = r.sub; return r;
   }
   if (!u) { r.e = 'pend'; r.p = 0.99; r.sub = 'sin registro · ' + taFrec(t); r.corta = 'sin registro'; return r; }
   d = diasEntre(u.dia, hoy); p = d / I; r.p = p; r.d = d;
@@ -2577,7 +2585,7 @@ function taInfo(t) {
   return r;
 }
 function taGrupos() {
-  var g = { atr: [], pend: [], ok: [], pausa: [] }, k, t, i;
+  var g = { atr: [], pend: [], hoy: [], ok: [], pausa: [] }, k, t, i;
   for (k = 0; k < TA.tareas.length; k++) { t = TA.tareas[k]; if (t.borrada) continue; i = taInfo(t); g[i.e].push({ t: t, i: i }); }
   function porUrgencia(a, b) { return b.i.p - a.i.p || (a.t.orden || 0) - (b.t.orden || 0); }
   g.atr.sort(porUrgencia); g.pend.sort(porUrgencia);
@@ -2607,8 +2615,18 @@ function taSemana(off) {
   r.hechas.sort(function (x, y) { return x.dia < y.dia ? 1 : x.dia > y.dia ? -1 : (x.creado < y.creado ? 1 : -1); });
   var esp = taEsperado(), dias = off === 0 ? diasEntre(a, hoyI) + 1 : 7;
   r.actual = off === 0;
-  r.nota = esp > 0 ? Math.max(0, Math.min(5, Math.round(r.pts / (esp * dias / 7) * 10) / 2)) : null;
+  r.toca = Math.round(esp * dias / 7);
+  r.ratio = r.toca > 0 ? r.pts / r.toca : null;
+  r.frase = taFrase(r, dias);
   return r;
+}
+// Valoración de la semana, en palabras: lo hecho frente a lo que tocaba (hasta hoy, en la semana en curso)
+var TA_FRASES = [[1.15, 'Estáis a tope'], [0.9, 'Casa en orden'], [0.65, 'No va mal'], [0.4, 'Mejorable'], [0, 'Toca remangarse']];
+function taFrase(r, dias) {
+  if (r.ratio === null) return '—';
+  if (r.actual && !r.pts && dias <= 2) return 'Semana por estrenar';
+  for (var k = 0; k < TA_FRASES.length; k++) if (r.ratio >= TA_FRASES[k][0]) return TA_FRASES[k][1];
+  return TA_FRASES[TA_FRASES.length - 1][1];
 }
 function taSemTit(s) {
   if (s.actual) return 'Esta semana';
@@ -2691,7 +2709,7 @@ function taFila(x, op) {
   var extra = atr && !op.editar ? '<span class="extra">+50 %</span>' : '';
   return '<div class="ta-it e-' + i.e + '" data-ta="tarea" data-id="' + esc(t.id) + '"><span class="ta-ck"></span>' +
     '<span class="ta-nom"><b>' + esc(t.nombre) + '</b><i>' + (op.corta ? i.corta : i.sub) + '</i></span>' +
-    '<span class="ta-pts">' + taPtsTxt(t) + extra + '</span>' + (op.editar ? '<span class="ta-ed">' + LAPIZ_P + '</span>' : '') + '</div>';
+    '<span class="ta-pts">' + (i.e === 'hoy' ? '+' + i.pts + ' pts' : taPtsTxt(t)) + extra + '</span>' + (op.editar ? '<span class="ta-ed">' + LAPIZ_P + '</span>' : '') + '</div>';
 }
 function taBloque(tit, l, op, aviso, rot) {
   if (!l.length) return '';
@@ -2709,7 +2727,7 @@ function taCab() {
 function taListas(g, dosCol) {
   var op = TAV.editar ? { editar: true } : null;
   var a = taBloque('Atrasadas', g.atr, op, true) + taBloque('Pendientes', g.pend, op);
-  var b = taBloque('Al día', g.ok, op) + taBloque('En pausa', g.pausa, op);
+  var b = taBloque('Hechas hoy', g.hoy, op) + taBloque('Al día', g.ok, op) + taBloque('En pausa', g.pausa, op);
   if (!TA.tareas.length) a = '<div class="ta-vacio">' + (TA.cargado ? 'No hay tareas. Añade la primera arriba.' : 'Cargando tareas…') + '</div>';
   else if (!a) a = '<div class="ta-fr"><span>Pendientes</span></div><div class="ta-vacio">Nada pendiente por ahora</div>';
   return dosCol ? '<div class="ta-cols' + (TAV.editar ? ' ta-editando' : '') + '"><div class="ta-col" id="taColA">' + a + '</div><div class="ta-col" id="taColB">' + b + '</div></div>'
@@ -2725,11 +2743,11 @@ function taLado() {
   for (k = 1; k <= 2; k++) {
     if (TAV.sem - k < pri) break;
     var p = taSemana(TAV.sem - k);
-    ant = '<span>' + p.lun.getDate() + ' ' + MESES3[p.lun.getMonth()] + taEstrella(1, 10) + (p.nota === null ? '—' : coma(p.nota)) + '</span>' + ant;
+    ant = '<span>' + p.lun.getDate() + ' ' + MESES3[p.lun.getMonth()] + ' · ' + p.frase.toLowerCase() + '</span>' + ant;
   }
   h = '<div class="ta-carta" style="z-index:2"><div class="ta-sem-cab"><h1>' + taSemTit(s) + '</h1><span class="flechas">' +
     '<a data-ta="sem-"' + (TAV.sem <= pri ? ' class="off"' : '') + ' aria-label="Semana anterior">' + FLECHA_I + '</a><a data-ta="sem+"' + (TAV.sem >= 0 ? ' class="off"' : '') + ' aria-label="Semana siguiente">' + FLECHA_D + '</a></span></div>' +
-    '<div class="ta-nota">' + taEstrellas(s.nota, 24) + '<span class="num">' + (s.nota === null ? '—' : coma(s.nota)) + '</span><span class="de">de 5<span class="rot">' + (s.actual ? 'hasta hoy' : 'nota final') + '</span></span></div>' +
+    '<div class="ta-frase">' + s.frase + '</div><div class="rot ta-frase-d">' + s.pts + ' pts · ' + (s.actual ? 'tocaban unos ' + s.toca + ' hasta hoy' : 'tocaban unos ' + s.toca) + '</div>' +
     '<div class="ta-antes">' + ant + '</div></div>' +
     '<div class="ta-carta gris" style="z-index:1">' + taCuerda(s) + '</div>';
   h += '<div class="w ta-feed"><div class="w-cab"><h2 class="w-tit">' + (s.actual ? 'Hecho esta semana' : 'Hecho esa semana') + '</h2><span class="rot">' + s.pts + ' pts</span></div><div class="ta-fl">';
@@ -2745,7 +2763,7 @@ function taLado() {
 }
 function taWidget(max) {
   var g = taGrupos(), l = g.atr.concat(g.pend), s = taSemana(0), h, k, n = l.length;
-  h = '<div class="w-cab" data-ta="ir"><h2 class="w-tit">Tareas de casa</h2><span class="mini">' + taEstrella(1, 10) + (s.nota === null ? '—' : coma(s.nota)) + '</span></div>';
+  h = '<div class="w-cab" data-ta="ir"><h2 class="w-tit">Tareas de casa</h2><span class="mini">' + s.frase.toLowerCase() + '</span></div>';
   if (!TA.tareas.length) return h + '<div class="ta-vacio">' + (TA.cargado ? 'No hay tareas' : 'Cargando…') + '</div>';
   if (!l.length) l = g.ok.slice(0, 2);
   for (k = 0; k < l.length && k < max; k++) h += taFila(l[k], { corta: true });
@@ -2760,7 +2778,7 @@ function pintarTareas() {
   var n = g.atr.length + g.pend.length, s = taSemana(0);
   $('mTareas').className = 'v-' + TAV.vistaM;
   $('mTareas').innerHTML = '<div class="cp-seg ta-pest"><i class="seg-bola"></i><span data-ta="vista" data-v="t"' + (TAV.vistaM === 't' ? ' class="on"' : '') + '>Tareas' + (n ? '<b>' + n + '</b>' : '') + '</span>' +
-    '<span data-ta="vista" data-v="s"' + (TAV.vistaM === 's' ? ' class="on"' : '') + '>La semana<b>★ ' + (s.nota === null ? '—' : coma(s.nota)) + '</b></span></div>' +
+    '<span data-ta="vista" data-v="s"' + (TAV.vistaM === 's' ? ' class="on"' : '') + '>La semana</span></div>' +
     '<div class="ta-vt"><section class="w ta-lis">' + taCab() + taListas(g, false) + '</section></div>' +
     '<div class="ta-vs"><section class="ta-lado">' + lado + '</section></div>';
   $('wTareasT').innerHTML = taWidget(4);
@@ -2792,6 +2810,7 @@ function taTocar(id, largo) {
   var t = tareaDe(id); if (!t) return;
   if (TAV.editar && !largo) { abrirTarea(id); return; }
   if (t.pausada && !largo) { abrirTarea(id); return; }
+  if (taInfo(t).e === 'hoy' && !largo) { abrirHoy(id); return; }
   // En la cocina (o sin saber quién es) se pregunta; con formas, se elige cuál. Si no, se marca al momento como tuya.
   if (largo || COCINA || !YO || taFormas(t).length) { abrirMarcar(id); return; }
   taMarcar(id, YO, null);
@@ -2811,6 +2830,17 @@ function abrirMarcar(id) {
   else h += '<span class="rot ta-pre">¿quién lo ha hecho?</span><div class="ta-quien"><a data-tah="quien" data-v="L"><span class="bur L">L</span>Lidia</a><a data-tah="quien" data-v="M"><span class="bur M">M</span>Miguel</a></div>';
   h += '<div class="ta-bt">' + (i.e === 'atr' || i.e === 'pend' ? '<a data-tah="posponer">Posponer 1 día</a>' : '') + '<a data-tah="editar">Editar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   $('cpHojaIn').innerHTML = h; mostrarHoja();
+}
+// Hecha hoy: desmarcar (quita el último registro de hoy) o hacerla otra vez (dos lavadoras el mismo día)
+function abrirHoy(id) {
+  var t = tareaDe(id); if (!t) return;
+  var l = taHoy(id), u = l[l.length - 1]; if (!u) return;
+  TAH = { id: id, hecha: u.id };
+  HOJA = { tipo: 'ta-hoy' }; $('cpHojaIn').className = 'h';
+  $('cpHojaIn').innerHTML = '<span class="rot">hecha hoy · ' + taInfo(t).sub + ' · +' + u.puntos + ' pts</span><h2>' + esc(t.nombre) + '</h2>' +
+    '<a class="ta-ok" data-tah="otra">Hecha otra vez</a>' +
+    '<div class="ta-bt"><a class="peligro" data-tah="desmarcar">Desmarcar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
+  mostrarHoja();
 }
 function abrirRegistro(id) {
   var x = hechaDe(id); if (!x) return;
@@ -2880,6 +2910,12 @@ function tocarHojaTareas(e) {
     if (a === 'yo' || a === 'quien') { var fo = TAH.forma; cerrarHoja(); taMarcar(tid, a === 'yo' ? YO : v, fo); return; }
     if (a === 'posponer') { cerrarHoja(); taAccion({ tipo: 'posponer', id: tid, hasta: diaISO(masDias(new Date(), 1)) }); return; }
     if (a === 'editar') { abrirTarea(tid); return; }
+    return;
+  }
+  if (HOJA.tipo === 'ta-hoy') {
+    var hid = TAH.hecha, oid = TAH.id, ot = tareaDe(oid);
+    if (a === 'desmarcar') { cerrarHoja(); taAccion({ tipo: 'deshacer', id: hid }); return; }
+    if (a === 'otra') { if (!ot) return; if (COCINA || !YO || taFormas(ot).length) { abrirMarcar(oid); return; } cerrarHoja(); taMarcar(oid, YO, null); }
     return;
   }
   if (HOJA.tipo === 'ta-registro') {
