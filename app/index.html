@@ -824,12 +824,14 @@ body.p-tareas .portada, body.p-tareas .dots { display: none; }
 body.p-tareas #pagTareas { display: flex; }
 #pagTareas { flex-grow: 1; min-height: 0; overflow: hidden; }
 .ta-lis { padding: 0; flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
-.ta-cab { position: relative; z-index: 2; flex-shrink: 0; padding: 16px 16px 20px; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
+.ta-cab { position: relative; z-index: 2; flex-shrink: 0; margin-bottom: -20px; padding: 16px 16px 20px; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
 .ta-in { cursor: pointer; }
 .ta-in span { font-size: 14px; color: var(--ter); }
 .ta-cols { flex: 1 1 0; min-height: 0; display: flex; }
 .ta-col { flex: 1 1 0; min-width: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
 .ta-col + .ta-col { box-shadow: inset 1px 0 0 var(--sep); }
+.ta-col > .ta-fr:first-child { height: 52px; padding-top: 20px; }
+.ta-col > .ta-vacio:first-child { padding-top: 40px; }
 .ta-fr { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 16px; background: var(--finde); font-size: 12px; font-weight: 600; color: var(--sec); }
 .ta-fr .rot { font-weight: 400; }
 .ta-fr.aviso { color: var(--aviso); }
@@ -1071,6 +1073,7 @@ body.movil.p-tareas #mTareas { display: block; margin-top: 16px; }
   <div id="mPaginas">
   <div id="mInicio">
   <a href="#calendario" class="w m-cal m-g" id="calM" style="margin-top:16px"></a>
+  <div class="w ta-w" id="wTareasM"></div>
   <div class="m-fila">
     <a href="#" class="w m-tiempo m-p" id="tiempoM"><div class="t-hoy"><span class="rot">hoy</span><span class="esq" style="width:45%;height:32px;margin-top:12px"></span><span class="esq" style="width:75%"></span></div></a>
     <div class="w cf-w m-p" id="wComerM"></div>
@@ -1078,7 +1081,6 @@ body.movil.p-tareas #mTareas { display: block; margin-top: 16px; }
   <div class="wc m-m" id="wCompraM"><div class="cp-carta wc-a"><div class="wc-cab" data-acc="ir"><h2 class="w-tit">Lista de la compra</h2><span class="wc-n" id="wcNM"></span></div>
     <div class="cp-in cp-campo"><svg class="lead" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><input enterkeyhint="done" id="wcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"></div></div>
     <div class="cp-carta wc-b"><span class="rot">habituales</span><div class="wc-pills" id="wcPM"></div></div></div>
-  <div class="w ta-w" id="wTareasM"></div>
   </div>
   <div id="mCal"><section class="w k-mini" id="kMiniM"></section><section class="w k-dia" id="kDiaM"></section><section class="w k-ag" id="kAgM"></section></div>
   <div id="mCompra" class="v-lista">
@@ -2620,7 +2622,7 @@ function taSemana(off) {
 // Valoración de la semana, en palabras: lo hecho frente a lo que tocaba (hasta hoy, en la semana en curso)
 var TA_FRASES = [[1.15, 'Estáis a tope'], [0.9, 'Casa en orden'], [0.65, 'No va mal'], [0.4, 'Mejorable'], [0, 'Toca remangarse']];
 // Emoji de cada frase: solo en la página (en los widgets, la frase sola)
-var TA_EMOJI = { 'Estáis a tope': '🚀', 'Casa en orden': '✨', 'No va mal': '👍', 'Mejorable': '🌱', 'Toca remangarse': '💪', 'Semana por estrenar': '🌅' };
+var TA_EMOJI = { 'Estáis a tope': '🚀', 'Casa en orden': '✨', 'No va mal': '👍', 'Mejorable': '📈', 'Toca remangarse': '💪', 'Semana por estrenar': '🏁' };
 function taFrase(r, dias) {
   if (r.ratio === null) return '—';
   if (r.actual && !r.pts && dias <= 2) return 'Semana por estrenar';
