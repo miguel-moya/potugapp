@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<title>Maqueta · Tareas de casa</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Space+Mono&amp;display=swap">
+<!--
+  Maqueta de Tareas de casa. Datos inventados, a jueves 12 de noviembre (semana del 9 al 15).
+  ?vista=ipad (página) · ?vista=ipad-portada (widget) · ?vista=ipad-quien (¿quién lo ha hecho?, cocina)
+  ?vista=movil (widget en la portada) · ?vista=movil-pagina · ?vista=movil-hecho (pestaña Hecho) · ?vista=movil-secar (marcar con opciones)
+  Reglas: escala 4/8, radio 20, baraja con 40 px de solape. El estado nunca va solo en color:
+  posición (lo urgente arriba), etiqueta y barra.
+-->
+<style>
+:root {
+  --fondo: #e4e1d9; --widget: #f4f3ef; --finde: #ecebe6; --tinta: #1d1d1b;
+  --sec: #5c5a54; --ter: #8a877f; --sep: #e3e0d9; --sep-fuerte: #d3cfc6; --pista: #d6d3cb;
+  --aviso: #b04a30; --ok: #3f8a54; --acento: #c9b29b;
+  --lidia: #c98b8f; --miguel: #f0b95f; --bruno: #ef6c50; --familia: #9a826b;
+  --mono: 'Space Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--fondo); }
+body { font-family: Manrope, -apple-system, sans-serif; color: var(--tinta); }
+svg { display: block; }
+.rot { font-family: var(--mono); font-size: 10px; color: var(--sec); }
+.pto { display: inline-block; width: 6px; height: 6px; border-radius: 3px; flex-shrink: 0; }
+.L { background: var(--lidia); } .M { background: var(--miguel); }
+.bur { width: 20px; height: 20px; border-radius: 10px; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.crece { flex-grow: 1; }
+.w { background: var(--widget); border-radius: 20px; }
+.w-tit { margin: 0; font-size: 13px; font-weight: 600; }
+.w-cab { display: flex; justify-content: space-between; align-items: center; }
+.otro { opacity: 0.45; }
+
+/* ---------- iPad: estructura (igual que la app) ---------- */
+.app { width: 1024px; height: 768px; display: flex; padding-top: 14px; position: relative; overflow: hidden; }
+.rail { width: 72px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding: 0 0 16px; }
+.rail > * + * { margin-top: 4px; }
+.logo { font-size: 28px; font-weight: 600; letter-spacing: -1px; height: 40px; margin-top: 4px; display: flex; align-items: center; }
+.logo span { color: var(--bruno); }
+.esp { flex-grow: 1; }
+.nav { width: 46px; height: 46px; border-radius: 23px; display: flex; align-items: center; justify-content: center; }
+.nav.activo { background: var(--tinta); color: var(--widget); }
+.nav svg { width: 22px; height: 22px; }
+.content { flex-grow: 1; min-width: 0; padding: 0 16px 16px 0; display: flex; flex-direction: column; }
+.topbar { height: 40px; flex-shrink: 0; padding-top: 4px; display: flex; align-items: center; }
+.topbar > * + * { margin-left: 12px; }
+.hora { font-size: 26px; font-weight: 300; letter-spacing: -1px; }
+.fecha { font-size: 14px; color: var(--sec); }
+.dots { margin-left: auto; display: flex; align-items: center; }
+.dots span { width: 18px; height: 3px; border-radius: 2px; background: #c3c0b8; }
+.dots span + span { margin-left: 4px; }
+.dots span.on { background: var(--tinta); }
+.cuerpo { flex-grow: 1; min-height: 0; display: flex; margin-top: 8px; }
+
+/* ---------- Baraja: resumen de la semana ---------- */
+.carta { position: relative; flex-shrink: 0; background: var(--widget); border-radius: 20px; padding: 16px; box-shadow: inset 0 -1px 0 var(--sep); }
+.carta + .carta { margin-top: -40px; padding-top: 56px; }
+.carta.reparto { background: var(--finde); box-shadow: none; padding-bottom: 16px; }
+.mes { display: flex; align-items: center; justify-content: space-between; height: 36px; }
+.mes h1 { margin: 0; font-size: 16px; font-weight: 600; }
+.flechas { display: flex; align-items: center; color: var(--sec); }
+.flechas a { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+.flechas a.off { opacity: 0.3; }
+
+/* La nota: estrellas (se leen por forma, no por color) */
+.nota { display: flex; align-items: center; margin-top: 16px; }
+.estrellas { display: flex; align-items: center; }
+.estrellas svg + svg { margin-left: 4px; }
+.nota .num { font-size: 64px; font-weight: 300; letter-spacing: -2px; line-height: 0.9; margin-left: 16px; }
+.nota .de { display: flex; flex-direction: column; margin-left: 8px; font-size: 14px; color: var(--sec); }
+.nota .de .rot { margin-top: 4px; }
+
+.barra { position: relative; flex-shrink: 0; height: 12px; border-radius: 6px; background: var(--pista); margin-top: 24px; }
+.barra i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--tinta); }
+.barra.lento i { background: var(--aviso); }
+.barra .marca { position: absolute; top: -4px; width: 2px; height: 20px; margin-left: -1px; border-radius: 1px; background: var(--tinta); box-shadow: 0 0 0 2px var(--widget); }
+.datos { display: flex; margin-top: 24px; }
+.datos > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding-right: 12px; }
+.datos .v { font-size: 14px; margin-top: 4px; white-space: nowrap; }
+.datos .v.lento { color: var(--aviso); font-weight: 600; }
+
+/* Reparto: discreto, sin podio */
+.rep { display: flex; align-items: center; }
+.rep .t { font-size: 14px; display: flex; align-items: center; white-space: nowrap; }
+.rep .t .pto { margin-right: 8px; }
+.rep .t b { font-weight: 400; font-family: var(--mono); font-size: 12px; color: var(--sec); margin-left: 8px; }
+.rep .t + .t { margin-left: 24px; }
+.rep-barra { display: flex; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 12px; }
+.rep-barra i { display: block; height: 6px; }
+.rep-barra i + i { margin-left: 2px; }
+
+/* Semanas anteriores */
+.hist { margin-top: 16px; flex-grow: 1; padding: 16px; display: flex; flex-direction: column; }
+.sems { display: flex; align-items: flex-end; }
+.sems .col { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; }
+.sems .col + .col { margin-left: 12px; }
+.sems .v { font-family: var(--mono); font-size: 10px; color: var(--sec); display: flex; align-items: center; }
+.sems .v svg { margin-right: 2px; }
+.sems .b { width: 100%; max-width: 48px; border-radius: 8px 8px 4px 4px; background: var(--pista); margin-top: 4px; }
+.sems .col.actual .b { background: var(--acento); }
+.sems .col.actual .b.prov { background: repeating-linear-gradient(135deg, var(--acento) 0 6px, #d8c6b3 6px 12px); }
+.sems .m { font-family: var(--mono); font-size: 10px; color: var(--sec); margin-top: 8px; }
+.sems .col.actual .m { color: var(--tinta); font-weight: 700; }
+
+/* ---------- Lista de tareas ---------- */
+.lista { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; overflow: hidden; }
+.lista-cab { padding: 16px 16px 12px; }
+.cab { display: flex; align-items: center; justify-content: space-between; height: 36px; }
+.cab h1 { margin: 0; font-size: 16px; font-weight: 600; }
+.seg { display: flex; height: 44px; padding: 4px; border-radius: 22px; background: var(--finde); }
+.seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 18px; white-space: nowrap; }
+.seg span sup { font-family: var(--mono); font-size: 9px; font-weight: 400; margin-left: 4px; }
+.seg span svg { margin-right: 8px; }
+.seg span.on { background: var(--tinta); color: var(--widget); }
+
+.franja { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 16px; background: var(--finde); font-size: 12px; font-weight: 600; color: var(--sec); }
+.franja .rot { font-weight: 400; display: flex; align-items: center; }
+.franja .rot svg { margin-left: 4px; }
+.franja.aviso { color: var(--aviso); }
+.franja.aviso .ico { display: flex; align-items: center; }
+.franja.aviso .ico svg { margin-right: 6px; }
+
+.tarea { display: flex; align-items: center; min-height: 64px; padding: 0 12px 0 16px; position: relative; }
+.tarea + .tarea { box-shadow: inset 0 1px 0 var(--sep); }
+.tarea .ic { width: 32px; height: 32px; border-radius: 16px; background: var(--finde); display: flex; align-items: center; justify-content: center; color: var(--sec); flex-shrink: 0; }
+.tarea .nom { flex-grow: 1; min-width: 0; margin-left: 12px; display: flex; flex-direction: column; }
+.tarea .n1 { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tarea .rot { margin-top: 2px; white-space: nowrap; }
+.tarea.acum .rot b { color: var(--aviso); font-weight: 700; }
+/* Barra de urgencia: cuánto del intervalo ha pasado (llena = toca; más allá se marca) */
+.urg { position: relative; height: 4px; border-radius: 2px; background: var(--pista); margin-top: 8px; width: 100%; max-width: 160px; }
+.urg i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: var(--sec); }
+.tarea.acum .urg i { background: var(--aviso); }
+.urg .tope { position: absolute; top: -2px; width: 2px; height: 8px; border-radius: 1px; background: var(--tinta); box-shadow: 0 0 0 1.5px var(--widget); }
+.talla { font-family: var(--mono); font-size: 11px; color: var(--sec); margin-left: 12px; display: flex; flex-direction: column; align-items: flex-end; white-space: nowrap; }
+.talla .extra { color: var(--aviso); font-weight: 700; margin-top: 2px; }
+.hecho { width: 44px; height: 44px; border-radius: 22px; box-shadow: inset 0 0 0 1.5px var(--sep-fuerte); display: flex; align-items: center; justify-content: center; color: var(--sec); margin-left: 12px; flex-shrink: 0; }
+.tarea.acum .hecho { box-shadow: inset 0 0 0 1.5px var(--tinta); color: var(--tinta); }
+.plegada { display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 16px; font-size: 13px; color: var(--sec); box-shadow: inset 0 1px 0 var(--sep); }
+.plegada .nombres { flex-grow: 1; min-width: 0; margin-right: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Actividad (pestaña Hecho) */
+.act { display: flex; align-items: center; min-height: 52px; padding: 0 16px; }
+.act + .act { box-shadow: inset 0 1px 0 var(--sep); }
+.act .ic { width: 32px; height: 32px; border-radius: 16px; background: var(--finde); display: flex; align-items: center; justify-content: center; color: var(--sec); flex-shrink: 0; }
+.act .nom { flex-grow: 1; min-width: 0; margin-left: 12px; display: flex; flex-direction: column; }
+.act .n1 { font-size: 14px; }
+.act .rot { margin-top: 2px; display: flex; align-items: center; }
+.act .rot .pto { margin-right: 6px; }
+.act .pts { font-family: var(--mono); font-size: 13px; margin-left: 12px; }
+.act .pts.extra { color: var(--aviso); }
+
+/* ---------- iPad: widget en la portada ---------- */
+.filas { flex-grow: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 8px; }
+.fila { flex: 1 1 0; min-height: 0; display: flex; }
+.fila + .fila { margin-top: 16px; }
+.fila > * { width: calc((100% - 32px) / 3); flex-shrink: 0; }
+.fila > * + * { margin-left: 16px; }
+.wt { display: flex; flex-direction: column; overflow: hidden; }
+.wt .cima { padding: 16px 16px 12px; }
+.wt .nota { margin-top: 12px; }
+.wt .nota .num { font-size: 32px; letter-spacing: -1px; margin-left: 12px; }
+.wt .nota .de { font-size: 12px; }
+.wt .tarea { min-height: 56px; padding-right: 8px; }
+.wt .tarea .urg { display: none; }
+.wt .tarea .hecho { width: 40px; height: 40px; border-radius: 20px; }
+.app .wt .talla { display: none; }
+.wt .mas { padding: 0 16px; height: 40px; display: flex; align-items: center; font-size: 12px; color: var(--sec); box-shadow: inset 0 1px 0 var(--sep); margin-top: auto; }
+
+/* ---------- Hoja: ¿quién lo ha hecho? ---------- */
+.velo { position: absolute; z-index: 100; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); }
+.hoja { position: absolute; z-index: 101; background: var(--widget); border-radius: 20px; padding: 24px; }
+.app .hoja { width: 440px; left: 292px; top: 168px; }
+.hoja .tit { display: flex; align-items: center; }
+.hoja .tit .ic { width: 40px; height: 40px; border-radius: 20px; background: var(--finde); display: flex; align-items: center; justify-content: center; color: var(--sec); }
+.hoja .tit h2 { margin: 0 0 0 12px; font-size: 18px; font-weight: 600; }
+.hoja .rot.pre { display: block; margin-top: 24px; }
+.hoja .seg { margin-top: 8px; height: 52px; border-radius: 26px; }
+.hoja .seg span { border-radius: 22px; }
+.hoja .seg span em { font-style: normal; font-family: var(--mono); font-size: 10px; font-weight: 400; margin-left: 8px; opacity: 0.7; }
+.quien { display: flex; margin-top: 8px; }
+.quien a { flex: 1 1 0; height: 96px; border-radius: 20px; background: var(--finde); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+.quien a + a { margin-left: 12px; }
+.quien .bur { width: 40px; height: 40px; border-radius: 20px; font-size: 16px; margin-bottom: 8px; }
+.hoja .pie { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+.btn-linea { height: 40px; padding: 0 20px; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--sep-fuerte); display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--sec); }
+.guardar { height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; margin-top: 20px; }
+
+/* ---------- Móvil ---------- */
+.movil { width: 390px; min-height: 844px; padding: 0 16px 112px; position: relative; }
+.m-top { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px 0; }
+.m-top .logo { font-size: 22px; height: auto; margin: 0; }
+.m-fecha { font-size: 13px; color: var(--sec); margin-top: 2px; }
+.m-nav { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 64px; padding: 0 8px; background: var(--widget); border-radius: 32px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 32px rgba(29,29,27,0.16), 0 1px 4px rgba(29,29,27,0.06); z-index: 20; }
+.m-nav a { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+.m-nav svg { width: 22px; height: 22px; }
+.m-nav .on { width: 48px; height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; }
+.m-fila { display: flex; margin-top: 16px; }
+.m-fila > * { width: calc((100% - 16px) / 2); height: 171px; flex-shrink: 0; }
+.m-fila > * + * { margin-left: 16px; }
+.movil .baraja { margin-top: 16px; }
+.movil .nota .num { font-size: 44px; letter-spacing: -1.5px; margin-left: 12px; }
+.movil .datos { flex-wrap: wrap; }
+.movil .datos > div { flex: 0 0 50%; }
+.movil .datos > div:nth-child(n+3) { margin-top: 12px; }
+.movil .seg.pest { margin-top: 16px; background: var(--widget); }
+.m-lista { margin-top: 16px; overflow: hidden; }
+.movil .wt { margin-top: 16px; }
+.aviso-deshacer { position: absolute; z-index: 30; left: 16px; right: 16px; bottom: 96px; height: 52px; border-radius: 26px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 20px; font-size: 13px; }
+.aviso-deshacer b { font-family: var(--mono); font-weight: 400; font-size: 12px; opacity: 0.7; margin-left: 8px; }
+.aviso-deshacer a { height: 36px; padding: 0 16px; border-radius: 18px; background: rgba(244,243,239,0.16); display: flex; align-items: center; font-weight: 600; }
+.movil .hoja { left: 8px; right: 8px; top: 56px; }
+</style>
+</head>
+<body>
+<div id="raiz"></div>
+<script>
+var I = {
+  inicio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>',
+  cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg>',
+  compra: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg>',
+  tareas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  comer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg>',
+  fotos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg>',
+  ajustes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/></svg>',
+  mas3: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/></svg>',
+  izq: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
+  der: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  abajo: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+  check: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  alerta: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.01"/></svg>',
+  // Iconos de tarea (16 px, trazo fino)
+  lavar: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><circle cx="12" cy="13" r="4"/><path d="M8 6.5h2" stroke-linecap="round"/></svg>',
+  secar: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.5a1.8 1.8 0 1 1 1.8 1.8L12 8.5 3.5 15h17L12 8.5"/><path d="M5 15v4h14v-4"/></svg>',
+  sol: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/></svg>',
+  doblar: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="4" y="13" width="16" height="6" rx="1.5"/><rect x="5.5" y="7" width="13" height="6" rx="1.5"/><path d="M9 7l3-2.5L15 7"/></svg>',
+  cama: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V7M3 14h18v4M21 14v-2a3 3 0 0 0-3-3h-7v5"/><rect x="5.5" y="9.5" width="4" height="3" rx="1.5"/></svg>',
+  sabanas: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="M4 10c3 2 5-2 8 0s5-2 8 0"/></svg>',
+  guardarS: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M10 8h4M10 16h4" stroke-linecap="round"/></svg>',
+  bano: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c3 4 5.5 6.8 5.5 10a5.5 5.5 0 0 1-11 0c0-3.2 2.5-6 5.5-10z"/></svg>',
+  cafe: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2M11 3.5v2"/></svg>',
+  cal2: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M5.5 5.5l2 2M16.5 16.5l2 2M3 12h3M18 12h3"/><circle cx="12" cy="12" r="3"/></svg>'
+};
+function estrella(llena, t) {
+  // llena: 1, 0.5 o 0
+  var id = 'e' + Math.random().toString(36).slice(2, 7);
+  var d = 'M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z';
+  return '<svg width="' + t + '" height="' + t + '" viewBox="0 0 24 24"><defs><clipPath id="' + id + '"><rect x="0" y="0" width="' + (24 * llena) + '" height="24"/></clipPath></defs>' +
+    '<path d="' + d + '" fill="var(--pista)"/><path d="' + d + '" fill="var(--tinta)" clip-path="url(#' + id + ')"/></svg>';
+}
+function estrellas(n, t) {
+  var h = '<span class="estrellas">';
+  for (var k = 0; k < 5; k++) h += estrella(n >= k + 1 ? 1 : n >= k + 0.5 ? 0.5 : 0, t);
+  return h + '</span>';
+}
+
+// ---------- Datos inventados: jueves 12 de noviembre, día 4 de la semana ----------
+var TALLA = { S: 50, M: 100, L: 200 };
+// [icono, nombre, intervalo en días, texto de frecuencia, talla, hace (días)]
+var TAREAS = [
+  ['doblar', 'Doblar y recoger ropa', 3.5, '2 por semana', 'M', 7],
+  ['bano', 'Limpiar el baño', 7, '1 por semana', 'L', 11],
+  ['lavar', 'Poner lavadora', 2.3, '3 por semana', 'S', 2],
+  ['secar', 'Secar ropa', 2.3, '3 por semana', 'S', 2],
+  ['cafe', 'Limpiar cafetera a fondo', 10, '3 al mes', 'S', 8],
+  ['cama', 'Cambiar sábanas y fundas', 15, 'cada 15 días', 'M', 6],
+  ['sabanas', 'Lavar y secar sábanas y toallas', 15, 'cada 15 días', 'M', 6],
+  ['guardarS', 'Doblar y guardar sábanas', 15, 'cada 15 días', 'S', 5],
+  ['cal2', 'Descalcificar cafetera', 91, 'cada 3 meses', 'M', 40]
+];
+// Umbrales: < 70 % en regla · 70–130 % toca · > 130 % acumulada
+function pct(t) { return t[5] / t[2]; }
+var acum = [], toca = [], regla = [];
+TAREAS.forEach(function (t) { var p = pct(t); (p > 1.3 ? acum : p >= 0.7 ? toca : regla).push(t); });
+function ord(a, b) { return pct(b) - pct(a); }
+acum.sort(ord); toca.sort(ord); regla.sort(ord);
+
+// Lo hecho esta semana: [día, icono, tarea, detalle, quién, puntos, rescate]
+var HECHO = [
+  ['mar 10', 'secar', 'Secar ropa', 'secadora', 'L', 50],
+  ['mar 10', 'lavar', 'Poner lavadora', '', 'M', 50],
+  ['lun 9', 'secar', 'Secar ropa', 'tendida al sol', 'M', 100],
+  ['lun 9', 'lavar', 'Poner lavadora', '', 'L', 50]
+];
+// Puntos esperados por semana: suma de talla × veces por semana (≈ 860)
+var ESPERADO = 0;
+TAREAS.forEach(function (t) { ESPERADO += TALLA[t[4]] * 7 / t[2]; });
+ESPERADO = Math.round(ESPERADO / 10) * 10;
+var DIA = 4, HOY_ESP = Math.round(ESPERADO * DIA / 7);
+var PTS = 0, PL = 0, PM = 0;
+HECHO.forEach(function (h) { PTS += h[5]; if (h[4] === 'L') PL += h[5]; else PM += h[5]; });
+// Nota provisional: lo hecho frente a lo que tocaba hasta hoy. El domingo se cierra con la semana entera.
+var NOTA = Math.min(5, Math.round(PTS / HOY_ESP * 10) / 2);
+var SEMANAS = [['19 oct', 4], ['26 oct', 3.5], ['2 nov', 4.5], ['9 nov', NOTA]];
+var NOMBRE = { L: 'Lidia', M: 'Miguel' };
+
+function coma(n) { return String(n).replace('.', ','); }
+function haceTxt(t) {
+  var p = pct(t), faltan = Math.round(t[2] - t[5]);
+  if (p > 1.3) return 'hace ' + t[5] + ' d · <b>' + Math.round(t[5] - t[2]) + ' d de retraso</b>';
+  if (p >= 0.7) return 'hace ' + t[5] + ' d · ' + t[3];
+  return 'hace ' + t[5] + ' d · toca en ' + faltan + ' d';
+}
+function filaTarea(t, corta) {
+  var p = pct(t), ac = p > 1.3, w = Math.min(100, p / 1.5 * 100);
+  return '<div class="tarea' + (ac ? ' acum' : '') + '"><span class="ic">' + I[t[0]] + '</span>' +
+    '<span class="nom"><span class="n1">' + t[1] + '</span><span class="rot">' + (corta ? (ac ? '<b>' + Math.round(t[5] - t[2]) + ' d de retraso</b>' : 'hace ' + t[5] + ' d') : haceTxt(t)) + '</span>' +
+    '<span class="urg"><i style="width:' + w + '%"></i><span class="tope" style="left:' + (100 / 1.5) + '%"></span></span></span>' +
+    '<span class="talla">' + t[4] + ' · ' + TALLA[t[4]] + (ac ? '<span class="extra">+' + TALLA[t[4]] / 2 + '</span>' : '') + '</span>' +
+    '<a class="hecho">' + I.check + '</a></div>';
+}
+function listaPendientes() {
+  var h = '';
+  if (acum.length) { h += '<div class="franja aviso"><span class="ico">' + I.alerta + 'Acumuladas</span><span class="rot">rescate +50 %</span></div>'; acum.forEach(function (t) { h += filaTarea(t); }); }
+  if (toca.length) { h += '<div class="franja"><span>Toca</span><span class="rot">' + toca.length + '</span></div>'; toca.forEach(function (t) { h += filaTarea(t); }); }
+  h += '<div class="franja"><span>En regla</span><span class="rot">' + regla.length + I.abajo + '</span></div>';
+  h += '<div class="plegada"><span class="nombres">' + regla.map(function (t) { return t[1]; }).join(' · ') + '</span></div>';
+  return h;
+}
+function listaHecho() {
+  var h = '', dia = null;
+  HECHO.forEach(function (x) {
+    if (x[0] !== dia) {
+      dia = x[0]; var s = 0;
+      HECHO.forEach(function (y) { if (y[0] === dia) s += y[5]; });
+      h += '<div class="franja"><span>' + dia + '</span><span class="rot">' + s + ' pts</span></div>';
+    }
+    h += '<div class="act"><span class="ic">' + I[x[1]] + '</span><span class="nom"><span class="n1">' + x[2] + '</span><span class="rot"><span class="pto ' + x[4] + '"></span>' + NOMBRE[x[4]] + (x[3] ? ' · ' + x[3] : '') + '</span></span><span class="pts">+' + x[5] + '</span></div>';
+  });
+  h += '<div class="franja"><span>Semana anterior</span><span class="rot">' + estrellas(4.5, 10).replace('class="estrellas"', 'class="estrellas" style="margin-right:4px"') + '4,5</span></div>';
+  h += '<div class="act"><span class="ic">' + I.bano + '</span><span class="nom"><span class="n1">Limpiar el baño</span><span class="rot"><span class="pto M"></span>Miguel · rescatada</span></span><span class="pts extra">+300</span></div>';
+  return h;
+}
+
+function cartaSemana(grande) {
+  var lento = PTS < HOY_ESP;
+  return '<div class="carta" style="z-index:2"><div class="mes"><h1>Semana del 9 al 15 nov</h1><span class="flechas"><a>' + I.izq + '</a><a class="off">' + I.der + '</a></span></div>' +
+    '<div class="nota">' + estrellas(NOTA, grande ? 32 : 24) + '<span class="num">' + coma(NOTA) + '</span><span class="de">de 5<span class="rot">provisional</span></span></div>' +
+    '<div class="barra' + (lento ? ' lento' : '') + '"><i style="width:' + (PTS / ESPERADO * 100) + '%"></i><span class="marca" style="left:' + (HOY_ESP / ESPERADO * 100) + '%"></span></div>' +
+    '<div class="datos"><div><span class="rot">ritmo</span><span class="v' + (lento ? ' lento' : '') + '">' + Math.abs(HOY_ESP - PTS) + ' pts ' + (lento ? 'por debajo' : 'por encima') + '</span></div>' +
+    '<div><span class="rot">puntos</span><span class="v">' + PTS + ' de ' + ESPERADO + '</span></div>' +
+    '<div><span class="rot">acumuladas</span><span class="v">' + acum.length + '</span></div>' +
+    '<div><span class="rot">días</span><span class="v">' + (7 - DIA) + '</span></div></div></div>';
+}
+function cartaReparto() {
+  return '<div class="carta reparto" style="z-index:1"><div class="rep"><span class="t"><span class="pto L"></span>Lidia<b>' + PL + ' pts</b></span><span class="t"><span class="pto M"></span>Miguel<b>' + PM + ' pts</b></span></div>' +
+    '<div class="rep-barra"><i class="L" style="width:' + (PL / PTS * 100) + '%"></i><i class="M" style="flex-grow:1"></i></div></div>';
+}
+function historial() {
+  var h = '<div class="w hist"><div class="w-cab"><h2 class="w-tit">Últimas semanas</h2><span class="rot">nota de la familia</span></div><div class="crece"></div><div class="sems">';
+  SEMANAS.forEach(function (s, k) {
+    var act = k === SEMANAS.length - 1;
+    h += '<div class="col' + (act ? ' actual' : '') + '"><span class="v">' + estrella(1, 10) + coma(s[1]) + '</span><span class="b' + (act ? ' prov' : '') + '" style="height:' + Math.round(s[1] / 5 * 150) + 'px"></span><span class="m">' + s[0] + '</span></div>';
+  });
+  return h + '</div></div>';
+}
+function cabLista(pest) {
+  return '<div class="lista-cab"><div class="seg"><span' + (pest === 'p' ? ' class="on"' : '') + '>Pendientes<sup>' + (acum.length + toca.length) + '</sup></span><span' + (pest === 'h' ? ' class="on"' : '') + '>Hecho<sup>' + HECHO.length + '</sup></span></div></div>';
+}
+
+function rail(activo) {
+  var n = ['inicio', 'cal', 'compra', 'tareas', 'comer', 'fotos'], h = '<nav class="rail"><div class="logo">P<span>.</span></div><div class="esp"></div>';
+  for (var k = 0; k < n.length; k++) h += '<a class="nav' + (n[k] === activo ? ' activo' : '') + '">' + I[n[k]] + '</a>';
+  return h + '<div class="esp"></div><a class="nav">' + I.ajustes + '</a></nav>';
+}
+function topbar(dots) {
+  return '<header class="topbar"><span class="hora">19:20</span><span class="fecha">Jueves, 12 de noviembre</span>' + (dots ? '<span class="dots"><span class="on"></span><span></span></span>' : '') + '</header>';
+}
+
+function ipad(pest) {
+  return '<div class="app">' + rail('tareas') + '<main class="content">' + topbar() +
+    '<div class="cuerpo"><section class="izq" style="flex:1 1 0;min-width:0;display:flex;flex-direction:column"><div class="baraja">' + cartaSemana(true) + cartaReparto() + '</div>' + historial() + '</section>' +
+    '<section class="w lista">' + cabLista(pest || 'p') + (pest === 'h' ? listaHecho() : listaPendientes()) + '</section></div></main></div>';
+}
+
+function widget() {
+  var top = acum.concat(toca).slice(0, 3), resto = acum.length + toca.length - top.length;
+  var h = '<div class="w wt"><div class="cima"><div class="w-cab"><h2 class="w-tit">Tareas</h2><span class="rot">esta semana</span></div>' +
+    '<div class="nota">' + estrellas(NOTA, 18) + '<span class="num">' + coma(NOTA) + '</span><span class="de">de 5</span></div></div>';
+  top.forEach(function (t) { h += filaTarea(t, true); });
+  return h + '<div class="mas">' + (resto > 0 ? '+' + resto + ' más por hacer' : 'Todo lo demás en regla') + '</div></div>';
+}
+
+function ipadPortada() {
+  var cal = '<div class="w otro" style="height:100%;background:var(--acento);padding:16px"><span class="rot" style="color:var(--tinta)">calendario</span></div>';
+  return '<div class="app">' + rail('inicio') + '<main class="content">' + topbar(true) +
+    '<div class="filas"><div class="fila" style="flex:1 1 0">' + '<div style="width:100%">' + cal + '</div></div>' +
+    '<div class="fila"><div class="w otro" style="padding:16px"><span class="rot">hoy</span><div style="font-size:44px;font-weight:300;margin-top:8px">17°</div></div>' +
+    '<div class="w otro" style="padding:16px"><h2 class="w-tit">Lista de la compra</h2></div>' + widget() + '</div></div></main></div>';
+}
+
+function hojaQuien(conSecar) {
+  var t = TAREAS[3];
+  return '<div class="velo"></div><div class="hoja"><div class="tit"><span class="ic">' + I.secar + '</span><h2>' + t[1] + '</h2></div>' +
+    (conSecar ? '<span class="rot pre">cómo</span><div class="seg"><span class="on">' + I.sol + 'Tendida<em>M · 100</em></span><span>Secadora<em>S · 50</em></span></div>' : '') +
+    '<span class="rot pre">¿quién lo ha hecho?</span><div class="quien"><a><span class="bur L">L</span>Lidia</a><a><span class="bur M">M</span>Miguel</a></div>' +
+    '<div class="pie"><span class="btn-linea">Posponer 1 día</span><span class="btn-linea">Cancelar</span></div></div>';
+}
+function ipadQuien() { return ipad('p').replace(/<\/div>$/, hojaQuien(true) + '</div>'); }
+
+// ---------- Móvil ----------
+function mTop() { return '<div class="m-top"><div><div class="logo">P<span>.</span></div><div class="m-fecha">Jueves, 12 de noviembre</div></div><span style="color:var(--tinta)">' + I.ajustes.replace('<svg', '<svg width="22" height="22"') + '</span></div>'; }
+function mNav(activo) {
+  var n = ['inicio', 'cal', 'compra', 'tareas', 'comer', 'mas3'], h = '<nav class="m-nav">';
+  for (var k = 0; k < n.length; k++) h += '<a>' + (n[k] === activo ? '<span class="on">' + I[n[k]] + '</span>' : I[n[k]]) + '</a>';
+  return h + '</nav>';
+}
+function movilPortada() {
+  return '<div class="movil">' + mTop() +
+    '<div class="w otro" style="margin-top:16px;height:200px;background:var(--acento);padding:16px"><span class="rot" style="color:var(--tinta)">calendario</span></div>' +
+    '<div class="m-fila"><div class="w otro" style="padding:16px"><span class="rot">hoy</span><div style="font-size:36px;font-weight:300;margin-top:8px">17°</div></div><div class="w otro" style="padding:16px"><h2 class="w-tit">Comer fuera</h2></div></div>' +
+    widget() + '<div class="w otro" style="margin-top:16px;height:120px;padding:16px"><h2 class="w-tit">Lista de la compra</h2></div>' + mNav('inicio') + '</div>';
+}
+function movilPagina(pest, toast) {
+  return '<div class="movil">' + mTop() + '<div class="baraja">' + cartaSemana(false) + cartaReparto() + '</div>' +
+    '<div class="seg pest"><span' + (pest !== 'h' ? ' class="on"' : '') + '>Pendientes<sup>' + (acum.length + toca.length) + '</sup></span><span' + (pest === 'h' ? ' class="on"' : '') + '>Hecho<sup>' + HECHO.length + '</sup></span><span>Semanas</span></div>' +
+    '<div class="w m-lista">' + (pest === 'h' ? listaHecho() : listaPendientes()) + '</div>' +
+    (toast ? '<div class="aviso-deshacer"><span>Doblar y recoger ropa<b>+150 pts</b></span><a>Deshacer</a></div>' : '') + mNav('tareas') + '</div>';
+}
+function movilSecar() {
+  var h = movilPagina('p').replace('<div class="movil">', '<div class="movil" style="height:844px;overflow:hidden">').replace(/<\/div>$/, '');
+  var hoja = hojaQuien(true).replace(/<span class="rot pre">¿quién lo ha hecho\?<\/span><div class="quien">.*?<\/div>/, '<div class="guardar">Hecha por mí</div>');
+  return h + hoja + '</div>';
+}
+
+var v = (location.search.match(/vista=([\w-]+)/) || [])[1] || 'ipad';
+document.getElementById('raiz').innerHTML =
+  v === 'ipad-portada' ? ipadPortada() : v === 'ipad-quien' ? ipadQuien() : v === 'ipad-hecho' ? ipad('h') :
+  v === 'movil' ? movilPortada() : v === 'movil-pagina' ? movilPagina('p', true) : v === 'movil-hecho' ? movilPagina('h') : v === 'movil-secar' ? movilSecar() : ipad('p');
+</script>
+</body>
+</html>
