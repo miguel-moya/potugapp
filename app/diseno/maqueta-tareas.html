@@ -6,11 +6,12 @@
 <title>Maqueta · Tareas de casa</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&amp;family=Space+Mono&amp;display=swap">
 <!--
-  Maqueta de Tareas de casa. Datos inventados, a jueves 12 de noviembre (semana del 9 al 15).
-  ?vista=ipad (página) · ?vista=ipad-portada (widget) · ?vista=ipad-quien (¿quién lo ha hecho?, cocina)
-  ?vista=movil (widget en la portada) · ?vista=movil-pagina · ?vista=movil-hecho (pestaña Hecho) · ?vista=movil-secar (marcar con opciones)
-  Reglas: escala 4/8, radio 20, baraja con 40 px de solape. El estado nunca va solo en color:
-  posición (lo urgente arriba), etiqueta y barra.
+  Maqueta de Tareas de casa (v2). Datos inventados, a jueves 12 de noviembre (semana del 9 al 15).
+  ?vista=ipad (página) · ?vista=ipad-editar (modo edición) · ?vista=ipad-nueva (hoja nueva tarea)
+  ?vista=ipad-quien (¿quién lo ha hecho?, cocina) · ?vista=ipad-portada (widget)
+  ?vista=movil (widget en la portada) · ?vista=movil-pagina · ?vista=movil-semana · ?vista=movil-editar (hoja editar tarea)
+  Las tareas son lo principal; la nota de la semana acompaña. Filas con el mismo formato que la lista de la compra.
+  El estado nunca va solo en color: sección, icono y texto.
 -->
 <style>
 :root {
@@ -55,102 +56,84 @@ svg { display: block; }
 .dots span.on { background: var(--tinta); }
 .cuerpo { flex-grow: 1; min-height: 0; display: flex; margin-top: 8px; }
 
-/* ---------- Baraja: resumen de la semana ---------- */
-.carta { position: relative; flex-shrink: 0; background: var(--widget); border-radius: 20px; padding: 16px; box-shadow: inset 0 -1px 0 var(--sep); }
-.carta + .carta { margin-top: -40px; padding-top: 56px; }
-.carta.reparto { background: var(--finde); box-shadow: none; padding-bottom: 16px; }
-.mes { display: flex; align-items: center; justify-content: space-between; height: 36px; }
-.mes h1 { margin: 0; font-size: 16px; font-weight: 600; }
-.flechas { display: flex; align-items: center; color: var(--sec); }
-.flechas a { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
-.flechas a.off { opacity: 0.3; }
-
-/* La nota: estrellas (se leen por forma, no por color) */
-.nota { display: flex; align-items: center; margin-top: 16px; }
-.estrellas { display: flex; align-items: center; }
-.estrellas svg + svg { margin-left: 4px; }
-.nota .num { font-size: 64px; font-weight: 300; letter-spacing: -2px; line-height: 0.9; margin-left: 16px; }
-.nota .de { display: flex; flex-direction: column; margin-left: 8px; font-size: 14px; color: var(--sec); }
-.nota .de .rot { margin-top: 4px; }
-
-.barra { position: relative; flex-shrink: 0; height: 12px; border-radius: 6px; background: var(--pista); margin-top: 24px; }
-.barra i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--tinta); }
-.barra.lento i { background: var(--aviso); }
-.barra .marca { position: absolute; top: -4px; width: 2px; height: 20px; margin-left: -1px; border-radius: 1px; background: var(--tinta); box-shadow: 0 0 0 2px var(--widget); }
-.datos { display: flex; margin-top: 24px; }
-.datos > div { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; padding-right: 12px; }
-.datos .v { font-size: 14px; margin-top: 4px; white-space: nowrap; }
-.datos .v.lento { color: var(--aviso); font-weight: 600; }
-
-/* Reparto: discreto, sin podio */
-.rep { display: flex; align-items: center; }
-.rep .t { font-size: 14px; display: flex; align-items: center; white-space: nowrap; }
-.rep .t .pto { margin-right: 8px; }
-.rep .t b { font-weight: 400; font-family: var(--mono); font-size: 12px; color: var(--sec); margin-left: 8px; }
-.rep .t + .t { margin-left: 24px; }
-.rep-barra { display: flex; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 12px; }
-.rep-barra i { display: block; height: 6px; }
-.rep-barra i + i { margin-left: 2px; }
-
-/* Semanas anteriores */
-.hist { margin-top: 16px; flex-grow: 1; padding: 16px; display: flex; flex-direction: column; }
-.sems { display: flex; align-items: flex-end; }
-.sems .col { flex: 1 1 0; display: flex; flex-direction: column; align-items: center; }
-.sems .col + .col { margin-left: 12px; }
-.sems .v { font-family: var(--mono); font-size: 10px; color: var(--sec); display: flex; align-items: center; }
-.sems .v svg { margin-right: 2px; }
-.sems .b { width: 100%; max-width: 48px; border-radius: 8px 8px 4px 4px; background: var(--pista); margin-top: 4px; }
-.sems .col.actual .b { background: var(--acento); }
-.sems .col.actual .b.prov { background: repeating-linear-gradient(135deg, var(--acento) 0 6px, #d8c6b3 6px 12px); }
-.sems .m { font-family: var(--mono); font-size: 10px; color: var(--sec); margin-top: 8px; }
-.sems .col.actual .m { color: var(--tinta); font-weight: 700; }
-
-/* ---------- Lista de tareas ---------- */
-.lista { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; overflow: hidden; }
-.lista-cab { padding: 16px 16px 12px; }
-.cab { display: flex; align-items: center; justify-content: space-between; height: 36px; }
-.cab h1 { margin: 0; font-size: 16px; font-weight: 600; }
-.seg { display: flex; height: 44px; padding: 4px; border-radius: 22px; background: var(--finde); }
-.seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 18px; white-space: nowrap; }
-.seg span sup { font-family: var(--mono); font-size: 9px; font-weight: 400; margin-left: 4px; }
-.seg span svg { margin-right: 8px; }
-.seg span.on { background: var(--tinta); color: var(--widget); }
-
+/* ---------- Lista de tareas (formato lista de la compra) ---------- */
+.tlis { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+.cab-carta { padding: 16px 16px 20px; position: relative; z-index: 2; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
+.tit { display: flex; align-items: center; justify-content: space-between; height: 36px; }
+.tit h1 { margin: 0; font-size: 16px; font-weight: 600; }
+.tit h1 .sub { margin-left: 8px; font-size: 12px; color: var(--sec); font-weight: 400; }
+.btn-red { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 0 1px var(--sep-fuerte); }
+.btn-red.on { background: var(--tinta); color: var(--widget); box-shadow: none; }
+.campo { display: flex; align-items: center; height: 48px; margin-top: 12px; padding: 0 16px; border-radius: 24px; background: var(--finde); font-size: 14px; color: var(--ter); }
+.campo svg { margin-right: 12px; color: var(--ter); }
 .franja { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 16px; background: var(--finde); font-size: 12px; font-weight: 600; color: var(--sec); }
 .franja .rot { font-weight: 400; display: flex; align-items: center; }
 .franja .rot svg { margin-left: 4px; }
 .franja.aviso { color: var(--aviso); }
-.franja.aviso .ico { display: flex; align-items: center; }
-.franja.aviso .ico svg { margin-right: 6px; }
+.franja .ico { display: flex; align-items: center; }
+.franja .ico svg { margin-right: 6px; }
+.it { display: flex; align-items: center; min-height: 56px; padding: 0 16px; }
+.it + .it { box-shadow: inset 0 1px 0 var(--sep); }
+.ck { width: 24px; height: 24px; border-radius: 12px; box-shadow: inset 0 0 0 1.3px #b9b6ae; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--widget); }
+.it.hecha .ck { background: var(--tinta); box-shadow: none; }
+.it.atr .ck { box-shadow: inset 0 0 0 1.6px var(--aviso); }
+.nom { flex-grow: 1; min-width: 0; margin-left: 12px; padding: 8px 0; }
+.nom b { display: block; font-weight: 400; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nom i { display: block; font-style: normal; font-size: 12px; color: var(--sec); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.it.atr .nom i em { font-style: normal; color: var(--aviso); font-weight: 600; }
+.it.hecha .nom b { color: var(--ter); text-decoration: line-through; }
+.pts { flex-shrink: 0; font-family: var(--mono); font-size: 11px; color: var(--sec); margin-left: 12px; text-align: right; white-space: nowrap; }
+.pts .extra { display: block; color: var(--aviso); font-weight: 700; margin-top: 2px; }
+.it .ed { width: 32px; height: 32px; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--sec); margin-left: 8px; box-shadow: inset 0 0 0 1px var(--sep-fuerte); }
+.editando .ck { visibility: hidden; width: 0; }
+.editando .nom { margin-left: 0; }
+.it.pausa .nom b { color: var(--ter); }
+.items { flex-grow: 1; min-height: 0; overflow: hidden; }
+.dosc { display: flex; }
+.dosc > div { flex: 1 1 0; min-width: 0; }
+.dosc > div + div { box-shadow: inset 1px 0 0 var(--sep); }
 
-.tarea { display: flex; align-items: center; min-height: 64px; padding: 0 12px 0 16px; position: relative; }
-.tarea + .tarea { box-shadow: inset 0 1px 0 var(--sep); }
-.tarea .ic { width: 32px; height: 32px; border-radius: 16px; background: var(--finde); display: flex; align-items: center; justify-content: center; color: var(--sec); flex-shrink: 0; }
-.tarea .nom { flex-grow: 1; min-width: 0; margin-left: 12px; display: flex; flex-direction: column; }
-.tarea .n1 { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tarea .rot { margin-top: 2px; white-space: nowrap; }
-.tarea.acum .rot b { color: var(--aviso); font-weight: 700; }
-/* Barra de urgencia: cuánto del intervalo ha pasado (llena = toca; más allá se marca) */
-.urg { position: relative; height: 4px; border-radius: 2px; background: var(--pista); margin-top: 8px; width: 100%; max-width: 160px; }
-.urg i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: var(--sec); }
-.tarea.acum .urg i { background: var(--aviso); }
-.urg .tope { position: absolute; top: -2px; width: 2px; height: 8px; border-radius: 1px; background: var(--tinta); box-shadow: 0 0 0 1.5px var(--widget); }
-.talla { font-family: var(--mono); font-size: 11px; color: var(--sec); margin-left: 12px; display: flex; flex-direction: column; align-items: flex-end; white-space: nowrap; }
-.talla .extra { color: var(--aviso); font-weight: 700; margin-top: 2px; }
-.hecho { width: 44px; height: 44px; border-radius: 22px; box-shadow: inset 0 0 0 1.5px var(--sep-fuerte); display: flex; align-items: center; justify-content: center; color: var(--sec); margin-left: 12px; flex-shrink: 0; }
-.tarea.acum .hecho { box-shadow: inset 0 0 0 1.5px var(--tinta); color: var(--tinta); }
-.plegada { display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 16px; font-size: 13px; color: var(--sec); box-shadow: inset 0 1px 0 var(--sep); }
-.plegada .nombres { flex-grow: 1; min-width: 0; margin-right: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* ---------- La semana (acompaña) ---------- */
+.lado { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; }
+.carta { position: relative; flex-shrink: 0; background: var(--widget); border-radius: 20px; padding: 16px; box-shadow: inset 0 -1px 0 var(--sep); }
+.carta + .carta { margin-top: -40px; padding-top: 56px; }
+.carta.gris { background: var(--finde); box-shadow: none; }
+.flechas { display: flex; align-items: center; color: var(--sec); }
+.flechas a { width: 36px; height: 36px; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+.flechas a.off { opacity: 0.3; }
+.nota { display: flex; align-items: center; margin-top: 12px; }
+.estrellas { display: flex; align-items: center; }
+.estrellas svg + svg { margin-left: 4px; }
+.nota .num { font-size: 44px; font-weight: 300; letter-spacing: -1.5px; line-height: 0.9; margin-left: 16px; }
+.nota .de { display: flex; flex-direction: column; margin-left: 8px; font-size: 13px; color: var(--sec); }
+.nota .de .rot { margin-top: 2px; }
+.antes { display: flex; margin-top: 16px; }
+.antes span { display: flex; align-items: center; font-family: var(--mono); font-size: 10px; color: var(--sec); white-space: nowrap; }
+.antes span + span { margin-left: 16px; }
+.antes span svg { margin: 0 2px 0 6px; }
 
-/* Actividad (pestaña Hecho) */
-.act { display: flex; align-items: center; min-height: 52px; padding: 0 16px; }
+/* La cuerda: cada uno tira hacia su lado; el nudo marca quién va ganando */
+.cuerda-n { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; }
+.cuerda-n span { display: flex; align-items: center; }
+.cuerda-n .pto { margin-right: 8px; }
+.cuerda-n .derecha .pto { margin: 0 0 0 8px; }
+.cuerda-n b { font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--sec); margin-left: 8px; }
+.cuerda-n .derecha b { margin: 0 8px 0 0; }
+.cuerda { position: relative; height: 8px; margin-top: 12px; }
+.cuerda .l, .cuerda .m { position: absolute; top: 2px; height: 4px; }
+.cuerda .l { left: 0; background: var(--lidia); border-radius: 2px 0 0 2px; }
+.cuerda .m { right: 0; background: var(--miguel); border-radius: 0 2px 2px 0; }
+.cuerda .centro { position: absolute; left: 50%; top: -4px; width: 2px; height: 16px; margin-left: -1px; border-radius: 1px; background: var(--ter); }
+.cuerda .nudo { position: absolute; top: -2px; width: 12px; height: 12px; margin-left: -6px; border-radius: 6px; background: var(--tinta); box-shadow: 0 0 0 2px var(--finde); }
+
+.feed { margin-top: 16px; flex-grow: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+.feed .w-cab { padding: 16px 16px 12px; }
+.act { display: flex; align-items: center; min-height: 48px; padding: 0 16px; }
 .act + .act { box-shadow: inset 0 1px 0 var(--sep); }
-.act .ic { width: 32px; height: 32px; border-radius: 16px; background: var(--finde); display: flex; align-items: center; justify-content: center; color: var(--sec); flex-shrink: 0; }
-.act .nom { flex-grow: 1; min-width: 0; margin-left: 12px; display: flex; flex-direction: column; }
-.act .n1 { font-size: 14px; }
-.act .rot { margin-top: 2px; display: flex; align-items: center; }
-.act .rot .pto { margin-right: 6px; }
-.act .pts { font-family: var(--mono); font-size: 13px; margin-left: 12px; }
+.act .nom { padding: 6px 0; margin-left: 0; }
+.act .nom i { display: flex; align-items: center; }
+.act .nom i .pto { margin-right: 6px; }
+.act .pts { font-size: 12px; color: var(--tinta); }
 .act .pts.extra { color: var(--aviso); }
 
 /* ---------- iPad: widget en la portada ---------- */
@@ -160,34 +143,51 @@ svg { display: block; }
 .fila > * { width: calc((100% - 32px) / 3); flex-shrink: 0; }
 .fila > * + * { margin-left: 16px; }
 .wt { display: flex; flex-direction: column; overflow: hidden; }
-.wt .cima { padding: 16px 16px 12px; }
-.wt .nota { margin-top: 12px; }
-.wt .nota .num { font-size: 32px; letter-spacing: -1px; margin-left: 12px; }
-.wt .nota .de { font-size: 12px; }
-.wt .tarea { min-height: 56px; padding-right: 8px; }
-.wt .tarea .urg { display: none; }
-.wt .tarea .hecho { width: 40px; height: 40px; border-radius: 20px; }
-.app .wt .talla { display: none; }
-.wt .mas { padding: 0 16px; height: 40px; display: flex; align-items: center; font-size: 12px; color: var(--sec); box-shadow: inset 0 1px 0 var(--sep); margin-top: auto; }
+.wt .w-cab { padding: 16px 16px 8px; }
+.wt .mini { display: flex; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--sec); }
+.wt .mini svg { margin-right: 4px; }
+.wt .it { min-height: 52px; }
+.wt .mas { padding: 0 16px; height: 40px; display: flex; align-items: center; font-size: 12px; color: var(--sec); box-shadow: inset 0 1px 0 var(--sep); margin-top: auto; flex-shrink: 0; }
 
-/* ---------- Hoja: ¿quién lo ha hecho? ---------- */
+/* ---------- Hojas ---------- */
 .velo { position: absolute; z-index: 100; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); }
 .hoja { position: absolute; z-index: 101; background: var(--widget); border-radius: 20px; padding: 24px; }
-.app .hoja { width: 440px; left: 292px; top: 168px; }
-.hoja .tit { display: flex; align-items: center; }
-.hoja .tit .ic { width: 40px; height: 40px; border-radius: 20px; background: var(--finde); display: flex; align-items: center; justify-content: center; color: var(--sec); }
-.hoja .tit h2 { margin: 0 0 0 12px; font-size: 18px; font-weight: 600; }
-.hoja .rot.pre { display: block; margin-top: 24px; }
-.hoja .seg { margin-top: 8px; height: 52px; border-radius: 26px; }
-.hoja .seg span { border-radius: 22px; }
-.hoja .seg span em { font-style: normal; font-family: var(--mono); font-size: 10px; font-weight: 400; margin-left: 8px; opacity: 0.7; }
+.app .hoja { width: 440px; left: 292px; top: 120px; }
+.hoja .h-tit { display: flex; align-items: center; justify-content: space-between; }
+.hoja .h-tit h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.hoja .rot.pre { display: block; margin-top: 20px; }
+.input { display: flex; align-items: center; height: 52px; margin-top: 8px; padding: 0 16px; border-radius: 26px; background: var(--fondo); font-size: 15px; }
+.input i { display: inline-block; width: 2px; height: 20px; background: var(--tinta); margin-left: 1px; }
+.pills { display: flex; flex-wrap: wrap; margin: 4px 0 0 -4px; }
+.pill { margin: 4px 0 0 4px; height: 40px; padding: 0 16px; border-radius: 20px; background: var(--finde); font-size: 13px; display: flex; align-items: center; white-space: nowrap; }
+.pill.on { background: var(--tinta); color: var(--widget); }
+.pill.mas { box-shadow: inset 0 0 0 1px var(--sep-fuerte); background: transparent; color: var(--sec); }
+.pill .x { margin-left: 8px; opacity: 0.6; }
+.frec { display: flex; align-items: center; margin-top: 8px; }
+.paso { display: flex; align-items: center; height: 44px; border-radius: 22px; background: var(--finde); }
+.paso a { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--sec); }
+.paso b { min-width: 24px; text-align: center; font-size: 16px; font-weight: 500; }
+.frec .por { margin: 0 12px; font-size: 14px; color: var(--sec); white-space: nowrap; }
+.seg { display: flex; height: 44px; padding: 4px; border-radius: 22px; background: var(--finde); flex-grow: 1; }
+.seg span { flex: 1 1 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--sec); border-radius: 18px; white-space: nowrap; }
+.seg span sup { font-family: var(--mono); font-size: 9px; font-weight: 400; margin-left: 4px; }
+.seg span svg { margin-right: 8px; }
+.seg span em { font-style: normal; font-family: var(--mono); font-size: 10px; font-weight: 400; margin-left: 8px; opacity: 0.7; }
+.seg span.on { background: var(--tinta); color: var(--widget); }
+.hoja .seg.ancho { margin-top: 8px; height: 52px; border-radius: 26px; }
+.hoja .seg.ancho span { border-radius: 22px; }
+.ayuda { font-family: var(--mono); font-size: 10px; color: var(--ter); margin-top: 8px; }
+.interr { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; font-size: 14px; }
+.interr .sw { width: 52px; height: 32px; border-radius: 16px; background: var(--pista); position: relative; }
+.interr .sw::after { content: ''; position: absolute; left: 4px; top: 4px; width: 24px; height: 24px; border-radius: 12px; background: var(--widget); }
 .quien { display: flex; margin-top: 8px; }
 .quien a { flex: 1 1 0; height: 96px; border-radius: 20px; background: var(--finde); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
 .quien a + a { margin-left: 12px; }
 .quien .bur { width: 40px; height: 40px; border-radius: 20px; font-size: 16px; margin-bottom: 8px; }
-.hoja .pie { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+.hoja .pie { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
 .btn-linea { height: 40px; padding: 0 20px; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--sep-fuerte); display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--sec); }
-.guardar { height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; margin-top: 20px; }
+.btn-linea.borrar { color: var(--aviso); }
+.guardar { height: 48px; padding: 0 32px; border-radius: 24px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
 
 /* ---------- Móvil ---------- */
 .movil { width: 390px; min-height: 844px; padding: 0 16px 112px; position: relative; }
@@ -201,18 +201,17 @@ svg { display: block; }
 .m-fila { display: flex; margin-top: 16px; }
 .m-fila > * { width: calc((100% - 16px) / 2); height: 171px; flex-shrink: 0; }
 .m-fila > * + * { margin-left: 16px; }
-.movil .baraja { margin-top: 16px; }
-.movil .nota .num { font-size: 44px; letter-spacing: -1.5px; margin-left: 12px; }
-.movil .datos { flex-wrap: wrap; }
-.movil .datos > div { flex: 0 0 50%; }
-.movil .datos > div:nth-child(n+3) { margin-top: 12px; }
-.movil .seg.pest { margin-top: 16px; background: var(--widget); }
-.m-lista { margin-top: 16px; overflow: hidden; }
 .movil .wt { margin-top: 16px; }
+.movil .seg.pest { margin-top: 16px; background: var(--widget); }
+.movil .tlis { margin-top: 16px; overflow: visible; }
+.movil .campo { height: 52px; border-radius: 26px; }
+.movil .lado { width: auto; margin: 16px 0 0; }
 .aviso-deshacer { position: absolute; z-index: 30; left: 16px; right: 16px; bottom: 96px; height: 52px; border-radius: 26px; background: var(--tinta); color: var(--widget); display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 20px; font-size: 13px; }
 .aviso-deshacer b { font-family: var(--mono); font-weight: 400; font-size: 12px; opacity: 0.7; margin-left: 8px; }
 .aviso-deshacer a { height: 36px; padding: 0 16px; border-radius: 18px; background: rgba(244,243,239,0.16); display: flex; align-items: center; font-weight: 600; }
-.movil .hoja { left: 8px; right: 8px; top: 56px; }
+.movil .frec { flex-wrap: wrap; }
+.movil .frec .seg { flex: 1 0 100%; margin-top: 8px; }
+.movil .hoja { left: 8px; right: 8px; top: 56px; padding: 20px; }
 </style>
 </head>
 <body>
@@ -257,110 +256,89 @@ function estrellas(n, t) {
   return h + '</span>';
 }
 
+I.lapiz = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>';
+I.mas = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+I.menos = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 12h14"/></svg>';
+I.ck = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+I.x = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
 // ---------- Datos inventados: jueves 12 de noviembre, día 4 de la semana ----------
-var TALLA = { S: 50, M: 100, L: 200 };
-// [icono, nombre, intervalo en días, texto de frecuencia, talla, hace (días)]
+// [icono, nombre, intervalo en días, frecuencia, puntos, hace (días), formas]
 var TAREAS = [
-  ['doblar', 'Doblar y recoger ropa', 3.5, '2 por semana', 'M', 7],
-  ['bano', 'Limpiar el baño', 7, '1 por semana', 'L', 11],
-  ['lavar', 'Poner lavadora', 2.3, '3 por semana', 'S', 2],
-  ['secar', 'Secar ropa', 2.3, '3 por semana', 'S', 2],
-  ['cafe', 'Limpiar cafetera a fondo', 10, '3 al mes', 'S', 8],
-  ['cama', 'Cambiar sábanas y fundas', 15, 'cada 15 días', 'M', 6],
-  ['sabanas', 'Lavar y secar sábanas y toallas', 15, 'cada 15 días', 'M', 6],
-  ['guardarS', 'Doblar y guardar sábanas', 15, 'cada 15 días', 'S', 5],
-  ['cal2', 'Descalcificar cafetera', 91, 'cada 3 meses', 'M', 40]
+  ['doblar', 'Doblar y recoger ropa', 3.5, '2 por semana', 100, 7],
+  ['bano', 'Limpiar el baño', 7, '1 por semana', 200, 11],
+  ['lavar', 'Poner lavadora', 2.3, '3 por semana', 50, 2],
+  ['secar', 'Secar ropa', 2.3, '3 por semana', '50–100', 2, true],
+  ['cafe', 'Limpiar cafetera a fondo', 10, '3 al mes', 50, 8],
+  ['cama', 'Cambiar sábanas y fundas', 15, '2 al mes', 100, 6],
+  ['sabanas', 'Lavar y secar sábanas y toallas', 15, '2 al mes', 100, 6],
+  ['guardarS', 'Doblar y guardar sábanas', 15, '2 al mes', 50, 5],
+  ['cal2', 'Descalcificar cafetera', 91, '4 al año', 100, 40]
 ];
-// Umbrales: < 70 % en regla · 70–130 % toca · > 130 % acumulada
+// Atrasada > 130 % del intervalo · Pendiente 70–130 % · Al día < 70 %
 function pct(t) { return t[5] / t[2]; }
-var acum = [], toca = [], regla = [];
-TAREAS.forEach(function (t) { var p = pct(t); (p > 1.3 ? acum : p >= 0.7 ? toca : regla).push(t); });
+var atr = [], pend = [], aldia = [];
+TAREAS.forEach(function (t) { var p = pct(t); (p > 1.3 ? atr : p >= 0.7 ? pend : aldia).push(t); });
 function ord(a, b) { return pct(b) - pct(a); }
-acum.sort(ord); toca.sort(ord); regla.sort(ord);
+atr.sort(ord); pend.sort(ord); aldia.sort(ord);
 
-// Lo hecho esta semana: [día, icono, tarea, detalle, quién, puntos, rescate]
+// Hecho esta semana: [día, tarea, detalle, quién, puntos, rescate]
 var HECHO = [
-  ['mar 10', 'secar', 'Secar ropa', 'secadora', 'L', 50],
-  ['mar 10', 'lavar', 'Poner lavadora', '', 'M', 50],
-  ['lun 9', 'secar', 'Secar ropa', 'tendida al sol', 'M', 100],
-  ['lun 9', 'lavar', 'Poner lavadora', '', 'L', 50]
+  ['mar 10', 'Secar ropa', 'secadora', 'L', 50],
+  ['mar 10', 'Poner lavadora', '', 'M', 50],
+  ['lun 9', 'Secar ropa', 'tendida', 'M', 100],
+  ['lun 9', 'Poner lavadora', '', 'L', 50]
 ];
-// Puntos esperados por semana: suma de talla × veces por semana (≈ 860)
-var ESPERADO = 0;
-TAREAS.forEach(function (t) { ESPERADO += TALLA[t[4]] * 7 / t[2]; });
-ESPERADO = Math.round(ESPERADO / 10) * 10;
-var DIA = 4, HOY_ESP = Math.round(ESPERADO * DIA / 7);
-var PTS = 0, PL = 0, PM = 0;
-HECHO.forEach(function (h) { PTS += h[5]; if (h[4] === 'L') PL += h[5]; else PM += h[5]; });
-// Nota provisional: lo hecho frente a lo que tocaba hasta hoy. El domingo se cierra con la semana entera.
-var NOTA = Math.min(5, Math.round(PTS / HOY_ESP * 10) / 2);
-var SEMANAS = [['19 oct', 4], ['26 oct', 3.5], ['2 nov', 4.5], ['9 nov', NOTA]];
+var NOTA = 2.5, PL = 100, PM = 150;
+var ANTES = [['26 oct', 3.5], ['2 nov', 4.5]];
 var NOMBRE = { L: 'Lidia', M: 'Miguel' };
-
 function coma(n) { return String(n).replace('.', ','); }
-function haceTxt(t) {
-  var p = pct(t), faltan = Math.round(t[2] - t[5]);
-  if (p > 1.3) return 'hace ' + t[5] + ' d · <b>' + Math.round(t[5] - t[2]) + ' d de retraso</b>';
-  if (p >= 0.7) return 'hace ' + t[5] + ' d · ' + t[3];
-  return 'hace ' + t[5] + ' d · toca en ' + faltan + ' d';
+
+// ---------- Filas: mismo formato que la lista de la compra ----------
+function sub(t, corta) {
+  var p = pct(t);
+  if (p > 1.3) return (corta ? '' : 'hace ' + t[5] + ' días · ') + '<em>' + Math.round(t[5] - t[2]) + ' días de retraso</em>';
+  if (p >= 0.7) return 'hace ' + t[5] + ' días' + (corta ? '' : ' · ' + t[3]);
+  return 'en ' + Math.round(t[2] - t[5]) + ' días' + (corta ? '' : ' · ' + t[3]);
 }
-function filaTarea(t, corta) {
-  var p = pct(t), ac = p > 1.3, w = Math.min(100, p / 1.5 * 100);
-  return '<div class="tarea' + (ac ? ' acum' : '') + '"><span class="ic">' + I[t[0]] + '</span>' +
-    '<span class="nom"><span class="n1">' + t[1] + '</span><span class="rot">' + (corta ? (ac ? '<b>' + Math.round(t[5] - t[2]) + ' d de retraso</b>' : 'hace ' + t[5] + ' d') : haceTxt(t)) + '</span>' +
-    '<span class="urg"><i style="width:' + w + '%"></i><span class="tope" style="left:' + (100 / 1.5) + '%"></span></span></span>' +
-    '<span class="talla">' + t[4] + ' · ' + TALLA[t[4]] + (ac ? '<span class="extra">+' + TALLA[t[4]] / 2 + '</span>' : '') + '</span>' +
-    '<a class="hecho">' + I.check + '</a></div>';
+function fila(t, op) {
+  op = op || {};
+  var a = pct(t) > 1.3, pts = typeof t[4] === 'number' ? t[4] : t[4];
+  return '<div class="it' + (a ? ' atr' : '') + (op.hecha ? ' hecha' : '') + '"><span class="ck">' + (op.hecha ? I.ck : '') + '</span>' +
+    '<span class="nom"><b>' + t[1] + '</b><i>' + sub(t, op.corta) + '</i></span>' +
+    '<span class="pts">' + pts + ' pts' + (a && !op.editar ? '<span class="extra">+' + t[4] / 2 + '</span>' : '') + '</span>' +
+    (op.editar ? '<a class="ed">' + I.lapiz + '</a>' : '') + '</div>';
 }
-function listaPendientes() {
-  var h = '';
-  if (acum.length) { h += '<div class="franja aviso"><span class="ico">' + I.alerta + 'Acumuladas</span><span class="rot">rescate +50 %</span></div>'; acum.forEach(function (t) { h += filaTarea(t); }); }
-  if (toca.length) { h += '<div class="franja"><span>Toca</span><span class="rot">' + toca.length + '</span></div>'; toca.forEach(function (t) { h += filaTarea(t); }); }
-  h += '<div class="franja"><span>En regla</span><span class="rot">' + regla.length + I.abajo + '</span></div>';
-  h += '<div class="plegada"><span class="nombres">' + regla.map(function (t) { return t[1]; }).join(' · ') + '</span></div>';
+function franjaAtr() { return '<div class="franja aviso"><span class="ico">' + I.alerta + 'Atrasadas</span><span class="rot">rescate +50 %</span></div>'; }
+function bloque(titulo, lista, op, aviso) {
+  if (!lista.length) return '';
+  var h = aviso ? franjaAtr() : '<div class="franja"><span>' + titulo + '</span><span class="rot">' + lista.length + '</span></div>';
+  lista.forEach(function (t, k) { h += fila(t, op && op.marcada === t[1] ? { hecha: true } : op); });
   return h;
 }
-function listaHecho() {
-  var h = '', dia = null;
+
+// ---------- La semana ----------
+function cuerda() {
+  var tot = PL + PM, n = PL / tot * 100;
+  return '<div class="cuerda-n"><span><span class="pto L"></span>Lidia<b>' + PL + '</b></span><span class="derecha"><b>' + PM + '</b>Miguel<span class="pto M"></span></span></div>' +
+    '<div class="cuerda"><span class="l" style="width:' + n + '%"></span><span class="m" style="width:' + (100 - n) + '%"></span><span class="centro"></span><span class="nudo" style="left:' + n + '%"></span></div>';
+}
+function cartaNota() {
+  var h = '<div class="carta" style="z-index:2"><div class="w-cab"><h2 class="w-tit" style="font-size:16px">Esta semana</h2><span class="flechas"><a>' + I.izq + '</a><a class="off">' + I.der + '</a></span></div>' +
+    '<div class="nota">' + estrellas(NOTA, 24) + '<span class="num">' + coma(NOTA) + '</span><span class="de">de 5<span class="rot">hasta hoy</span></span></div><div class="antes">';
+  ANTES.forEach(function (s) { h += '<span>' + s[0] + estrella(1, 10) + coma(s[1]) + '</span>'; });
+  return h + '</div></div><div class="carta gris" style="z-index:1">' + cuerda() + '</div>';
+}
+function feed() {
+  var h = '<div class="w feed"><div class="w-cab"><h2 class="w-tit">Hecho esta semana</h2><span class="rot">' + (PL + PM) + ' pts</span></div>', dia = null;
   HECHO.forEach(function (x) {
-    if (x[0] !== dia) {
-      dia = x[0]; var s = 0;
-      HECHO.forEach(function (y) { if (y[0] === dia) s += y[5]; });
-      h += '<div class="franja"><span>' + dia + '</span><span class="rot">' + s + ' pts</span></div>';
-    }
-    h += '<div class="act"><span class="ic">' + I[x[1]] + '</span><span class="nom"><span class="n1">' + x[2] + '</span><span class="rot"><span class="pto ' + x[4] + '"></span>' + NOMBRE[x[4]] + (x[3] ? ' · ' + x[3] : '') + '</span></span><span class="pts">+' + x[5] + '</span></div>';
+    if (x[0] !== dia) { dia = x[0]; h += '<div class="franja"><span>' + dia + '</span></div>'; }
+    h += '<div class="act"><span class="nom"><b>' + x[1] + '</b><i><span class="pto ' + x[3] + '"></span>' + NOMBRE[x[3]] + (x[2] ? ' · ' + x[2] : '') + '</i></span><span class="pts">+' + x[4] + '</span></div>';
   });
-  h += '<div class="franja"><span>Semana anterior</span><span class="rot">' + estrellas(4.5, 10).replace('class="estrellas"', 'class="estrellas" style="margin-right:4px"') + '4,5</span></div>';
-  h += '<div class="act"><span class="ic">' + I.bano + '</span><span class="nom"><span class="n1">Limpiar el baño</span><span class="rot"><span class="pto M"></span>Miguel · rescatada</span></span><span class="pts extra">+300</span></div>';
-  return h;
+  return h + '</div>';
 }
 
-function cartaSemana(grande) {
-  var lento = PTS < HOY_ESP;
-  return '<div class="carta" style="z-index:2"><div class="mes"><h1>Semana del 9 al 15 nov</h1><span class="flechas"><a>' + I.izq + '</a><a class="off">' + I.der + '</a></span></div>' +
-    '<div class="nota">' + estrellas(NOTA, grande ? 32 : 24) + '<span class="num">' + coma(NOTA) + '</span><span class="de">de 5<span class="rot">provisional</span></span></div>' +
-    '<div class="barra' + (lento ? ' lento' : '') + '"><i style="width:' + (PTS / ESPERADO * 100) + '%"></i><span class="marca" style="left:' + (HOY_ESP / ESPERADO * 100) + '%"></span></div>' +
-    '<div class="datos"><div><span class="rot">ritmo</span><span class="v' + (lento ? ' lento' : '') + '">' + Math.abs(HOY_ESP - PTS) + ' pts ' + (lento ? 'por debajo' : 'por encima') + '</span></div>' +
-    '<div><span class="rot">puntos</span><span class="v">' + PTS + ' de ' + ESPERADO + '</span></div>' +
-    '<div><span class="rot">acumuladas</span><span class="v">' + acum.length + '</span></div>' +
-    '<div><span class="rot">días</span><span class="v">' + (7 - DIA) + '</span></div></div></div>';
-}
-function cartaReparto() {
-  return '<div class="carta reparto" style="z-index:1"><div class="rep"><span class="t"><span class="pto L"></span>Lidia<b>' + PL + ' pts</b></span><span class="t"><span class="pto M"></span>Miguel<b>' + PM + ' pts</b></span></div>' +
-    '<div class="rep-barra"><i class="L" style="width:' + (PL / PTS * 100) + '%"></i><i class="M" style="flex-grow:1"></i></div></div>';
-}
-function historial() {
-  var h = '<div class="w hist"><div class="w-cab"><h2 class="w-tit">Últimas semanas</h2><span class="rot">nota de la familia</span></div><div class="crece"></div><div class="sems">';
-  SEMANAS.forEach(function (s, k) {
-    var act = k === SEMANAS.length - 1;
-    h += '<div class="col' + (act ? ' actual' : '') + '"><span class="v">' + estrella(1, 10) + coma(s[1]) + '</span><span class="b' + (act ? ' prov' : '') + '" style="height:' + Math.round(s[1] / 5 * 150) + 'px"></span><span class="m">' + s[0] + '</span></div>';
-  });
-  return h + '</div></div>';
-}
-function cabLista(pest) {
-  return '<div class="lista-cab"><div class="seg"><span' + (pest === 'p' ? ' class="on"' : '') + '>Pendientes<sup>' + (acum.length + toca.length) + '</sup></span><span' + (pest === 'h' ? ' class="on"' : '') + '>Hecho<sup>' + HECHO.length + '</sup></span></div></div>';
-}
-
+// ---------- iPad ----------
 function rail(activo) {
   var n = ['inicio', 'cal', 'compra', 'tareas', 'comer', 'fotos'], h = '<nav class="rail"><div class="logo">P<span>.</span></div><div class="esp"></div>';
   for (var k = 0; k < n.length; k++) h += '<a class="nav' + (n[k] === activo ? ' activo' : '') + '">' + I[n[k]] + '</a>';
@@ -369,37 +347,52 @@ function rail(activo) {
 function topbar(dots) {
   return '<header class="topbar"><span class="hora">19:20</span><span class="fecha">Jueves, 12 de noviembre</span>' + (dots ? '<span class="dots"><span class="on"></span><span></span></span>' : '') + '</header>';
 }
-
-function ipad(pest) {
+function cabTareas(editar) {
+  return '<div class="cab-carta"><div class="tit"><h1>Tareas de casa<span class="sub">' + (atr.length + pend.length) + ' por hacer</span></h1><a class="btn-red' + (editar ? ' on' : '') + '">' + I.lapiz + '</a></div>' +
+    '<div class="campo">' + I.mas + 'Añade una tarea…</div></div>';
+}
+function ipad(editar) {
+  var op = editar ? { editar: true } : null;
   return '<div class="app">' + rail('tareas') + '<main class="content">' + topbar() +
-    '<div class="cuerpo"><section class="izq" style="flex:1 1 0;min-width:0;display:flex;flex-direction:column"><div class="baraja">' + cartaSemana(true) + cartaReparto() + '</div>' + historial() + '</section>' +
-    '<section class="w lista">' + cabLista(pest || 'p') + (pest === 'h' ? listaHecho() : listaPendientes()) + '</section></div></main></div>';
+    '<div class="cuerpo"><section class="w tlis' + (editar ? ' editando' : '') + '">' + cabTareas(editar) +
+    '<div class="items dosc"><div>' + bloque('', atr, op, true) + bloque('Pendientes', pend, op) + '</div><div>' + bloque('Al día', aldia, op) + '</div></div></section>' +
+    '<section class="lado">' + cartaNota() + feed() + '</section></div></main></div>';
 }
 
 function widget() {
-  var top = acum.concat(toca).slice(0, 3), resto = acum.length + toca.length - top.length;
-  var h = '<div class="w wt"><div class="cima"><div class="w-cab"><h2 class="w-tit">Tareas</h2><span class="rot">esta semana</span></div>' +
-    '<div class="nota">' + estrellas(NOTA, 18) + '<span class="num">' + coma(NOTA) + '</span><span class="de">de 5</span></div></div>';
-  top.forEach(function (t) { h += filaTarea(t, true); });
-  return h + '<div class="mas">' + (resto > 0 ? '+' + resto + ' más por hacer' : 'Todo lo demás en regla') + '</div></div>';
+  var top = atr.concat(pend).slice(0, 4), resto = atr.length + pend.length - top.length;
+  var h = '<div class="w wt"><div class="w-cab"><h2 class="w-tit">Tareas de casa</h2><span class="mini">' + estrella(1, 10) + coma(NOTA) + '</span></div>';
+  top.forEach(function (t) { h += fila(t, { corta: true }); });
+  return h + '<div class="mas">' + (resto > 0 ? '+' + resto + ' más por hacer' : 'Lo demás, al día') + '</div></div>';
 }
-
 function ipadPortada() {
   var cal = '<div class="w otro" style="height:100%;background:var(--acento);padding:16px"><span class="rot" style="color:var(--tinta)">calendario</span></div>';
   return '<div class="app">' + rail('inicio') + '<main class="content">' + topbar(true) +
-    '<div class="filas"><div class="fila" style="flex:1 1 0">' + '<div style="width:100%">' + cal + '</div></div>' +
+    '<div class="filas"><div class="fila"><div style="width:100%">' + cal + '</div></div>' +
     '<div class="fila"><div class="w otro" style="padding:16px"><span class="rot">hoy</span><div style="font-size:44px;font-weight:300;margin-top:8px">17°</div></div>' +
     '<div class="w otro" style="padding:16px"><h2 class="w-tit">Lista de la compra</h2></div>' + widget() + '</div></div></main></div>';
 }
 
-function hojaQuien(conSecar) {
-  var t = TAREAS[3];
-  return '<div class="velo"></div><div class="hoja"><div class="tit"><span class="ic">' + I.secar + '</span><h2>' + t[1] + '</h2></div>' +
-    (conSecar ? '<span class="rot pre">cómo</span><div class="seg"><span class="on">' + I.sol + 'Tendida<em>M · 100</em></span><span>Secadora<em>S · 50</em></span></div>' : '') +
+// ---------- Hojas ----------
+function conHoja(base, hoja) { return base.replace(/<\/div>$/, '<div class="velo"></div><div class="hoja">' + hoja + '</div></div>'); }
+function hojaQuien() {
+  return '<div class="h-tit"><h2>Secar ropa</h2></div>' +
+    '<span class="rot pre">cómo</span><div class="seg ancho"><span class="on">' + I.sol + 'Tendida<em>100</em></span><span>Secadora<em>50</em></span></div>' +
     '<span class="rot pre">¿quién lo ha hecho?</span><div class="quien"><a><span class="bur L">L</span>Lidia</a><a><span class="bur M">M</span>Miguel</a></div>' +
-    '<div class="pie"><span class="btn-linea">Posponer 1 día</span><span class="btn-linea">Cancelar</span></div></div>';
+    '<div class="pie"><span class="btn-linea">Posponer 1 día</span><span class="btn-linea">Cancelar</span></div>';
 }
-function ipadQuien() { return ipad('p').replace(/<\/div>$/, hojaQuien(true) + '</div>'); }
+function hojaTarea(editar) {
+  var nombre = editar ? 'Secar ropa' : 'Limpiar los cristales<i></i>';
+  return '<div class="h-tit"><h2>' + (editar ? 'Editar tarea' : 'Nueva tarea') + '</h2></div>' +
+    '<div class="input">' + nombre + '</div>' +
+    (editar ? '' : '<span class="rot pre">puntos</span><div class="pills"><span class="pill">50</span><span class="pill on">100</span><span class="pill">200</span></div>') +
+    '<span class="rot pre">cada cuánto</span><div class="frec"><span class="paso"><a>' + I.menos + '</a><b>' + (editar ? 3 : 1) + '</b><a>' + I.mas + '</a></span><span class="por">' + (editar ? 'veces por' : 'vez por') + '</span>' +
+      '<div class="seg"><span' + (editar ? ' class="on"' : '') + '>semana</span><span' + (editar ? '' : ' class="on"') + '>mes</span><span>año</span></div></div>' +
+    '<span class="rot pre">' + (editar ? 'formas de hacerla · cada una con sus puntos' : 'formas de hacerla') + '</span><div class="pills">' +
+      (editar ? '<span class="pill">Tendida · 100<span class="x">' + I.x + '</span></span><span class="pill">Secadora · 50<span class="x">' + I.x + '</span></span>' : '') + '<span class="pill mas">' + I.mas + '</span></div>' +
+    (editar ? '<div class="interr"><span>En pausa</span><span class="sw"></span></div>' : '') +
+    '<div class="pie">' + (editar ? '<span class="btn-linea borrar">Borrar</span>' : '<span class="btn-linea">Cancelar</span>') + '<span class="guardar">Guardar</span></div>';
+}
 
 // ---------- Móvil ----------
 function mTop() { return '<div class="m-top"><div><div class="logo">P<span>.</span></div><div class="m-fecha">Jueves, 12 de noviembre</div></div><span style="color:var(--tinta)">' + I.ajustes.replace('<svg', '<svg width="22" height="22"') + '</span></div>'; }
@@ -414,22 +407,26 @@ function movilPortada() {
     '<div class="m-fila"><div class="w otro" style="padding:16px"><span class="rot">hoy</span><div style="font-size:36px;font-weight:300;margin-top:8px">17°</div></div><div class="w otro" style="padding:16px"><h2 class="w-tit">Comer fuera</h2></div></div>' +
     widget() + '<div class="w otro" style="margin-top:16px;height:120px;padding:16px"><h2 class="w-tit">Lista de la compra</h2></div>' + mNav('inicio') + '</div>';
 }
-function movilPagina(pest, toast) {
-  return '<div class="movil">' + mTop() + '<div class="baraja">' + cartaSemana(false) + cartaReparto() + '</div>' +
-    '<div class="seg pest"><span' + (pest !== 'h' ? ' class="on"' : '') + '>Pendientes<sup>' + (acum.length + toca.length) + '</sup></span><span' + (pest === 'h' ? ' class="on"' : '') + '>Hecho<sup>' + HECHO.length + '</sup></span><span>Semanas</span></div>' +
-    '<div class="w m-lista">' + (pest === 'h' ? listaHecho() : listaPendientes()) + '</div>' +
+function pest(cual) {
+  return '<div class="seg pest"><span' + (cual === 't' ? ' class="on"' : '') + '>Tareas<sup>' + (atr.length + pend.length) + '</sup></span><span' + (cual === 's' ? ' class="on"' : '') + '>La semana' + '<sup>★ ' + coma(NOTA) + '</sup></span></div>';
+}
+function movilPagina(toast) {
+  return '<div class="movil">' + mTop() + pest('t') + '<section class="w tlis">' + cabTareas() +
+    bloque('', atr, { marcada: toast ? 'Doblar y recoger ropa' : null }, true) + bloque('Pendientes', pend) + bloque('Al día', aldia) + '</section>' +
     (toast ? '<div class="aviso-deshacer"><span>Doblar y recoger ropa<b>+150 pts</b></span><a>Deshacer</a></div>' : '') + mNav('tareas') + '</div>';
 }
-function movilSecar() {
-  var h = movilPagina('p').replace('<div class="movil">', '<div class="movil" style="height:844px;overflow:hidden">').replace(/<\/div>$/, '');
-  var hoja = hojaQuien(true).replace(/<span class="rot pre">¿quién lo ha hecho\?<\/span><div class="quien">.*?<\/div>/, '<div class="guardar">Hecha por mí</div>');
-  return h + hoja + '</div>';
+function movilSemana() {
+  return '<div class="movil">' + mTop() + pest('s') + '<section class="lado">' + cartaNota() + feed() + '</section>' + mNav('tareas') + '</div>';
+}
+function movilEditar() {
+  return conHoja(movilPagina().replace('<div class="movil">', '<div class="movil" style="height:844px;overflow:hidden">'), hojaTarea(true));
 }
 
 var v = (location.search.match(/vista=([\w-]+)/) || [])[1] || 'ipad';
 document.getElementById('raiz').innerHTML =
-  v === 'ipad-portada' ? ipadPortada() : v === 'ipad-quien' ? ipadQuien() : v === 'ipad-hecho' ? ipad('h') :
-  v === 'movil' ? movilPortada() : v === 'movil-pagina' ? movilPagina('p', true) : v === 'movil-hecho' ? movilPagina('h') : v === 'movil-secar' ? movilSecar() : ipad('p');
+  v === 'ipad-portada' ? ipadPortada() : v === 'ipad-editar' ? ipad(true) : v === 'ipad-nueva' ? conHoja(ipad(), hojaTarea(false)) :
+  v === 'ipad-quien' ? conHoja(ipad(), hojaQuien()) :
+  v === 'movil' ? movilPortada() : v === 'movil-pagina' ? movilPagina(true) : v === 'movil-semana' ? movilSemana() : v === 'movil-editar' ? movilEditar() : ipad();
 </script>
 </body>
 </html>
