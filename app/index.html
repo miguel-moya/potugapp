@@ -2622,7 +2622,9 @@ function taSemana(off) {
 // Valoración de la semana, en palabras: lo hecho frente a lo que tocaba (hasta hoy, en la semana en curso)
 var TA_FRASES = [[1.15, 'Estáis a tope'], [0.9, 'Casa en orden'], [0.65, 'No va mal'], [0.4, 'Mejorable'], [0, 'Toca remangarse']];
 // Emoji de cada frase: solo en la página (en los widgets, la frase sola)
-var TA_EMOJI = { 'Estáis a tope': '🚀', 'Casa en orden': '✨', 'No va mal': '👍', 'Mejorable': '📈', 'Toca remangarse': '💪', 'Semana por estrenar': '🏁' };
+// 🤌 (mano italiana) llegó en iOS 14.2: en aparatos más viejos (el iPad de la cocina) se ve 📈
+var TA_IOS = navigator.userAgent.match(/OS (\d+)_(\d+).* like Mac OS X/);
+var TA_EMOJI = { 'Estáis a tope': '🚀', 'Casa en orden': '✨', 'No va mal': '👍', 'Mejorable': TA_IOS && (+TA_IOS[1] < 14 || (+TA_IOS[1] === 14 && +TA_IOS[2] < 2)) ? '📈' : '🤌', 'Toca remangarse': '💪', 'Semana por estrenar': '🏁' };
 function taFrase(r, dias) {
   if (r.ratio === null) return '—';
   if (r.actual && !r.pts && dias <= 2) return 'Semana por estrenar';
