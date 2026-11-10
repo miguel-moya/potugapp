@@ -960,6 +960,12 @@ body.movil.p-tareas #mTareas { display: block; margin-top: 16px; }
 #mTareas.v-s .seg-bola { -webkit-transform: translateX(100%); transform: translateX(100%); }
 #mTareas.v-t .ta-vs, #mTareas.v-s .ta-vt { display: none; }
 
+/* iPad con la app en la pantalla de inicio: la barra de estado de iOS es transparente con letra blanca;
+   se pinta debajo una franja del color de acento (los 20 px que encajar() ya deja libres arriba) */
+#barraIos { display: none; position: fixed; z-index: 5; left: 0; top: 0; right: 0; height: 20px; background: var(--acento); }
+html.ipad-app #barraIos { display: block; }
+body.movil #barraIos { display: none; }
+
 /* Puerta: clave familiar */
 #puerta { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: var(--fondo); z-index: 60; }
 #puerta.on { display: block; }
@@ -1110,6 +1116,7 @@ body.movil.p-tareas #mTareas { display: block; margin-top: 16px; }
   </nav>
 </div>
 
+<div id="barraIos"></div>
 <div id="taAviso"></div>
 
 <div id="cpHoja"><div class="h" id="cpHojaIn"></div></div>
@@ -1231,6 +1238,7 @@ function encajar() {
     st.style.zoom = s; st.style.top = (top / s) + 'px';
   }
 }
+if (window.navigator.standalone) document.documentElement.className += ' ipad-app';
 window.addEventListener('resize', encajar);
 window.addEventListener('orientationchange', function () { setTimeout(encajar, 300); });
 
