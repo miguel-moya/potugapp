@@ -817,6 +817,143 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
 #sbHora { font-size: 150px; font-weight: 300; line-height: 1; color: #7a7a7a; }
 #sbFecha { font-size: 28px; margin-top: 16px; color: #555; }
 
+/* ================= TAREAS DE CASA (#tareas) =================
+   Las tareas son lo principal (formato de la lista de la compra); la nota de la semana acompaña.
+   El estado nunca va solo en color: sección, icono y texto («4 días de retraso»). */
+body.p-tareas .portada, body.p-tareas .dots { display: none; }
+body.p-tareas #pagTareas { display: flex; }
+#pagTareas { flex-grow: 1; min-height: 0; overflow: hidden; }
+.ta-lis { padding: 0; flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.ta-cab { position: relative; z-index: 2; flex-shrink: 0; padding: 16px 16px 20px; background: var(--widget); border-radius: 20px; box-shadow: inset 0 -1px 0 var(--sep); }
+.ta-in { cursor: pointer; }
+.ta-in span { font-size: 14px; color: var(--ter); }
+.ta-cols { flex: 1 1 0; min-height: 0; display: flex; }
+.ta-col { flex: 1 1 0; min-width: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 16px; }
+.ta-col + .ta-col { box-shadow: inset 1px 0 0 var(--sep); }
+.ta-fr { display: flex; align-items: center; justify-content: space-between; height: 32px; padding: 0 16px; background: var(--finde); font-size: 12px; font-weight: 600; color: var(--sec); }
+.ta-fr .rot { font-weight: 400; }
+.ta-fr.aviso { color: var(--aviso); }
+.ta-fr .ico { display: flex; align-items: center; }
+.ta-fr .ico svg { margin-right: 6px; }
+.ta-it { display: flex; align-items: center; min-height: 56px; padding: 0 16px; cursor: pointer; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.ta-it + .ta-it { box-shadow: inset 0 1px 0 var(--sep); }
+.ta-ck { width: 24px; height: 24px; border-radius: 12px; box-shadow: inset 0 0 0 1.3px #b9b6ae; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--widget); }
+.ta-it.e-atr .ta-ck { box-shadow: inset 0 0 0 1.6px var(--aviso); }
+.ta-it.hecha .ta-ck { background: var(--tinta); box-shadow: none; }
+.ta-it.hecha .ta-ck:after { content: ''; width: 10px; height: 5px; margin-top: -3px; border-left: 2px solid var(--widget); border-bottom: 2px solid var(--widget); -webkit-transform: rotate(-45deg); transform: rotate(-45deg); }
+.ta-it.hecha .ta-nom b { color: var(--ter); text-decoration: line-through; }
+.ta-nom { flex-grow: 1; min-width: 0; margin-left: 12px; padding: 8px 0; }
+.ta-nom b { display: block; font-weight: 400; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ta-nom i { display: block; font-style: normal; font-size: 12px; color: var(--sec); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ta-nom i em { font-style: normal; color: var(--aviso); font-weight: 600; }
+.ta-it.e-pausa .ta-nom b { color: var(--ter); }
+.ta-it.e-pausa .ta-ck { opacity: 0.4; }
+.ta-pts { flex-shrink: 0; font-family: var(--mono); font-size: 11px; color: var(--sec); margin-left: 12px; text-align: right; white-space: nowrap; }
+.ta-pts .extra { display: block; color: var(--aviso); font-weight: 700; margin-top: 2px; }
+.ta-ed { width: 32px; height: 32px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--sec); margin-left: 8px; box-shadow: inset 0 0 0 1px var(--sep-fuerte); }
+.ta-editando .ta-ck { display: none; }
+.ta-editando .ta-nom { margin-left: 0; }
+.ta-vacio { padding: 20px 16px; font-size: 13px; color: var(--ter); }
+/* La semana */
+.ta-lado { width: 372px; flex-shrink: 0; margin-left: 16px; display: flex; flex-direction: column; min-height: 0; }
+.ta-carta { position: relative; flex-shrink: 0; background: var(--widget); border-radius: 20px; padding: 16px; box-shadow: inset 0 -1px 0 var(--sep); }
+.ta-carta + .ta-carta { margin-top: -40px; padding-top: 56px; }
+.ta-carta.gris { background: var(--finde); box-shadow: none; }
+.ta-sem-cab { display: flex; align-items: center; justify-content: space-between; height: 36px; }
+.ta-sem-cab h1 { margin: 0; font-size: 16px; font-weight: 600; }
+.ta-sem-cab .flechas a.off { opacity: 0.25; cursor: default; }
+.ta-nota { display: flex; align-items: center; margin-top: 12px; }
+.ta-estr { display: flex; align-items: center; }
+.ta-estr svg + svg { margin-left: 4px; }
+.ta-nota .num { font-size: 44px; font-weight: 300; letter-spacing: -1.5px; line-height: 0.9; margin-left: 16px; }
+.ta-nota .de { display: flex; flex-direction: column; margin-left: 8px; font-size: 13px; color: var(--sec); }
+.ta-nota .de .rot { margin-top: 2px; }
+.ta-antes { display: flex; margin-top: 16px; min-height: 12px; }
+.ta-antes span { display: flex; align-items: center; font-family: var(--mono); font-size: 10px; color: var(--sec); white-space: nowrap; }
+.ta-antes span + span { margin-left: 16px; }
+.ta-antes span svg { margin: 0 2px 0 6px; }
+/* La cuerda: cada uno tira hacia su lado; el nudo marca quién va ganando */
+.ta-cn { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; }
+.ta-cn > span { display: flex; align-items: center; }
+.ta-cn .pto { margin-right: 8px; }
+.ta-cn .der .pto { margin: 0 0 0 8px; }
+.ta-cn b { font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--sec); margin-left: 8px; }
+.ta-cn .der b { margin: 0 8px 0 0; }
+.ta-cuerda { position: relative; height: 8px; margin-top: 12px; }
+.ta-cuerda .l, .ta-cuerda .m { position: absolute; top: 2px; height: 4px; }
+.ta-cuerda .l { left: 0; background: var(--lidia); border-radius: 2px 0 0 2px; }
+.ta-cuerda .m { right: 0; background: var(--miguel); border-radius: 0 2px 2px 0; }
+.ta-cuerda .c { position: absolute; left: 50%; top: -4px; width: 2px; height: 16px; margin-left: -1px; border-radius: 1px; background: var(--ter); }
+.ta-cuerda .n { position: absolute; top: -2px; width: 12px; height: 12px; margin-left: -6px; border-radius: 6px; background: var(--tinta); box-shadow: 0 0 0 2px var(--finde); }
+html:not(.sin-anim) .ta-cuerda .n { -webkit-transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.ta-feed { padding: 0; margin-top: 16px; flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.ta-feed .w-cab { padding: 16px 16px 12px; flex-shrink: 0; }
+.ta-feed .ta-fl { flex: 1 1 0; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
+.ta-act { display: flex; align-items: center; min-height: 48px; padding: 0 16px; cursor: pointer; }
+.ta-act + .ta-act { box-shadow: inset 0 1px 0 var(--sep); }
+.ta-act .ta-nom { margin-left: 0; padding: 6px 0; }
+.ta-act .ta-nom i { display: flex; align-items: center; }
+.ta-act .ta-nom i .pto { margin-right: 6px; }
+.ta-act .ta-pts { font-size: 12px; color: var(--tinta); }
+.ta-act .ta-pts.extra { color: var(--aviso); }
+/* Widget */
+.ta-w { display: flex; flex-direction: column; overflow: hidden; padding: 0 !important; }
+.ta-w .w-cab { padding: 16px 16px 8px; cursor: pointer; flex-shrink: 0; }
+.ta-w .mini { display: flex; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--sec); }
+.ta-w .mini svg { margin-right: 4px; }
+.ta-w .ta-it { min-height: 52px; }
+.ta-w .mas { padding: 0 16px; height: 40px; flex-shrink: 0; display: flex; align-items: center; font-size: 12px; color: var(--sec); box-shadow: inset 0 1px 0 var(--sep); margin-top: auto; cursor: pointer; }
+#wTareasM { margin-top: 16px; }
+/* Aviso con «Deshacer» */
+#taAviso { display: none; position: fixed; z-index: 65; left: 50%; bottom: 24px; width: 420px; margin-left: -210px; height: 52px; border-radius: 26px; background: var(--tinta); color: var(--widget); -webkit-box-align: center; align-items: center; justify-content: space-between; padding: 0 8px 0 20px; font-size: 13px; box-shadow: 0 8px 32px rgba(29,29,27,0.24); }
+#taAviso.on { display: flex; }
+#taAviso span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#taAviso b { font-family: var(--mono); font-weight: 400; font-size: 12px; opacity: 0.7; margin-left: 8px; }
+#taAviso a { flex-shrink: 0; height: 36px; padding: 0 16px; margin-left: 12px; border-radius: 18px; background: rgba(244,243,239,0.16); display: flex; align-items: center; font-weight: 600; cursor: pointer; }
+body.movil #taAviso { left: 16px; right: 16px; width: auto; margin-left: 0; bottom: 96px; }
+/* Hojas de tareas */
+#cpHoja .ta-pre { display: block; margin-top: 16px; }
+.ta-quien { display: flex; margin-top: 8px; }
+.ta-quien a { flex: 1 1 0; height: 96px; border-radius: 20px; background: var(--finde); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; cursor: pointer; }
+.ta-quien a + a { margin-left: 12px; }
+.ta-quien .bur { width: 40px; height: 40px; border-radius: 20px; font-size: 16px; margin-bottom: 8px; }
+.ta-ok { display: flex; margin-top: 16px; height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); align-items: center; justify-content: center; font-size: 14px; font-weight: 600; cursor: pointer; }
+.ta-bt { display: flex; flex-wrap: wrap; margin: 16px 0 0 -8px; }
+.ta-bt a { margin: 8px 0 0 8px; height: 40px; padding: 0 16px; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--sep-fuerte); display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--sec); cursor: pointer; }
+.ta-bt a.der { margin-left: auto; }
+.ta-bt a.peligro { color: var(--aviso); }
+.ta-bt a.seguro { background: var(--aviso); color: var(--widget); box-shadow: none; }
+.ta-bt a.guardar { background: var(--tinta); color: var(--widget); box-shadow: none; padding: 0 24px; }
+.ta-bt a.guardar.off { opacity: 0.3; cursor: default; }
+.ta-frec { display: flex; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+.ta-paso { display: flex; align-items: center; height: 44px; border-radius: 22px; background: var(--finde); flex-shrink: 0; }
+.ta-paso a { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--sec); cursor: pointer; }
+.ta-paso b { min-width: 24px; text-align: center; font-size: 16px; font-weight: 500; }
+.ta-frec .por { margin: 0 12px; font-size: 14px; color: var(--sec); white-space: nowrap; }
+.ta-frec .cf-pills { margin-top: 0; flex-wrap: nowrap; }
+body.movil .ta-frec .cf-pills { width: 100%; margin-top: 4px; }
+body.movil .ta-frec .cf-pill { flex: 1 1 0; justify-content: center; }
+.ta-forma .x { margin-left: 8px; opacity: 0.6; display: flex; }
+#cpHoja .ta-fn { display: flex; align-items: center; margin-top: 8px; }
+#cpHoja .ta-fn input { margin-top: 0; flex: 1 1 0; min-width: 0; }
+.ta-sw { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; font-size: 14px; cursor: pointer; }
+.ta-sw i { width: 52px; height: 32px; border-radius: 16px; background: var(--pista); position: relative; flex-shrink: 0; }
+.ta-sw i:after { content: ''; position: absolute; left: 4px; top: 4px; width: 24px; height: 24px; border-radius: 12px; background: var(--widget); }
+.ta-sw.on i { background: var(--tinta); }
+.ta-sw.on i:after { left: 24px; }
+html:not(.sin-anim) .ta-sw i:after { -webkit-transition: left 0.2s; transition: left 0.2s; }
+/* Móvil */
+#mTareas { display: none; }
+body.movil.p-tareas #mInicio { display: none; }
+body.movil.p-tareas #mTareas { display: block; margin-top: 16px; }
+#mTareas .ta-lis { margin-top: 16px; overflow: visible; }
+#mTareas .ta-lado { width: auto; margin: 16px 0 0; }
+#mTareas .ta-feed { flex: 0 0 auto; }
+#mTareas .ta-feed .ta-fl { overflow: visible; -webkit-flex: none; flex: none; }
+#mTareas .ta-col { overflow: visible; padding-bottom: 8px; }
+#mTareas.v-s .seg-bola { -webkit-transform: translateX(100%); transform: translateX(100%); }
+#mTareas.v-t .ta-vs, #mTareas.v-s .ta-vt { display: none; }
+
 /* Puerta: clave familiar */
 #puerta { display: none; position: fixed; left: 0; top: 0; right: 0; bottom: 0; background: var(--fondo); z-index: 60; }
 #puerta.on { display: block; }
@@ -839,7 +976,7 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
     <a href="#" class="nav activo" id="navInicio" aria-label="Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
     <a href="#calendario" class="nav" id="navCal" aria-label="Calendario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
     <a href="#compra" class="nav" id="navCompra" aria-label="Compra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg></a>
-    <a href="#" class="nav" aria-label="Tareas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
+    <a href="#tareas" class="nav" id="navTareas" aria-label="Tareas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
     <a href="#comer" class="nav" id="navComer" aria-label="Comer fuera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg></a>
     <a href="#" class="nav" aria-label="Fotos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="12" cy="12" r="3"/></svg></a>
     <div class="esp"></div>
@@ -865,10 +1002,7 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
       <div class="fila">
         <a href="#" class="w tiempo" id="tiempo"><div class="t-hoy"><div class="w-cab"><span class="rot" style="font-size:11px">hoy</span></div><span class="esq" style="width:40%;height:40px;margin-top:20px"></span><span class="esq" style="width:70%"></span><span class="esq" style="width:55%"></span></div></a>
         <div class="wc" id="wCompra"><div class="cp-carta wc-a"><div id="wcTop" data-acc="ir"></div><div class="cp-in cp-campo"><svg class="lead" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><input enterkeyhint="done" id="wcInT" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"></div></div><div class="cp-carta wc-b" data-acc="ir"><span class="rot">habituales</span><div class="wc-pills" id="wcP"></div></div></div>
-        <div class="w pend">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-          <h2 class="w-tit">Tareas de hoy</h2><span class="t12">Pendiente de desarrollo</span>
-        </div>
+        <div class="w ta-w" id="wTareasT"></div>
       </div>
     </div>
 
@@ -909,6 +1043,12 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
       <section class="w k-sem" id="kSem"></section>
     </div>
 
+    <!-- Página Tareas de casa -->
+    <div class="pagina" id="pagTareas">
+      <section class="w ta-lis" id="taLis"></section>
+      <section class="ta-lado" id="taLado"></section>
+    </div>
+
     <!-- Página Comer fuera -->
     <div class="pagina" id="pagComer">
       <div class="cf-izq" id="cfIzq"></div>
@@ -934,7 +1074,7 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
   <div class="wc m-m" id="wCompraM"><div class="cp-carta wc-a"><div class="wc-cab" data-acc="ir"><h2 class="w-tit">Lista de la compra</h2><span class="wc-n" id="wcNM"></span></div>
     <div class="cp-in cp-campo"><svg class="lead" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><input enterkeyhint="done" id="wcIn" type="text" autocomplete="off" autocorrect="off" placeholder="Añade a la lista…" aria-label="Apuntar en la compra"></div></div>
     <div class="cp-carta wc-b"><span class="rot">habituales</span><div class="wc-pills" id="wcPM"></div></div></div>
-  <div class="w pend m-m"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5c5a54" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><h2 class="w-tit">Mis tareas de hoy</h2><span class="t12">Pendiente de desarrollo</span></div>
+  <div class="w ta-w" id="wTareasM"></div>
   </div>
   <div id="mCal"><section class="w k-mini" id="kMiniM"></section><section class="w k-dia" id="kDiaM"></section><section class="w k-ag" id="kAgM"></section></div>
   <div id="mCompra" class="v-lista">
@@ -947,6 +1087,7 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
     </div>
     <section class="cp-bas" id="mcBas"></section>
   </div>
+  <div id="mTareas" class="v-t"></div>
   <div id="mComer"></div>
   <div id="mAjustes"><section class="w aj-carta" id="ajQuienM"></section><section class="w aj-carta" id="ajPrefM"></section><section class="aj-baraja" id="ajEstM"></section></div>
   </div>
@@ -957,11 +1098,13 @@ body.movil.p-ajustes #mAjustes { display: block; margin-top: 16px; }
     <a href="#" aria-label="Inicio" id="mNavInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg></a>
     <a href="#calendario" aria-label="Calendario" id="mNavCal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16"/></svg></a>
     <a href="#compra" aria-label="Compra" id="mNavCompra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M5 8.5h14l-1 11.5H6z"/><path d="M9 8.5a3 3 0 0 1 6 0"/></svg></a>
-    <a href="#" aria-label="Tareas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
+    <a href="#tareas" aria-label="Tareas" id="mNavTareas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></a>
     <a href="#comer" aria-label="Comer fuera" id="mNavComer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v5M9.5 4v5M12 4v5M7 9a2.5 2.5 0 0 0 5 0M9.5 11.5V20"/><path d="M17.5 20V4c-1.8 1.4-2.5 4-2.5 7.5h2.5"/></svg></a>
     <a href="#" aria-label="Más"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/></svg></a>
   </nav>
 </div>
+
+<div id="taAviso"></div>
 
 <div id="cpHoja"><div class="h" id="cpHojaIn"></div></div>
 
@@ -1112,7 +1255,7 @@ function pedir(url, cabeceras, cb) {
 /* ---------- Estado de conexión (solo se ve si algo falla) ---------- */
 var calOk = null;
 // Última descarga correcta y último fallo de cada parte (para Ajustes → Estado)
-var OK = { cal: null, compra: null, comer: null, tiempo: null }, ERR = { cal: null, compra: null, comer: null, tiempo: null };
+var OK = { cal: null, compra: null, comer: null, tareas: null, tiempo: null }, ERR = { cal: null, compra: null, comer: null, tareas: null, tiempo: null };
 function estado(msg) { $('estado').innerHTML = $('estadoM').innerHTML = msg ? esc(msg) : ''; }
 
 /* ---------- Calendario ---------- */
@@ -1816,7 +1959,7 @@ function hojaTeclado() { if (MOVIL) return ' teclado'; var a = document.activeEl
 $('cpHoja').addEventListener('focusin', function () { if (HOJA) this.className = 'on ver' + hojaTeclado(); });
 $('cpHoja').addEventListener('focusout', function () { var v = this; setTimeout(function () { if (HOJA) v.className = 'on ver' + hojaTeclado(); }, 50); });
 function cerrarHoja() {
-  HOJA = null; CFH = null;
+  HOJA = null; CFH = null; TAH = null;
   var v = $('cpHoja'); clearTimeout(v._t);
   var tec = /teclado/.test(v.className) ? ' teclado' : '';   // se cierra desde donde está (arriba si había teclado)
   v.className = 'on ver cierra' + tec; void v.offsetWidth;   // primero se fija la curva de salida, luego se quita «ver»
@@ -1826,6 +1969,7 @@ function cerrarHoja() {
 }
 $('cpHoja').addEventListener('click', function (e) {
   if (e.target === this) { cerrarHoja(); return; }
+  if (HOJA && /^ta-/.test(HOJA.tipo)) { tocarHojaTareas(e); return; }
   if (HOJA && (HOJA.tipo === 'comer' || HOJA.tipo === 'cf-tope')) { tocarHojaComer(e); return; }
   var a = e.target.getAttribute && e.target.getAttribute('data-h'); if (!a || !HOJA) return;
   var v = $('cpTxt') ? $('cpTxt').value.replace(/^\s+|\s+$/g, '') : '';
@@ -2350,6 +2494,475 @@ $('cpHoja').addEventListener('change', function (e) {
   cfPintarPartes();
 });
 
+/* ================= TAREAS DE CASA (#tareas) =================
+   Catálogo de tareas con su frecuencia («3 por semana») y sus puntos; cualquiera las hace y se apunta quién.
+   Igual que la compra y comer fuera: lo último del servidor + la cola de acciones pendientes, aplicadas encima.
+   Estado de cada tarea según los días desde la última vez frente a su intervalo ideal (periodo ÷ veces):
+     atrasada > 130 % · pendiente 70–130 % (o sin registro) · al día < 70 %
+   Rescatar una atrasada da +50 %. La nota de la semana (0–5 estrellas) es lo hecho frente a lo que tocaba
+   hasta hoy; el reparto entre Lidia y Miguel se ve como una cuerda, sin clasificación. */
+var FN_TAREAS = 'https://hxkpogkirwlamgvnvawl.supabase.co/functions/v1/tareas';
+var TA_INICIO = '2026-11-09';   // primera semana de la herramienta: no se puede ir antes
+var TA_PUNTOS = [50, 100, 150, 200];
+var TA_DIAS = { s: 7, m: 30.44, a: 365.25 };
+var TA = { tareas: [], hechas: [], cargado: false };
+var colaTA = [];
+try { TA = JSON.parse(leer('potugapp.tareas')) || TA; } catch (e) {}
+try { colaTA = JSON.parse(leer('potugapp.colaTareas')) || []; } catch (e) {}
+var TAV = { sem: 0, editar: false, vistaM: 't', enviando: false, tAccion: 0, aviso: null };
+var TAH = null;   // hoja abierta (marcar, editar o un registro)
+var ICO_ALERTA = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.01"/></svg>';
+var MENOS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/></svg>';
+var EQUIS = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+function taEstrella(llena, t) {
+  // Media estrella: la mitad izquierda rellena (sin clipPath, que el iPad de 2012 pinta mal dentro de innerHTML)
+  var d = 'M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z';
+  var izq = 'M12 2.8L9.2 8.7l-6.4.8 4.7 4.4-1.2 6.4L12 17.2z';
+  return '<svg width="' + t + '" height="' + t + '" viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '" fill="' + (llena === 1 ? 'var(--tinta)' : 'var(--pista)') + '"/>' +
+    (llena === 0.5 ? '<path d="' + izq + '" fill="var(--tinta)"/>' : '') + '</svg>';
+}
+function taEstrellas(n, t) {
+  var h = '<span class="ta-estr" aria-label="' + (n === null ? 'sin nota' : String(n).replace('.', ',') + ' de 5') + '">';
+  for (var k = 0; k < 5; k++) h += taEstrella(n !== null && n >= k + 1 ? 1 : n !== null && n >= k + 0.5 ? 0.5 : 0, t);
+  return h + '</span>';
+}
+function coma(n) { return String(n).replace('.', ','); }
+
+function tareaDe(id) { for (var i = 0; i < TA.tareas.length; i++) if (TA.tareas[i].id === id) return TA.tareas[i]; return null; }
+function hechaDe(id) { for (var i = 0; i < TA.hechas.length; i++) if (TA.hechas[i].id === id) return TA.hechas[i]; return null; }
+function taIntervalo(t) { return (TA_DIAS[t.periodo] || 7) / Math.max(1, +t.veces || 1); }
+function taFrec(t) {
+  var v = +t.veces || 1;
+  if (t.periodo === 'm') return v + ' al mes';
+  if (t.periodo === 'a') return v + ' al año';
+  return v + ' por semana';
+}
+function taFormas(t) { return t.formas && t.formas.length ? t.formas : []; }
+function taBase(t) {   // puntos de referencia (con formas, la más corta)
+  var f = taFormas(t), m = null;
+  for (var k = 0; k < f.length; k++) if (m === null || +f[k].p < m) m = +f[k].p;
+  return m !== null ? m : (+t.puntos || 0);
+}
+function taPtsTxt(t) {
+  var f = taFormas(t), lo = null, hi = null;
+  for (var k = 0; k < f.length; k++) { if (lo === null || +f[k].p < lo) lo = +f[k].p; if (hi === null || +f[k].p > hi) hi = +f[k].p; }
+  return f.length ? (lo === hi ? lo : lo + '–' + hi) + ' pts' : (+t.puntos || 0) + ' pts';
+}
+function diasEntre(a, b) { return Math.round((deISO(b) - deISO(a)) / 864e5); }
+function taUltima(id) {
+  var u = null;
+  for (var i = 0; i < TA.hechas.length; i++) { var h = TA.hechas[i]; if (h.tarea_id === id && (!u || h.dia > u.dia || (h.dia === u.dia && h.creado > u.creado))) u = h; }
+  return u;
+}
+function taDiasTxt(d) { return d <= 0 ? 'hoy' : d === 1 ? 'ayer' : 'hace ' + d + ' días'; }
+function taEnDias(n) { return n === 1 ? '1 día' : n + ' días'; }
+// Estado de una tarea hoy: atr (atrasada), pend (pendiente), ok (al día), pausa
+function taInfo(t) {
+  var hoy = diaISO(new Date()), u = taUltima(t.id), I = taIntervalo(t), d, p, r = { u: u };
+  if (t.pausada) { r.e = 'pausa'; r.sub = 'en pausa · ' + taFrec(t); r.corta = 'en pausa'; r.orden = 0; return r; }
+  if (t.pospuesta && t.pospuesta > hoy) {
+    var dd = diasEntre(hoy, t.pospuesta);
+    r.e = 'ok'; r.sub = 'pospuesta hasta ' + (dd === 1 ? 'mañana' : DIAS3[deISO(t.pospuesta).getDay()] + ' ' + deISO(t.pospuesta).getDate()); r.corta = r.sub; r.orden = dd; return r;
+  }
+  if (!u) { r.e = 'pend'; r.p = 0.99; r.sub = 'sin registro · ' + taFrec(t); r.corta = 'sin registro'; return r; }
+  d = diasEntre(u.dia, hoy); p = d / I; r.p = p; r.d = d;
+  if (p > 1.3) {
+    var ret = Math.max(1, Math.round(d - I));
+    r.e = 'atr'; r.corta = '<em>' + taEnDias(ret) + ' de retraso</em>'; r.sub = taDiasTxt(d) + ' · ' + r.corta;
+  } else if (p >= 0.7) { r.e = 'pend'; r.sub = taDiasTxt(d) + ' · ' + taFrec(t); r.corta = taDiasTxt(d); }
+  else {
+    var falta = Math.max(1, Math.round(I - d));
+    r.e = 'ok'; r.orden = falta; r.sub = (d === 0 ? 'hecha hoy' : taDiasTxt(d)) + ' · toca en ' + taEnDias(falta); r.corta = r.sub;
+  }
+  return r;
+}
+function taGrupos() {
+  var g = { atr: [], pend: [], ok: [], pausa: [] }, k, t, i;
+  for (k = 0; k < TA.tareas.length; k++) { t = TA.tareas[k]; if (t.borrada) continue; i = taInfo(t); g[i.e].push({ t: t, i: i }); }
+  function porUrgencia(a, b) { return b.i.p - a.i.p || (a.t.orden || 0) - (b.t.orden || 0); }
+  g.atr.sort(porUrgencia); g.pend.sort(porUrgencia);
+  g.ok.sort(function (a, b) { return a.i.orden - b.i.orden || (a.t.orden || 0) - (b.t.orden || 0); });
+  g.pausa.sort(function (a, b) { return (a.t.orden || 0) - (b.t.orden || 0); });
+  return g;
+}
+// Puntos al marcarla ahora (con formas, los de la elegida; atrasada: +50 %)
+function taPuntos(t, forma) {
+  var f = taFormas(t), base = +t.puntos || 0;
+  if (f.length) { base = +f[0].p; for (var k = 0; k < f.length; k++) if (f[k].n === forma) base = +f[k].p; }
+  var resc = taInfo(t).e === 'atr';
+  return { puntos: Math.round(base * (resc ? 1.5 : 1)), rescate: resc };
+}
+
+// ---------- La semana: nota y reparto ----------
+function lunesDe(d) { return masDias(d, -((d.getDay() + 6) % 7)); }
+function taEsperado() {   // puntos que tocan en una semana con el catálogo actual
+  var e = 0;
+  for (var k = 0; k < TA.tareas.length; k++) { var t = TA.tareas[k]; if (!t.borrada && !t.pausada) e += taBase(t) * 7 / taIntervalo(t); }
+  return e;
+}
+function taSemana(off) {
+  var hoy = new Date(), lun = masDias(lunesDe(hoy), 7 * off), dom = masDias(lun, 6);
+  var a = diaISO(lun), b = diaISO(dom), hoyI = diaISO(hoy), r = { lun: lun, dom: dom, pts: 0, L: 0, M: 0, hechas: [] }, k;
+  for (k = 0; k < TA.hechas.length; k++) { var h = TA.hechas[k]; if (h.dia >= a && h.dia <= b) { r.pts += +h.puntos; r[h.quien] = (r[h.quien] || 0) + (+h.puntos); r.hechas.push(h); } }
+  r.hechas.sort(function (x, y) { return x.dia < y.dia ? 1 : x.dia > y.dia ? -1 : (x.creado < y.creado ? 1 : -1); });
+  var esp = taEsperado(), dias = off === 0 ? diasEntre(a, hoyI) + 1 : 7;
+  r.actual = off === 0;
+  r.nota = esp > 0 ? Math.max(0, Math.min(5, Math.round(r.pts / (esp * dias / 7) * 10) / 2)) : null;
+  return r;
+}
+function taSemTit(s) {
+  if (s.actual) return 'Esta semana';
+  var a = s.lun, b = s.dom;
+  return a.getMonth() === b.getMonth() ? 'Del ' + a.getDate() + ' al ' + b.getDate() + ' ' + MESES3[b.getMonth()] : 'Del ' + a.getDate() + ' ' + MESES3[a.getMonth()] + ' al ' + b.getDate() + ' ' + MESES3[b.getMonth()];
+}
+function taPrimeraSem() { return Math.round((lunesDe(deISO(TA_INICIO)) - lunesDe(new Date())) / (7 * 864e5)); }
+
+// ---------- datos: cola, servidor ----------
+function taGuardarLocal() { guardar('potugapp.tareas', JSON.stringify(TA)); guardar('potugapp.colaTareas', JSON.stringify(colaTA)); }
+function taAplicarLocal(a) {
+  var t, k;
+  if (a.tipo === 'hecha') {
+    if (hechaDe(a.id)) return;
+    t = tareaDe(a.tarea); if (!t) return;
+    var p = taPuntos(t, a.forma);
+    TA.hechas.push({ id: a.id, tarea_id: t.id, nombre: t.nombre, dia: a.dia, quien: a.quien, puntos: p.puntos, forma: taFormas(t).length ? (a.forma || taFormas(t)[0].n) : null, rescate: p.rescate, creado: new Date().toISOString(), local: true });
+    t.pospuesta = null;
+  } else if (a.tipo === 'deshacer') { for (k = TA.hechas.length - 1; k >= 0; k--) if (TA.hechas[k].id === a.id) TA.hechas.splice(k, 1); }
+  else if (a.tipo === 'tarea') {
+    t = tareaDe(a.id);
+    if (!t) { var mx = 0; for (k = 0; k < TA.tareas.length; k++) mx = Math.max(mx, +TA.tareas[k].orden || 0); t = { id: a.id, orden: mx + 1, creado: new Date().toISOString(), local: true }; TA.tareas.push(t); }
+    t.nombre = a.nombre; t.veces = a.veces; t.periodo = a.periodo; t.formas = a.formas || []; t.puntos = t.formas.length ? null : a.puntos; t.pausada = !!a.pausada;
+  } else if (a.tipo === 'borrar_tarea') { for (k = TA.tareas.length - 1; k >= 0; k--) if (TA.tareas[k].id === a.id) TA.tareas.splice(k, 1); }
+  else if (a.tipo === 'posponer') { t = tareaDe(a.id); if (t) t.pospuesta = a.hasta; }
+}
+function taAccion(a, sinPintar) {
+  colaTA.push(a); taAplicarLocal(a); taGuardarLocal(); TAV.tAccion = Date.now();
+  if (!sinPintar) pintarTareas();
+  enviarTareas();
+}
+function enviarTareas() {
+  var clave = leer('potugapp.clave');
+  if (!clave) { mostrarPuerta(); return; }
+  if (TAV.enviando) return;
+  TAV.enviando = true;
+  var lote = colaTA.slice(0), x = new XMLHttpRequest();
+  x.open(lote.length ? 'POST' : 'GET', FN_TAREAS, true); x.timeout = 20000;
+  x.setRequestHeader('x-familia', clave);
+  if (lote.length) x.setRequestHeader('Content-Type', 'application/json');
+  x.onload = function () {
+    TAV.enviando = false;
+    if (x.status === 401) { borrar('potugapp.clave'); mostrarPuerta('La clave no es correcta'); return; }
+    var j = null; try { j = JSON.parse(x.responseText); } catch (e) {}
+    if (x.status !== 200 || !j || !j.tareas) { ERR.tareas = Date.now(); estado('tareas: sin conexión, se guardará al volver'); return; }
+    OK.tareas = Date.now(); ERR.tareas = null;
+    colaTA = colaTA.slice(lote.length);
+    var antes = JSON.stringify(TA);
+    TA = { tareas: j.tareas, hechas: j.hechas, cargado: true };
+    for (var i = 0; i < colaTA.length; i++) taAplicarLocal(colaTA[i]);
+    taGuardarLocal();
+    // Si acabas de marcar algo, se espera a que termine su animación antes de repintar con lo del servidor
+    if (JSON.stringify(TA) !== antes) { var esp = 900 - (Date.now() - (TAV.tAccion || 0)); if (esp > 0) setTimeout(pintarTareas, esp); else pintarTareas(); }
+    if (j.errores && j.errores.length && window.console) console.log('Tareas, errores:', j.errores);
+    if (colaTA.length) enviarTareas();
+  };
+  x.onerror = x.ontimeout = function () { TAV.enviando = false; ERR.tareas = Date.now(); };
+  x.send(lote.length ? JSON.stringify({ acciones: lote }) : null);
+}
+// Consultas: con la página abierta, cada minuto; en la portada (los widgets), cada 5 min (la cocina mira aquí)
+var ultimaTareas = 0, diaTareas = diaISO(new Date());
+function sincTareas(forzar) {
+  if (reposo || document.hidden) return;
+  // Al cambiar de día, los «hace N días» cambian: se repinta aunque no llegue nada nuevo
+  if (diaISO(new Date()) !== diaTareas) { diaTareas = diaISO(new Date()); TAV.sem = 0; pintarTareas(); }
+  var pag = clasePagina(), util = pag === 'p-tareas' || pag === '';
+  if (!util && !colaTA.length) return;
+  var cada = pag === 'p-tareas' ? 60 * 1000 : 5 * 60 * 1000;
+  if (!forzar && !colaTA.length && Date.now() - ultimaTareas < cada - 500) return;
+  ultimaTareas = Date.now();
+  enviarTareas();
+}
+setInterval(sincTareas, 5000);
+document.addEventListener('visibilitychange', function () { if (!document.hidden) sincTareas(true); });
+
+// ---------- pintar ----------
+function taFila(x, op) {
+  op = op || {};
+  var t = x.t, i = x.i, atr = i.e === 'atr';
+  var extra = atr && !op.editar ? '<span class="extra">+50 %</span>' : '';
+  return '<div class="ta-it e-' + i.e + '" data-ta="tarea" data-id="' + esc(t.id) + '"><span class="ta-ck"></span>' +
+    '<span class="ta-nom"><b>' + esc(t.nombre) + '</b><i>' + (op.corta ? i.corta : i.sub) + '</i></span>' +
+    '<span class="ta-pts">' + taPtsTxt(t) + extra + '</span>' + (op.editar ? '<span class="ta-ed">' + LAPIZ_P + '</span>' : '') + '</div>';
+}
+function taBloque(tit, l, op, aviso, rot) {
+  if (!l.length) return '';
+  var h = aviso ? '<div class="ta-fr aviso"><span class="ico">' + ICO_ALERTA + tit + '</span><span class="rot">rescate +50 %</span></div>'
+    : '<div class="ta-fr"><span>' + tit + '</span><span class="rot">' + (rot || l.length) + '</span></div>';
+  for (var k = 0; k < l.length; k++) h += taFila(l[k], op);
+  return h;
+}
+function taCab() {
+  var g = taGrupos(), n = g.atr.length + g.pend.length;
+  return '<div class="ta-cab"><div class="cp-tit"><h1>Tareas de casa' + (TA.cargado || TA.tareas.length ? '<span class="sub">' + (n ? n + ' por hacer' : 'todo al día') + '</span>' : '') + '</h1>' +
+    '<a class="cp-btn' + (TAV.editar ? ' on' : '') + '" data-ta="editar" aria-label="Editar tareas">' + LAPIZ_P + '</a></div>' +
+    '<div class="cp-in cp-campo ta-in" data-ta="nueva"><svg class="lead" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Añade una tarea…</span></div></div>';
+}
+function taListas(g, dosCol) {
+  var op = TAV.editar ? { editar: true } : null;
+  var a = taBloque('Atrasadas', g.atr, op, true) + taBloque('Pendientes', g.pend, op);
+  var b = taBloque('Al día', g.ok, op) + taBloque('En pausa', g.pausa, op);
+  if (!TA.tareas.length) a = '<div class="ta-vacio">' + (TA.cargado ? 'No hay tareas. Añade la primera arriba.' : 'Cargando tareas…') + '</div>';
+  else if (!a) a = '<div class="ta-fr"><span>Pendientes</span></div><div class="ta-vacio">Nada pendiente por ahora</div>';
+  return dosCol ? '<div class="ta-cols' + (TAV.editar ? ' ta-editando' : '') + '"><div class="ta-col" id="taColA">' + a + '</div><div class="ta-col" id="taColB">' + b + '</div></div>'
+    : '<div class="ta-col' + (TAV.editar ? ' ta-editando' : '') + '">' + a + b + '</div>';
+}
+function taCuerda(s) {
+  var L = s.L || 0, M = s.M || 0, n = L + M ? L / (L + M) * 100 : 50;
+  return '<div class="ta-cn"><span><span class="pto L"></span>Lidia<b>' + L + '</b></span><span class="der"><b>' + M + '</b>Miguel<span class="pto M"></span></span></div>' +
+    '<div class="ta-cuerda"><span class="l" style="width:' + n + '%"></span><span class="m" style="width:' + (100 - n) + '%"></span><span class="c"></span><span class="n" style="left:' + n + '%"></span></div>';
+}
+function taLado() {
+  var s = taSemana(TAV.sem), pri = taPrimeraSem(), h, k, ant = '';
+  for (k = 1; k <= 2; k++) {
+    if (TAV.sem - k < pri) break;
+    var p = taSemana(TAV.sem - k);
+    ant = '<span>' + p.lun.getDate() + ' ' + MESES3[p.lun.getMonth()] + taEstrella(1, 10) + (p.nota === null ? '—' : coma(p.nota)) + '</span>' + ant;
+  }
+  h = '<div class="ta-carta" style="z-index:2"><div class="ta-sem-cab"><h1>' + taSemTit(s) + '</h1><span class="flechas">' +
+    '<a data-ta="sem-"' + (TAV.sem <= pri ? ' class="off"' : '') + ' aria-label="Semana anterior">' + FLECHA_I + '</a><a data-ta="sem+"' + (TAV.sem >= 0 ? ' class="off"' : '') + ' aria-label="Semana siguiente">' + FLECHA_D + '</a></span></div>' +
+    '<div class="ta-nota">' + taEstrellas(s.nota, 24) + '<span class="num">' + (s.nota === null ? '—' : coma(s.nota)) + '</span><span class="de">de 5<span class="rot">' + (s.actual ? 'hasta hoy' : 'nota final') + '</span></span></div>' +
+    '<div class="ta-antes">' + ant + '</div></div>' +
+    '<div class="ta-carta gris" style="z-index:1">' + taCuerda(s) + '</div>';
+  h += '<div class="w ta-feed"><div class="w-cab"><h2 class="w-tit">' + (s.actual ? 'Hecho esta semana' : 'Hecho esa semana') + '</h2><span class="rot">' + s.pts + ' pts</span></div><div class="ta-fl">';
+  if (!s.hechas.length) h += '<div class="ta-vacio">Todavía nada</div>';
+  var dia = null;
+  for (k = 0; k < s.hechas.length; k++) {
+    var x = s.hechas[k];
+    if (x.dia !== dia) { dia = x.dia; var d = deISO(dia); h += '<div class="ta-fr"><span>' + DIAS3[d.getDay()] + ' ' + d.getDate() + '</span></div>'; }
+    h += '<div class="ta-act" data-ta="registro" data-id="' + esc(x.id) + '"><span class="ta-nom"><b>' + esc(x.nombre) + '</b><i><span class="pto ' + x.quien + '"></span>' + NOMBRES[x.quien] +
+      (x.forma ? ' · ' + esc(x.forma.toLowerCase()) : '') + (x.rescate ? ' · rescatada' : '') + '</i></span><span class="ta-pts' + (x.rescate ? ' extra' : '') + '">+' + x.puntos + '</span></div>';
+  }
+  return h + '</div></div>';
+}
+function taWidget(max) {
+  var g = taGrupos(), l = g.atr.concat(g.pend), s = taSemana(0), h, k, n = l.length;
+  h = '<div class="w-cab" data-ta="ir"><h2 class="w-tit">Tareas de casa</h2><span class="mini">' + taEstrella(1, 10) + (s.nota === null ? '—' : coma(s.nota)) + '</span></div>';
+  if (!TA.tareas.length) return h + '<div class="ta-vacio">' + (TA.cargado ? 'No hay tareas' : 'Cargando…') + '</div>';
+  if (!l.length) l = g.ok.slice(0, 2);
+  for (k = 0; k < l.length && k < max; k++) h += taFila(l[k], { corta: true });
+  return h + '<div class="mas" data-ta="ir">' + (n > max ? '+' + (n - max) + ' más por hacer' : n ? 'Lo demás, al día' : 'Todo al día') + '</div>';
+}
+function pintarTareas() {
+  var g = taGrupos(), lis = taCab() + taListas(g, true), lado = taLado();
+  // Se conserva dónde estaba cada lista (al repintar no salta arriba)
+  var sa = $('taColA') ? $('taColA').scrollTop : 0, sb = $('taColB') ? $('taColB').scrollTop : 0;
+  $('taLis').innerHTML = lis; $('taLado').innerHTML = lado;
+  if ($('taColA')) $('taColA').scrollTop = sa; if ($('taColB')) $('taColB').scrollTop = sb;
+  var n = g.atr.length + g.pend.length, s = taSemana(0);
+  $('mTareas').className = 'v-' + TAV.vistaM;
+  $('mTareas').innerHTML = '<div class="cp-seg ta-pest"><i class="seg-bola"></i><span data-ta="vista" data-v="t"' + (TAV.vistaM === 't' ? ' class="on"' : '') + '>Tareas' + (n ? '<b>' + n + '</b>' : '') + '</span>' +
+    '<span data-ta="vista" data-v="s"' + (TAV.vistaM === 's' ? ' class="on"' : '') + '>La semana<b>★ ' + (s.nota === null ? '—' : coma(s.nota)) + '</b></span></div>' +
+    '<div class="ta-vt"><section class="w ta-lis">' + taCab() + taListas(g, false) + '</section></div>' +
+    '<div class="ta-vs"><section class="ta-lado">' + lado + '</section></div>';
+  $('wTareasT').innerHTML = taWidget(4);
+  $('wTareasM').innerHTML = taWidget(3);
+}
+
+// ---------- marcar ----------
+function taAviso(txt, hid) {
+  var el = $('taAviso'); clearTimeout(el._t);
+  el.innerHTML = '<span>' + txt + '</span>' + (hid ? '<a data-id="' + esc(hid) + '">Deshacer</a>' : '');
+  el.className = 'on'; animar(el, 'a-entra');
+  el._t = setTimeout(function () { el.className = ''; }, 5000);
+}
+$('taAviso').addEventListener('click', function (e) {
+  var id = e.target && e.target.getAttribute && e.target.getAttribute('data-id'); if (!id) return;
+  taAccion({ tipo: 'deshacer', id: id }); this.className = '';
+});
+function taMarcar(id, quien, forma) {
+  var t = tareaDe(id); if (!t || !quien) return;
+  var p = taPuntos(t, forma), a = { tipo: 'hecha', id: nuevoId(), tarea: id, quien: quien, forma: forma || null, dia: diaISO(new Date()) };
+  // Se tacha donde está y, un momento después, pasa a «Al día»
+  var l = document.querySelectorAll('[data-ta="tarea"][data-id="' + id + '"]');
+  for (var k = 0; k < l.length; k++) { l[k].className += ' hecha'; animar(l[k].querySelector('.ta-ck'), 'a-pop'); }
+  taAccion(a, true);
+  setTimeout(pintarTareas, ANIM ? 650 : 0);
+  taAviso(esc(t.nombre) + ' · ' + NOMBRES[quien] + '<b>+' + p.puntos + ' pts</b>', a.id);
+}
+function taTocar(id, largo) {
+  var t = tareaDe(id); if (!t) return;
+  if (TAV.editar && !largo) { abrirTarea(id); return; }
+  if (t.pausada && !largo) { abrirTarea(id); return; }
+  // En la cocina (o sin saber quién es) se pregunta; con formas, se elige cuál. Si no, se marca al momento como tuya.
+  if (largo || COCINA || !YO || taFormas(t).length) { abrirMarcar(id); return; }
+  taMarcar(id, YO, null);
+}
+function abrirMarcar(id) {
+  var t = tareaDe(id); if (!t) return;
+  var i = taInfo(t), f = taFormas(t), h, k;
+  TAH = { id: id, forma: f.length ? f[0].n : null };
+  HOJA = { tipo: 'ta-marcar' }; $('cpHojaIn').className = 'h';
+  h = '<span class="rot">' + taFrec(t) + (i.e === 'atr' ? ' · rescate +50 %' : '') + '</span><h2>' + esc(t.nombre) + '</h2>';
+  if (f.length) {
+    h += '<span class="rot ta-pre">cómo</span><div class="cf-pills" id="taFormasM">';
+    for (k = 0; k < f.length; k++) h += '<span class="cf-pill' + (k === 0 ? ' on' : '') + '" data-tah="forma" data-v="' + esc(f[k].n) + '">' + esc(f[k].n) + ' · ' + f[k].p + '</span>';
+    h += '</div>';
+  }
+  if (YO && !COCINA) h += '<a class="ta-ok" data-tah="yo">Hecha por mí</a>';
+  else h += '<span class="rot ta-pre">¿quién lo ha hecho?</span><div class="ta-quien"><a data-tah="quien" data-v="L"><span class="bur L">L</span>Lidia</a><a data-tah="quien" data-v="M"><span class="bur M">M</span>Miguel</a></div>';
+  h += '<div class="ta-bt">' + (i.e === 'atr' || i.e === 'pend' ? '<a data-tah="posponer">Posponer 1 día</a>' : '') + '<a data-tah="editar">Editar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
+  $('cpHojaIn').innerHTML = h; mostrarHoja();
+}
+function abrirRegistro(id) {
+  var x = hechaDe(id); if (!x) return;
+  var d = deISO(x.dia);
+  TAH = { id: id, borrar: false };
+  HOJA = { tipo: 'ta-registro' }; $('cpHojaIn').className = 'h';
+  $('cpHojaIn').innerHTML = '<span class="rot">' + DIAS[d.getDay()] + ' ' + d.getDate() + ' · ' + NOMBRES[x.quien] + ' · +' + x.puntos + ' pts</span><h2>' + esc(x.nombre) + '</h2>' +
+    '<div class="ta-bt"><a class="peligro" data-tah="quitar" id="taQuitar">Quitar este registro</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
+  mostrarHoja();
+}
+
+// ---------- hoja: nueva tarea / editar ----------
+function abrirTarea(id, nombre) {
+  var t = id ? tareaDe(id) : null;
+  if (id && !t) return;
+  TAH = t ? { id: t.id, nuevo: false, puntos: t.puntos || 100, veces: +t.veces || 1, periodo: t.periodo || 's', formas: JSON.parse(JSON.stringify(taFormas(t))), pausada: !!t.pausada, borrar: false, fn: false, fnP: 100 }
+    : { id: nuevoId(), nuevo: true, puntos: 100, veces: 1, periodo: 's', formas: [], pausada: false, borrar: false, fn: false, fnP: 100 };
+  HOJA = { tipo: 'ta-tarea' }; $('cpHojaIn').className = 'h';
+  $('cpHojaIn').innerHTML = '<span class="rot">' + (t ? 'editar tarea' : 'nueva tarea') + '</span>' +
+    '<input id="taNom" type="text" autocomplete="off" autocorrect="off" placeholder="Por ejemplo: limpiar los cristales" value="' + esc(t ? t.nombre : nombre || '') + '">' +
+    '<div id="taPtsH"></div>' +
+    '<span class="rot ta-pre">cada cuánto</span><div class="ta-frec" id="taFrecH"></div>' +
+    '<span class="rot ta-pre">formas de hacerla · opcional, cada una con sus puntos</span><div id="taFormasH"></div>' +
+    (t ? '<div class="ta-sw" data-tah="pausa" id="taPausa"><span>En pausa</span><i></i></div>' : '') +
+    '<div class="ta-bt">' + (t ? '<a class="peligro" data-tah="borrar" id="taBorrar">Borrar</a>' : '') + '<a class="der" data-tah="cerrar">Cancelar</a><a class="guardar" data-tah="guardar" id="taGuardar">Guardar</a></div>';
+  mostrarHoja();
+  taPintarHoja();
+  $('taNom').addEventListener('input', taPintarHoja);
+  $('taNom').addEventListener('keydown', function (e) { if (e.keyCode === 13) { e.preventDefault(); this.blur(); } });
+  // El foco va en el mismo toque que abre la hoja (sin esperar): si no, el iPhone no saca el teclado
+  if (!t) $('taNom').focus();
+}
+function taPills(attr, lista, val) {
+  var h = '<div class="cf-pills">';
+  for (var k = 0; k < lista.length; k++) h += '<span class="cf-pill' + (String(lista[k][0]) === String(val) ? ' on' : '') + '" data-tah="' + attr + '" data-v="' + lista[k][0] + '">' + lista[k][1] + '</span>';
+  return h + '</div>';
+}
+function taListo() { var n = $('taNom') ? $('taNom').value.replace(/^\s+|\s+$/g, '') : ''; return !!n && (TAH.formas.length || TA_PUNTOS.indexOf(+TAH.puntos) >= 0); }
+function taPintarHoja() {
+  if (!TAH || !$('taPtsH')) return;
+  var pts = TA_PUNTOS.map(function (p) { return [p, p]; }), k, h;
+  $('taPtsH').innerHTML = TAH.formas.length ? '' : '<span class="rot ta-pre">puntos</span>' + taPills('puntos', pts, TAH.puntos);
+  $('taFrecH').innerHTML = '<span class="ta-paso"><a data-tah="menos" aria-label="Menos">' + MENOS + '</a><b>' + TAH.veces + '</b><a data-tah="mas" aria-label="Más">' + MAS + '</a></span>' +
+    '<span class="por">' + (TAH.veces === 1 ? 'vez por' : 'veces por') + '</span>' + taPills('periodo', [['s', 'semana'], ['m', 'mes'], ['a', 'año']], TAH.periodo);
+  h = '<div class="cf-pills">';
+  for (k = 0; k < TAH.formas.length; k++) h += '<span class="cf-pill ta-forma" data-tah="quitar-forma" data-i="' + k + '">' + esc(TAH.formas[k].n) + ' · ' + TAH.formas[k].p + '<span class="x">' + EQUIS + '</span></span>';
+  if (!TAH.fn && TAH.formas.length < 6) h += '<span class="cf-pill" data-tah="nueva-forma" aria-label="Añadir forma">' + MAS + '</span>';
+  h += '</div>';
+  if (TAH.fn) h += '<div class="ta-fn"><input id="taFn" type="text" autocomplete="off" placeholder="Por ejemplo: tendida"></div>' + taPills('fp', pts, TAH.fnP) +
+    '<div class="ta-bt"><a data-tah="fn-no">Cancelar</a><a class="guardar" data-tah="fn-ok">Añadir forma</a></div>';
+  var fnVal = $('taFn') ? $('taFn').value : null;
+  $('taFormasH').innerHTML = h;
+  if (fnVal !== null && $('taFn')) $('taFn').value = fnVal;
+  if ($('taPausa')) $('taPausa').className = 'ta-sw' + (TAH.pausada ? ' on' : '');
+  if ($('taBorrar')) { $('taBorrar').className = TAH.borrar ? 'seguro' : 'peligro'; $('taBorrar').innerHTML = TAH.borrar ? 'Toca otra vez para borrar' : 'Borrar'; }
+  $('taGuardar').className = 'guardar' + (taListo() ? '' : ' off');
+}
+function tocarHojaTareas(e) {
+  var t = e.target, a = null;
+  while (t && t !== $('cpHojaIn')) { if (t.getAttribute && t.getAttribute('data-tah')) { a = t.getAttribute('data-tah'); break; } t = t.parentNode; }
+  if (!a || !TAH) return;
+  var v = t.getAttribute('data-v');
+  if (a === 'cerrar') { cerrarHoja(); return; }
+  if (HOJA.tipo === 'ta-marcar') {
+    var tid = TAH.id;
+    if (a === 'forma') { TAH.forma = v; var ps = t.parentNode.children; for (var q = 0; q < ps.length; q++) ps[q].className = 'cf-pill' + (ps[q] === t ? ' on' : ''); return; }
+    if (a === 'yo' || a === 'quien') { var fo = TAH.forma; cerrarHoja(); taMarcar(tid, a === 'yo' ? YO : v, fo); return; }
+    if (a === 'posponer') { cerrarHoja(); taAccion({ tipo: 'posponer', id: tid, hasta: diaISO(masDias(new Date(), 1)) }); return; }
+    if (a === 'editar') { abrirTarea(tid); return; }
+    return;
+  }
+  if (HOJA.tipo === 'ta-registro') {
+    if (a === 'quitar') {
+      if (!TAH.borrar) { TAH.borrar = true; t.className = 'seguro'; t.innerHTML = 'Toca otra vez para quitarlo'; return; }
+      var rid = TAH.id; cerrarHoja(); taAccion({ tipo: 'deshacer', id: rid });
+    }
+    return;
+  }
+  // nueva / editar
+  if (a !== 'borrar') TAH.borrar = false;
+  if (a === 'puntos') TAH.puntos = +v;
+  else if (a === 'periodo') TAH.periodo = v;
+  else if (a === 'menos') TAH.veces = Math.max(1, TAH.veces - 1);
+  else if (a === 'mas') TAH.veces = Math.min(31, TAH.veces + 1);
+  else if (a === 'pausa') TAH.pausada = !TAH.pausada;
+  else if (a === 'quitar-forma') TAH.formas.splice(+t.getAttribute('data-i'), 1);
+  else if (a === 'nueva-forma') { TAH.fn = true; taPintarHoja(); if ($('taFn')) $('taFn').focus(); return; }
+  else if (a === 'fp') TAH.fnP = +v;
+  else if (a === 'fn-no') TAH.fn = false;
+  else if (a === 'fn-ok') {
+    var fn = $('taFn') ? $('taFn').value.replace(/^\s+|\s+$/g, '') : '';
+    if (!fn) return;
+    TAH.formas.push({ n: fn.charAt(0).toUpperCase() + fn.slice(1), p: TAH.fnP }); TAH.fn = false;
+  }
+  else if (a === 'borrar') {
+    if (!TAH.borrar) { TAH.borrar = true; taPintarHoja(); return; }
+    var bid = TAH.id; cerrarHoja(); taAccion({ tipo: 'borrar_tarea', id: bid }); return;
+  }
+  else if (a === 'guardar') {
+    if (!taListo()) return;
+    var nom = $('taNom').value.replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+    var acc = { tipo: 'tarea', id: TAH.id, nombre: nom.charAt(0).toUpperCase() + nom.slice(1), puntos: TAH.formas.length ? null : TAH.puntos, veces: TAH.veces, periodo: TAH.periodo, formas: TAH.formas, pausada: TAH.pausada };
+    cerrarHoja(); taAccion(acc); return;
+  }
+  taPintarHoja();
+}
+
+// ---------- toques en la página y los widgets ----------
+var taPuls = null, taPulsHecha = false;
+function tocarTareas(e) {
+  var t = e.target, acc = null;
+  while (t && t !== this) { if (t.getAttribute && t.getAttribute('data-ta')) { acc = t.getAttribute('data-ta'); break; } t = t.parentNode; }
+  if (!acc) { if (this.id === 'wTareasT' || this.id === 'wTareasM') location.hash = '#tareas'; return; }
+  if (taPulsHecha && acc === 'tarea') { taPulsHecha = false; return; }   // venía de una pulsación larga
+  if (acc === 'ir') { location.hash = '#tareas'; return; }
+  if (acc === 'tarea') { taTocar(t.getAttribute('data-id')); return; }
+  if (acc === 'nueva') { abrirTarea(null); return; }
+  if (acc === 'registro') { abrirRegistro(t.getAttribute('data-id')); return; }
+  if (acc === 'editar') TAV.editar = !TAV.editar;
+  else if (acc === 'sem-' && TAV.sem > taPrimeraSem()) TAV.sem--;
+  else if (acc === 'sem+' && TAV.sem < 0) TAV.sem++;
+  else if (acc === 'vista') {
+    var vv = t.getAttribute('data-v'); if (vv === TAV.vistaM) return;
+    // Solo se cambia la clase: así el fondo de la pestaña se desliza (sin repintar)
+    TAV.vistaM = vv; $('mTareas').className = 'v-' + vv;
+    var ps = t.parentNode.children; for (var q = 0; q < ps.length; q++) if (ps[q].getAttribute('data-v')) ps[q].className = ps[q].getAttribute('data-v') === vv ? 'on' : '';
+    return;
+  }
+  else return;
+  pintarTareas();
+}
+// Pulsación larga en una tarea: sus opciones (posponer, editar, marcar por otro)
+function taEmpezarPuls(e) {
+  var t = e.target;
+  while (t && t !== this) { if (t.getAttribute && t.getAttribute('data-ta') === 'tarea') break; t = t.parentNode; }
+  if (!t || t === this) return;
+  var id = t.getAttribute('data-id'), p = e.touches ? e.touches[0] : e, x0 = p.clientX, y0 = p.clientY;
+  taPulsHecha = false; clearTimeout(taPuls);
+  taPuls = setTimeout(function () { taPulsHecha = true; taTocar(id, true); }, 550);
+  function mover(ev) { var q = ev.touches ? ev.touches[0] : ev; if (Math.abs(q.clientX - x0) > 10 || Math.abs(q.clientY - y0) > 10) clearTimeout(taPuls); }
+  function soltar() { clearTimeout(taPuls); document.removeEventListener('touchmove', mover); document.removeEventListener('mousemove', mover); }
+  document.addEventListener('touchmove', mover); document.addEventListener('mousemove', mover);
+  document.addEventListener('touchend', soltar, { once: true }); document.addEventListener('mouseup', soltar, { once: true });
+}
+['pagTareas', 'mTareas', 'wTareasT', 'wTareasM'].forEach(function (id) {
+  $(id).addEventListener('click', tocarTareas);
+  $(id).addEventListener('touchstart', taEmpezarPuls);
+  $(id).addEventListener('mousedown', taEmpezarPuls);
+  $(id).addEventListener('contextmenu', function (e) { var t = e.target; while (t && t !== this && !(t.getAttribute && t.getAttribute('data-ta') === 'tarea')) t = t.parentNode; if (t && t !== this) { e.preventDefault(); taTocar(t.getAttribute('data-id'), true); } });
+});
+pintarTareas();
+
 /* ---------- Burbuja del menú ----------
    Al cambiar de página, la mancha primero se estira hasta la opción nueva (el borde de delante)
    y después recoge el de detrás, con un pequeño rebote: parece que fluye de un icono a otro. */
@@ -2369,8 +2982,8 @@ function moverBurbuja(bur, el, vertical, anim) {
 }
 function moverBurbujas(anim) {
   var c = clasePagina();
-  var t = { '': 'navInicio', 'p-cal': 'navCal', 'p-compra': 'navCompra', 'p-comer': 'navComer' }[c];
-  var m = { '': 'mNavInicio', 'p-cal': 'mNavCal', 'p-compra': 'mNavCompra', 'p-comer': 'mNavComer' }[c];
+  var t = { '': 'navInicio', 'p-cal': 'navCal', 'p-compra': 'navCompra', 'p-tareas': 'navTareas', 'p-comer': 'navComer' }[c];
+  var m = { '': 'mNavInicio', 'p-cal': 'mNavCal', 'p-compra': 'mNavCompra', 'p-tareas': 'mNavTareas', 'p-comer': 'mNavComer' }[c];
   // En Ajustes no hay opción del menú activa: la burbuja se esconde (y reaparece en su sitio al salir)
   $('burM').style.opacity = m ? '' : 0; $('burT').style.opacity = t ? '' : 0;
   if (!t && !m) return;
@@ -2427,11 +3040,11 @@ function htmlPref() {
   return h + '</div>';
 }
 function htmlEst() {
-  var pend = cola.length + colaCF.length, v = versionVista ? versionVista.replace(/^potugapp\s*/, '') : '—', d;
+  var pend = cola.length + colaCF.length + colaTA.length, v = versionVista ? versionVista.replace(/^potugapp\s*/, '') : '—', d;
   if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)) { d = new Date(v.replace('Z', ':00Z')); if (!isNaN(d)) v = d.getDate() + ' ' + MESES3[d.getMonth()] + ' · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
   function fila(t, ok, err) { return '<div class="aj-fila"><span>' + t + '</span><span class="v' + (err && (!ok || err > ok) ? ' mal' : '') + '">' + (err && (!ok || err > ok) ? 'falla · ' + hace(err) : hace(ok)) + '</span></div>'; }
   return '<div class="aj-a"><div class="cp-tit"><h1>Estado</h1><span class="sub">' + esc(v) + '</span></div><div class="aj-bloque">' +
-    fila('Calendario', OK.cal, ERR.cal) + fila('Lista de la compra', OK.compra, ERR.compra) + fila('Comer fuera', OK.comer, ERR.comer) + fila('Tiempo', OK.tiempo, ERR.tiempo) +
+    fila('Calendario', OK.cal, ERR.cal) + fila('Lista de la compra', OK.compra, ERR.compra) + fila('Tareas de casa', OK.tareas, ERR.tareas) + fila('Comer fuera', OK.comer, ERR.comer) + fila('Tiempo', OK.tiempo, ERR.tiempo) +
     '<div class="aj-fila"><span>Pendiente de enviar</span><span class="v' + (pend ? ' mal' : '') + '">' + (pend ? pend + (pend === 1 ? ' cambio' : ' cambios') : 'nada') + '</span></div></div></div>' +
     '<div class="aj-b"><a class="aj-btn" data-aj="recargar">Recargar la app</a>' +
     '<a class="aj-peligro' + (AJ.clave ? ' seguro' : '') + '" data-aj="clave">' + (AJ.clave ? 'Toca otra vez para olvidar la clave' : 'Olvidar la clave familiar en este aparato') + '</a>' +
@@ -2515,7 +3128,7 @@ function tocarAjustes(e) {
   if (acc === 'borrar') {
     if (!AJ.borrar) { AJ.borrar = true; pintarAjustes('e'); setTimeout(function () { if (AJ.borrar) { AJ.borrar = false; pintarAjustes('e'); } }, 4000); return; }
     // Se borran los datos descargados y las colas; se mantienen quién soy, la clave y las preferencias
-    var l = ['potugapp.compra', 'potugapp.cola', 'potugapp.comer', 'potugapp.colaComer', 'potugapp.cal', 'potugapp.tiempo'];
+    var l = ['potugapp.compra', 'potugapp.cola', 'potugapp.tareas', 'potugapp.colaTareas', 'potugapp.comer', 'potugapp.colaComer', 'potugapp.cal', 'potugapp.tiempo'];
     for (var k = 0; k < l.length; k++) borrar(l[k]);
     location.reload(); return;
   }
@@ -2530,7 +3143,7 @@ function marcarAjustes() {
   $('ajustes').className = 'nav' + (YO ? ' conyo' : '') + (c === 'p-ajustes' ? ' activo' : '');
   $('ajustesM').className = (YO ? 'conyo' : '') + (c === 'p-ajustes' ? ' activo' : '');
 }
-var PAGINAS = { calendario: 'p-cal', compra: 'p-compra', comer: 'p-comer', ajustes: 'p-ajustes' };
+var PAGINAS = { calendario: 'p-cal', compra: 'p-compra', tareas: 'p-tareas', comer: 'p-comer', ajustes: 'p-ajustes' };
 function clasePagina() { return PAGINAS[location.hash.slice(1)] || ''; }
 function marcarMovil(el, on) {
   var dentro = /^<span class="on">/.test(el.innerHTML);
@@ -2544,13 +3157,15 @@ function irPagina() {
   $('navCal').className = 'nav' + (c === 'p-cal' ? ' activo' : '');
   $('navCompra').className = 'nav' + (c === 'p-compra' ? ' activo' : '');
   $('navComer').className = 'nav' + (c === 'p-comer' ? ' activo' : '');
-  var mn = { '': 'mNavInicio', 'p-cal': 'mNavCal', 'p-compra': 'mNavCompra', 'p-comer': 'mNavComer' };
+  $('navTareas').className = 'nav' + (c === 'p-tareas' ? ' activo' : '');
+  var mn = { '': 'mNavInicio', 'p-cal': 'mNavCal', 'p-compra': 'mNavCompra', 'p-tareas': 'mNavTareas', 'p-comer': 'mNavComer' };
   for (var k in mn) $(mn[k]).className = k === c ? 'activo' : '';
   moverBurbujas(true);
   if (c === 'p-cal') pintarPagCal();
   if (!c && !MOVIL) setTimeout(function () { irPort(PORT, true); }, 0);
   if (!c && MOVIL) setTimeout(recortarDias, 0);   // si se pintó con la portada oculta, el degradado no se pudo medir   // al volver a la portada, la página en la que estaba
   if (c === 'p-compra') { pintarCompra(); sincCompra(true); }
+  if (c === 'p-tareas') { TAV.sem = 0; TAV.editar = false; TAV.vistaM = 't'; pintarTareas(); sincTareas(true); }
   if (c === 'p-comer') { CFV.mes = mesHoy(); CFV.saldar = false; CFV.vistaM = 'gastos'; pintarComer(); sincComer(true); if (MOVIL) animar($('cfFab'), 'a-pop'); }
   if (c === 'p-ajustes') { AJ.otra = false; AJ.gpsMal = false; AJ.clave = AJ.borrar = false; pintarAjustes(); }
   marcarAjustes();
@@ -2559,7 +3174,7 @@ function irPagina() {
   var nueva = ORDEN_PAG.indexOf(location.hash.slice(1)); if (location.hash === '#ajustes') nueva = ORDEN_PAG.length;
   if (MOVIL && PAG_ANT !== null && nueva !== PAG_ANT) {
     var dir = DIR_DEDO || (nueva > PAG_ANT ? 1 : -1);
-    var cont = { 'p-cal': 'mCal', 'p-compra': 'mCompra', 'p-comer': 'mComer', 'p-ajustes': 'mAjustes' }[c] || 'mInicio';
+    var cont = { 'p-cal': 'mCal', 'p-compra': 'mCompra', 'p-tareas': 'mTareas', 'p-comer': 'mComer', 'p-ajustes': 'mAjustes' }[c] || 'mInicio';
     animar($(cont), dir > 0 ? 'a-pag-der' : 'a-pag-izq');
   }
   PAG_ANT = nueva; DIR_DEDO = 0;
@@ -2571,7 +3186,7 @@ window.addEventListener('hashchange', irPagina);
    Orden del menú, solo con las páginas que ya existen. No actúa sobre los meses del calendario
    (allí deslizar cambia de mes), con un campo de texto abierto ni empezando pegado al borde
    (en el iPhone ese gesto es «atrás» del navegador). */
-var ORDEN_PAG = ['', 'calendario', 'compra', 'comer'];
+var ORDEN_PAG = ['', 'calendario', 'compra', 'tareas', 'comer'];
 
 /* ---------- Portada del iPad: varias páginas de widgets ----------
    En el iPad deslizar el dedo no cambia de herramienta (para eso está el menú lateral):
@@ -2675,7 +3290,7 @@ window.addEventListener('resize', function () { irPort(PORT, true); });
    No recarga la página (eso daba un parpadeo): vuelve a pedir calendario, compra, comer fuera y tiempo,
    y mira si hay versión nueva de la app (solo entonces recarga, como la «P.»). */
 function actualizarTodo(fin) {
-  cargarCal(); sincCompra(true); sincComer(true); cargarTiempo();
+  cargarCal(); sincCompra(true); sincTareas(true); sincComer(true); cargarTiempo();
   var x = new XMLHttpRequest();
   x.open('GET', 'version.txt?t=' + Date.now(), true);
   x.onload = function () { var v = x.responseText.replace(/\s+$/, ''); if (x.status === 200 && versionVista !== null && v !== versionVista) recargar(); };
@@ -2874,7 +3489,7 @@ window.addEventListener('pageshow', volverDeBloqueo);
 setInterval(function () { var t = Date.now(); if (t - ultimoLatido > 60 * 1000) volverDeBloqueo(); ultimoLatido = t; }, 5000);
 
 /* ---------- Arranque ---------- */
-ponerYo(); encajar(); ultimoDia = diaISO(new Date()); reloj(); pintarCal(); pintarCompra(); pintarComer(); irPagina(); irPort(0, true); sincCompra(true); sincComer(true);
+ponerYo(); encajar(); ultimoDia = diaISO(new Date()); reloj(); pintarCal(); pintarCompra(); pintarComer(); irPagina(); irPort(0, true); sincCompra(true); sincTareas(true); sincComer(true);
 setInterval(reloj, 10000);
 cargarCal(); setInterval(function () { if (!reposo) cargarCal(); }, CAL_MS);
 tiempoGuardado(); cargarTiempo(); setInterval(cargarTiempo, 30 * 60 * 1000);

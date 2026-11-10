@@ -59,3 +59,10 @@ La tabla `items` de la Fase 1 sigue abierta a cualquiera con la clave pública. 
 1. Supabase → **SQL Editor → New query** → pegar `supabase/sql/06_comer.sql` → Run.
 2. Supabase → **Edge Functions → Deploy a new function → Via Editor** → nombre `comer` → pegar `supabase/functions/comer/index.ts` → Deploy.
 3. En los ajustes de la función, **desactivar "Verify JWT"** (usa la misma clave familiar `FAMILY_KEY`).
+
+## Tareas de casa: puesta en marcha (una sola vez)
+1. Supabase → **SQL Editor → New query** → pegar `supabase/sql/07_tareas.sql` → Run (crea las tablas y el catálogo de 11 tareas de partida).
+2. Supabase → **Edge Functions → Deploy a new function → Via Editor** → nombre `tareas` → pegar `supabase/functions/tareas/index.ts` → Deploy.
+3. En los ajustes de la función, **desactivar "Verify JWT"** (usa la misma clave familiar `FAMILY_KEY`).
+
+Para empezar de cero tras las pruebas (borra lo marcado, no el catálogo): `delete from tareas_hechas;`
