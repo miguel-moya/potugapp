@@ -867,6 +867,7 @@ body.p-tareas #pagTareas { display: flex; }
 .ta-sem-cab .flechas a.off { opacity: 0.25; cursor: default; }
 .ta-frase { margin-top: 12px; font-size: 32px; font-weight: 300; letter-spacing: -1px; line-height: 1.1; }
 .ta-frase-d { margin-top: 8px; }
+.ta-frase .emo { font-size: 28px; letter-spacing: 0; }
 .ta-antes span + span:before { content: '·'; margin-right: 16px; color: var(--ter); }
 .ta-nota { display: flex; align-items: center; margin-top: 12px; }
 .ta-estr { display: flex; align-items: center; }
@@ -880,18 +881,15 @@ body.p-tareas #pagTareas { display: flex; }
 .ta-antes span svg { margin: 0 2px 0 6px; }
 /* La cuerda: cada uno tira hacia su lado; el nudo marca quién va ganando */
 .ta-cn { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; }
-.ta-cn > span { display: flex; align-items: center; }
-.ta-cn .pto { margin-right: 8px; }
-.ta-cn .der .pto { margin: 0 0 0 8px; }
+.ta-cn > span { display: block; white-space: nowrap; }
+.ta-cn .pto { margin-right: 8px; vertical-align: 2px; }
 .ta-cn b { font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--sec); margin-left: 8px; }
-.ta-cn .der b { margin: 0 8px 0 0; }
 .ta-cuerda { position: relative; height: 8px; margin-top: 12px; }
 .ta-cuerda .l, .ta-cuerda .m { position: absolute; top: 2px; height: 4px; }
 .ta-cuerda .l { left: 0; background: var(--lidia); border-radius: 2px 0 0 2px; }
 .ta-cuerda .m { right: 0; background: var(--miguel); border-radius: 0 2px 2px 0; }
 .ta-cuerda .c { position: absolute; left: 50%; top: -4px; width: 2px; height: 16px; margin-left: -1px; border-radius: 1px; background: var(--ter); }
-.ta-cuerda .n { position: absolute; top: -2px; width: 12px; height: 12px; margin-left: -6px; border-radius: 6px; background: var(--tinta); box-shadow: 0 0 0 2px var(--finde); }
-html:not(.sin-anim) .ta-cuerda .n { -webkit-transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+html:not(.sin-anim) .ta-cuerda .l, html:not(.sin-anim) .ta-cuerda .m { -webkit-transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .ta-feed { padding: 0; margin-top: 16px; flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 .ta-feed .w-cab { padding: 16px 16px 12px; flex-shrink: 0; }
 .ta-feed .ta-fl { flex: 1 1 0; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
@@ -2517,7 +2515,6 @@ try { TA = JSON.parse(leer('potugapp.tareas')) || TA; } catch (e) {}
 try { colaTA = JSON.parse(leer('potugapp.colaTareas')) || []; } catch (e) {}
 var TAV = { sem: 0, editar: false, vistaM: 't', enviando: false, tAccion: 0, aviso: null };
 var TAH = null;   // hoja abierta (marcar, editar o un registro)
-var ICO_ALERTA = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.01"/></svg>';
 var MENOS = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/></svg>';
 var EQUIS = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 function coma(n) { return String(n).replace('.', ','); }
@@ -2622,6 +2619,8 @@ function taSemana(off) {
 }
 // Valoración de la semana, en palabras: lo hecho frente a lo que tocaba (hasta hoy, en la semana en curso)
 var TA_FRASES = [[1.15, 'Estáis a tope'], [0.9, 'Casa en orden'], [0.65, 'No va mal'], [0.4, 'Mejorable'], [0, 'Toca remangarse']];
+// Emoji de cada frase: solo en la página (en los widgets, la frase sola)
+var TA_EMOJI = { 'Estáis a tope': '🚀', 'Casa en orden': '✨', 'No va mal': '👍', 'Mejorable': '🌱', 'Toca remangarse': '💪', 'Semana por estrenar': '🌅' };
 function taFrase(r, dias) {
   if (r.ratio === null) return '—';
   if (r.actual && !r.pts && dias <= 2) return 'Semana por estrenar';
@@ -2713,7 +2712,7 @@ function taFila(x, op) {
 }
 function taBloque(tit, l, op, aviso, rot) {
   if (!l.length) return '';
-  var h = aviso ? '<div class="ta-fr aviso"><span class="ico">' + ICO_ALERTA + tit + '</span><span class="rot">rescate +50 %</span></div>'
+  var h = aviso ? '<div class="ta-fr aviso"><span>' + tit + '</span><span class="rot">rescate +50 %</span></div>'
     : '<div class="ta-fr"><span>' + tit + '</span><span class="rot">' + (rot || l.length) + '</span></div>';
   for (var k = 0; k < l.length; k++) h += taFila(l[k], op);
   return h;
@@ -2735,8 +2734,8 @@ function taListas(g, dosCol) {
 }
 function taCuerda(s) {
   var L = s.L || 0, M = s.M || 0, n = L + M ? L / (L + M) * 100 : 50;
-  return '<div class="ta-cn"><span><span class="pto L"></span>Lidia<b>' + L + '</b></span><span class="der"><b>' + M + '</b>Miguel<span class="pto M"></span></span></div>' +
-    '<div class="ta-cuerda"><span class="l" style="width:' + n + '%"></span><span class="m" style="width:' + (100 - n) + '%"></span><span class="c"></span><span class="n" style="left:' + n + '%"></span></div>';
+  return '<div class="ta-cn"><span><span class="pto L"></span>Lidia<b>' + L + '</b></span><span class="der"><span class="pto M"></span>Miguel<b>' + M + '</b></span></div>' +
+    '<div class="ta-cuerda"><span class="l" style="width:' + n + '%"></span><span class="m" style="width:' + (100 - n) + '%"></span><span class="c"></span></div>';
 }
 function taLado() {
   var s = taSemana(TAV.sem), pri = taPrimeraSem(), h, k, ant = '';
@@ -2747,7 +2746,7 @@ function taLado() {
   }
   h = '<div class="ta-carta" style="z-index:2"><div class="ta-sem-cab"><h1>' + taSemTit(s) + '</h1><span class="flechas">' +
     '<a data-ta="sem-"' + (TAV.sem <= pri ? ' class="off"' : '') + ' aria-label="Semana anterior">' + FLECHA_I + '</a><a data-ta="sem+"' + (TAV.sem >= 0 ? ' class="off"' : '') + ' aria-label="Semana siguiente">' + FLECHA_D + '</a></span></div>' +
-    '<div class="ta-frase">' + s.frase + '</div><div class="rot ta-frase-d">' + s.pts + ' pts · ' + (s.actual ? 'tocaban unos ' + s.toca + ' hasta hoy' : 'tocaban unos ' + s.toca) + '</div>' +
+    '<div class="ta-frase">' + s.frase + (TA_EMOJI[s.frase] ? ' <span class="emo">' + TA_EMOJI[s.frase] + '</span>' : '') + '</div><div class="rot ta-frase-d">' + s.pts + ' pts · ' + (s.actual ? 'tocaban unos ' + s.toca + ' hasta hoy' : 'tocaban unos ' + s.toca) + '</div>' +
     '<div class="ta-antes">' + ant + '</div></div>' +
     '<div class="ta-carta gris" style="z-index:1">' + taCuerda(s) + '</div>';
   h += '<div class="w ta-feed"><div class="w-cab"><h2 class="w-tit">' + (s.actual ? 'Hecho esta semana' : 'Hecho esa semana') + '</h2><span class="rot">' + s.pts + ' pts</span></div><div class="ta-fl">';
