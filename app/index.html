@@ -2863,9 +2863,9 @@ function abrirMarcar(id) {
     for (k = 0; k < f.length; k++) h += '<span class="cf-pill' + (k === 0 ? ' on' : '') + '" data-tah="forma" data-v="' + esc(f[k].n) + '">' + esc(f[k].n) + ' · ' + f[k].p + '</span>';
     h += '</div>';
   }
-  if (YO && !COCINA) h += '<a class="ta-ok" data-tah="yo">Hecha por mí</a><div class="ta-bt ta-otros"><a data-tah="quien" data-v="LM">A medias</a><a data-tah="quien" data-v="A">La hizo Ana</a></div>';
-  else h += '<span class="rot ta-pre">¿quién lo ha hecho?</span>' + taQuienBotones(null);
-  h += '<div class="ta-bt">' + (i.e === 'atr' || i.e === 'pend' ? '<a data-tah="posponer">Posponer 1 día</a>' : '') + '<a data-tah="editar">Editar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
+  // Misma hoja en todos los aparatos: las cuatro opciones de quién (en un móvil con nombre, el toque corto ya marca como tuya)
+  h += '<span class="rot ta-pre">¿quién lo ha hecho?</span>' + taQuienBotones(null);
+  h += '<div class="ta-bt">' + (i.e === 'atr' || i.e === 'pend' ? '<a data-tah="posponer">Posponer 1 día</a>' : '') + '<a class="der" data-tah="cerrar">Cancelar</a></div>';
   $('cpHojaIn').innerHTML = h; mostrarHoja();
 }
 // Hecha hoy: desmarcar (quita el último registro de hoy) o hacerla otra vez (dos lavadoras el mismo día)
@@ -2875,9 +2875,8 @@ function abrirHoy(id) {
   TAH = { id: id, hecha: u.id, quien: u.quien, forma: u.forma };
   HOJA = { tipo: 'ta-hoy' }; $('cpHojaIn').className = 'h';
   $('cpHojaIn').innerHTML = '<span class="rot">hecha hoy · ' + taInfo(t).sub + ' · +' + u.puntos + ' pts</span><h2>' + esc(t.nombre) + '</h2>' +
-    '<span class="rot ta-pre">¿quién la hizo?</span>' + taQuienBotones(u.quien) +
-    '<a class="ta-ok" data-tah="otra">Hecha otra vez</a>' +
-    '<div class="ta-bt"><a class="peligro" data-tah="desmarcar">Desmarcar</a><a data-tah="editar">Editar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
+    '<span class="rot ta-pre">¿quién lo ha hecho?</span>' + taQuienBotones(u.quien) +
+    '<div class="ta-bt"><a class="peligro" data-tah="desmarcar">Desmarcar</a><a data-tah="otra">Otra vez</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   mostrarHoja();
 }
 function abrirRegistro(id) {
@@ -2886,7 +2885,7 @@ function abrirRegistro(id) {
   TAH = { id: id, borrar: false };
   HOJA = { tipo: 'ta-registro' }; $('cpHojaIn').className = 'h';
   $('cpHojaIn').innerHTML = '<span class="rot">' + DIAS[d.getDay()] + ' ' + d.getDate() + ' · ' + taNombre(x.quien) + ' · +' + x.puntos + ' pts</span><h2>' + esc(x.nombre) + '</h2>' +
-    (tareaDe(x.tarea_id) ? '<span class="rot ta-pre">¿quién la hizo?</span>' + taQuienBotones(x.quien) : '') +
+    (tareaDe(x.tarea_id) ? '<span class="rot ta-pre">¿quién lo ha hecho?</span>' + taQuienBotones(x.quien) : '') +
     '<div class="ta-bt"><a class="peligro" data-tah="quitar" id="taQuitar">Quitar este registro</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   mostrarHoja();
 }
