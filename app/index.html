@@ -2673,7 +2673,7 @@ function taAplicarLocal(a) {
   if (a.tipo === 'hecha') {
     if (hechaDe(a.id)) return;
     t = tareaDe(a.tarea); if (!t) return;
-    var p = taPuntos(t, a.forma, a.quien);
+    var p = a.loc || taPuntos(t, a.forma, a.quien);   // loc: puntos ya sabidos (al cambiar quién hizo un registro de otro día)
     TA.hechas.push({ id: a.id, tarea_id: t.id, nombre: t.nombre, dia: a.dia, quien: a.quien, puntos: p.puntos, forma: taFormas(t).length ? (a.forma || taFormas(t)[0].n) : null, rescate: p.rescate, creado: new Date().toISOString(), local: true });
     t.pospuesta = null;
   } else if (a.tipo === 'deshacer') { for (k = TA.hechas.length - 1; k >= 0; k--) if (TA.hechas[k].id === a.id) TA.hechas.splice(k, 1); }
@@ -2885,6 +2885,7 @@ function abrirRegistro(id) {
   TAH = { id: id, borrar: false };
   HOJA = { tipo: 'ta-registro' }; $('cpHojaIn').className = 'h';
   $('cpHojaIn').innerHTML = '<span class="rot">' + DIAS[d.getDay()] + ' ' + d.getDate() + ' · ' + taNombre(x.quien) + ' · +' + x.puntos + ' pts</span><h2>' + esc(x.nombre) + '</h2>' +
+    (tareaDe(x.tarea_id) ? '<span class="rot ta-pre">¿quién la hizo?</span>' + taQuienBotones(x.quien) : '') +
     '<div class="ta-bt"><a class="peligro" data-tah="quitar" id="taQuitar">Quitar este registro</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   mostrarHoja();
 }
@@ -2958,6 +2959,15 @@ function tocarHojaTareas(e) {
     return;
   }
   if (HOJA.tipo === 'ta-registro') {
+    if (a === 'quien') {
+      // Cambiar quién hizo un registro (de cualquier día de la semana): se quita y se vuelve a apuntar ese mismo día
+      var x = hechaDe(TAH.id); if (!x || v === x.quien || !tareaDe(x.tarea_id)) return;
+      var base = x.rescate ? Math.round(x.puntos / 1.5) : +x.puntos, resc = x.rescate && v !== 'A';
+      cerrarHoja();
+      taAccion({ tipo: 'deshacer', id: x.id }, true);
+      taAccion({ tipo: 'hecha', id: nuevoId(), tarea: x.tarea_id, quien: v, forma: x.forma, dia: x.dia, loc: { puntos: resc ? Math.round(base * 1.5) : base, rescate: resc } });
+      return;
+    }
     if (a === 'quitar') {
       if (!TAH.borrar) { TAH.borrar = true; t.className = 'seguro'; t.innerHTML = 'Toca otra vez para quitarlo'; return; }
       var rid = TAH.id; cerrarHoja(); taAccion({ tipo: 'deshacer', id: rid });
