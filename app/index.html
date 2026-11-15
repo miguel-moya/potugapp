@@ -2841,7 +2841,8 @@ function taTocar(id, largo) {
   var t = tareaDe(id); if (!t) return;
   if (TAV.editar && !largo) { abrirTarea(id); return; }
   if (t.pausada && !largo) { abrirTarea(id); return; }
-  if (taInfo(t).e === 'hoy' && !largo) { abrirHoy(id); return; }
+  // Hecha hoy: siempre su hoja (quién la hizo, otra vez, desmarcar), también con pulsación larga
+  if (taInfo(t).e === 'hoy') { abrirHoy(id); return; }
   // En la cocina (o sin saber quién es) se pregunta; con formas, se elige cuál. Si no, se marca al momento como tuya.
   if (largo || COCINA || !YO || taFormas(t).length) { abrirMarcar(id); return; }
   taMarcar(id, YO, null);
@@ -2876,7 +2877,7 @@ function abrirHoy(id) {
   $('cpHojaIn').innerHTML = '<span class="rot">hecha hoy · ' + taInfo(t).sub + ' · +' + u.puntos + ' pts</span><h2>' + esc(t.nombre) + '</h2>' +
     '<span class="rot ta-pre">¿quién la hizo?</span>' + taQuienBotones(u.quien) +
     '<a class="ta-ok" data-tah="otra">Hecha otra vez</a>' +
-    '<div class="ta-bt"><a class="peligro" data-tah="desmarcar">Desmarcar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
+    '<div class="ta-bt"><a class="peligro" data-tah="desmarcar">Desmarcar</a><a data-tah="editar">Editar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   mostrarHoja();
 }
 function abrirRegistro(id) {
@@ -2953,6 +2954,7 @@ function tocarHojaTareas(e) {
   if (HOJA.tipo === 'ta-hoy') {
     var hid = TAH.hecha, oid = TAH.id, ot = tareaDe(oid);
     if (a === 'desmarcar') { cerrarHoja(); taAccion({ tipo: 'deshacer', id: hid }); return; }
+    if (a === 'editar') { abrirTarea(oid); return; }
     // Cambiar quién la hizo: se quita el registro y se vuelve a apuntar igual (mismos puntos y forma) con la persona nueva
     if (a === 'quien') { if (v === TAH.quien) return; var fq = TAH.forma; cerrarHoja(); taAccion({ tipo: 'deshacer', id: hid }, true); taMarcar(oid, v, fq); return; }
     if (a === 'otra') { if (!ot) return; if (COCINA || !YO || taFormas(ot).length) { abrirMarcar(oid); return; } cerrarHoja(); taMarcar(oid, YO, null); }
