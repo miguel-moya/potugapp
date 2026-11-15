@@ -66,3 +66,5 @@ La tabla `items` de la Fase 1 sigue abierta a cualquiera con la clave pública. 
 3. En los ajustes de la función, **desactivar "Verify JWT"** (usa la misma clave familiar `FAMILY_KEY`).
 
 Para empezar de cero tras las pruebas (borra lo marcado, no el catálogo): `delete from tareas_hechas;`
+
+Tareas: «a medias» y Ana (15 nov). Si ya se había pegado `07_tareas.sql`, pegar también `supabase/sql/08_tareas_quien.sql` y volver a pegar la función `tareas`.

@@ -921,8 +921,18 @@ body.movil #taAviso { left: 16px; right: 16px; width: auto; margin-left: 0; bott
 #cpHoja .ta-pre { display: block; margin-top: 16px; }
 .ta-quien { display: flex; margin-top: 8px; }
 .ta-quien a { flex: 1 1 0; height: 96px; border-radius: 20px; background: var(--finde); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; cursor: pointer; }
-.ta-quien a + a { margin-left: 12px; }
-.ta-quien .bur { width: 40px; height: 40px; border-radius: 20px; font-size: 16px; margin-bottom: 8px; }
+.ta-quien a + a { margin-left: 8px; }
+.ta-quien a { height: 88px; font-size: 13px; padding: 0 4px; text-align: center; }
+.ta-quien a.on { box-shadow: inset 0 0 0 2px var(--tinta); }
+.ta-quien .bur { width: 36px; height: 36px; border-radius: 18px; font-size: 14px; margin-bottom: 8px; }
+.ta-burs { display: flex; margin-bottom: 8px; }
+.ta-burs .bur { margin-bottom: 0; }
+.ta-burs .bur + .bur { margin-left: -10px; box-shadow: 0 0 0 2px var(--finde); }
+.bur.A { background: var(--pista); }
+.pto.A { background: var(--ter); }
+.ta-nom i .pto.ta-p1 { margin-right: 2px; }
+.ta-otros { margin-top: 4px; }
+.ta-otros a { -webkit-flex: 1 1 0; flex: 1 1 0; justify-content: center; }
 .ta-ok { display: flex; margin-top: 16px; height: 48px; border-radius: 24px; background: var(--tinta); color: var(--widget); align-items: center; justify-content: center; font-size: 14px; font-weight: 600; cursor: pointer; }
 .ta-bt { display: flex; flex-wrap: wrap; margin: 16px 0 0 -8px; }
 .ta-bt a { margin: 8px 0 0 8px; height: 40px; padding: 0 16px; border-radius: 20px; box-shadow: inset 0 0 0 1px var(--sep-fuerte); display: flex; align-items: center; font-size: 13px; font-weight: 600; color: var(--sec); cursor: pointer; }
@@ -2560,6 +2570,11 @@ function taHoy(id) {
   for (var i = 0; i < TA.hechas.length; i++) if (TA.hechas[i].tarea_id === id && TA.hechas[i].dia === hoy) l.push(TA.hechas[i]);
   return l.sort(function (a, b) { return a.creado < b.creado ? -1 : 1; });
 }
+// Quién: L, M, LM (a medias, mitad de puntos para cada uno) o A (Ana, de fuera: marca la tarea sin puntos para la cuerda)
+var TA_QUIEN = { L: 'Lidia', M: 'Miguel', LM: 'Lidia y Miguel', A: 'Ana' };
+function taNombre(q) { return TA_QUIEN[q] || q; }
+function taPtos(q) { return q === 'LM' ? '<span class="pto L ta-p1"></span><span class="pto M"></span>' : '<span class="pto ' + q + '"></span>'; }
+function taBur(q) { return q === 'LM' ? '<span class="ta-burs"><span class="bur L">L</span><span class="bur M">M</span></span>' : '<span class="bur ' + q + '">' + q + '</span>'; }
 function taDiasTxt(d) { return d <= 0 ? 'hoy' : d === 1 ? 'ayer' : 'hace ' + d + ' días'; }
 function taEnDias(n) { return n === 1 ? '1 día' : n + ' días'; }
 // Estado de una tarea hoy: atr (atrasada), pend (pendiente), ok (al día), pausa
@@ -2574,7 +2589,7 @@ function taInfo(t) {
   var hoyL = taHoy(t.id);
   if (hoyL.length) {
     var qs = [], pts = 0;
-    for (var q = 0; q < hoyL.length; q++) { pts += +hoyL[q].puntos; if (qs.indexOf(NOMBRES[hoyL[q].quien]) < 0) qs.push(NOMBRES[hoyL[q].quien]); }
+    for (var q = 0; q < hoyL.length; q++) { pts += +hoyL[q].puntos; if (qs.indexOf(taNombre(hoyL[q].quien)) < 0) qs.push(taNombre(hoyL[q].quien)); }
     r.e = 'hoy'; r.n = hoyL.length; r.pts = pts; r.orden = 0;
     r.sub = (hoyL.length > 1 ? hoyL.length + ' veces · ' : '') + qs.join(' y ') + (hoyL[hoyL.length - 1].forma ? ' · ' + hoyL[hoyL.length - 1].forma.toLowerCase() : '');
     r.corta = r.sub; return r;
@@ -2601,10 +2616,10 @@ function taGrupos() {
   return g;
 }
 // Puntos al marcarla ahora (con formas, los de la elegida; atrasada: +50 %)
-function taPuntos(t, forma) {
+function taPuntos(t, forma, quien) {
   var f = taFormas(t), base = +t.puntos || 0;
   if (f.length) { base = +f[0].p; for (var k = 0; k < f.length; k++) if (f[k].n === forma) base = +f[k].p; }
-  var resc = taInfo(t).e === 'atr';
+  var resc = taInfo(t).e === 'atr' && quien !== 'A';   // el rescate es para la familia: si la hace Ana, sin +50 %
   return { puntos: Math.round(base * (resc ? 1.5 : 1)), rescate: resc };
 }
 
@@ -2618,7 +2633,11 @@ function taEsperado() {   // puntos que tocan en una semana con el catálogo act
 function taSemana(off) {
   var hoy = new Date(), lun = masDias(lunesDe(hoy), 7 * off), dom = masDias(lun, 6);
   var a = diaISO(lun), b = diaISO(dom), hoyI = diaISO(hoy), r = { lun: lun, dom: dom, pts: 0, L: 0, M: 0, hechas: [] }, k;
-  for (k = 0; k < TA.hechas.length; k++) { var h = TA.hechas[k]; if (h.dia >= a && h.dia <= b) { r.pts += +h.puntos; r[h.quien] = (r[h.quien] || 0) + (+h.puntos); r.hechas.push(h); } }
+  for (k = 0; k < TA.hechas.length; k++) { var h = TA.hechas[k]; if (h.dia >= a && h.dia <= b) {
+    // A medias (LM): mitad para cada uno. Ana (A): cuenta para la casa (la valoración), no para la cuerda
+    r.pts += +h.puntos; r.hechas.push(h);
+    if (h.quien === 'LM') { r.L += h.puntos / 2; r.M += h.puntos / 2; } else r[h.quien] = (r[h.quien] || 0) + (+h.puntos);
+  } }
   r.hechas.sort(function (x, y) { return x.dia < y.dia ? 1 : x.dia > y.dia ? -1 : (x.creado < y.creado ? 1 : -1); });
   var esp = taEsperado(), dias = off === 0 ? diasEntre(a, hoyI) + 1 : 7;
   r.actual = off === 0;
@@ -2653,7 +2672,7 @@ function taAplicarLocal(a) {
   if (a.tipo === 'hecha') {
     if (hechaDe(a.id)) return;
     t = tareaDe(a.tarea); if (!t) return;
-    var p = taPuntos(t, a.forma);
+    var p = taPuntos(t, a.forma, a.quien);
     TA.hechas.push({ id: a.id, tarea_id: t.id, nombre: t.nombre, dia: a.dia, quien: a.quien, puntos: p.puntos, forma: taFormas(t).length ? (a.forma || taFormas(t)[0].n) : null, rescate: p.rescate, creado: new Date().toISOString(), local: true });
     t.pospuesta = null;
   } else if (a.tipo === 'deshacer') { for (k = TA.hechas.length - 1; k >= 0; k--) if (TA.hechas[k].id === a.id) TA.hechas.splice(k, 1); }
@@ -2745,7 +2764,7 @@ function taListas(g, dosCol) {
     : '<div class="ta-col' + (TAV.editar ? ' ta-editando' : '') + '">' + a + b + '</div>';
 }
 function taCuerda(s) {
-  var L = s.L || 0, M = s.M || 0, n = L + M ? L / (L + M) * 100 : 50;
+  var L = Math.round(s.L || 0), M = Math.round(s.M || 0), n = L + M ? L / (L + M) * 100 : 50;
   return '<div class="ta-cn"><span><span class="pto L"></span>Lidia<b>' + L + '</b></span><span class="der"><span class="pto M"></span>Miguel<b>' + M + '</b></span></div>' +
     '<div class="ta-cuerda"><span class="l" style="width:' + n + '%"></span><span class="m" style="width:' + (100 - n) + '%"></span><span class="c"></span></div>';
 }
@@ -2767,7 +2786,7 @@ function taLado() {
   for (k = 0; k < s.hechas.length; k++) {
     var x = s.hechas[k];
     if (x.dia !== dia) { dia = x.dia; var d = deISO(dia); h += '<div class="ta-fr"><span>' + DIAS3[d.getDay()] + ' ' + d.getDate() + '</span></div>'; }
-    h += '<div class="ta-act" data-ta="registro" data-id="' + esc(x.id) + '"><span class="ta-nom"><b>' + esc(x.nombre) + '</b><i><span class="pto ' + x.quien + '"></span>' + NOMBRES[x.quien] +
+    h += '<div class="ta-act" data-ta="registro" data-id="' + esc(x.id) + '"><span class="ta-nom"><b>' + esc(x.nombre) + '</b><i>' + taPtos(x.quien) + taNombre(x.quien) + (x.quien === 'LM' ? ' · a medias' : '') +
       (x.forma ? ' · ' + esc(x.forma.toLowerCase()) : '') + (x.rescate ? ' · rescatada' : '') + '</i></span><span class="ta-pts' + (x.rescate ? ' extra' : '') + '">+' + x.puntos + '</span></div>';
   }
   return h + '</div></div>';
@@ -2809,13 +2828,13 @@ $('taAviso').addEventListener('click', function (e) {
 });
 function taMarcar(id, quien, forma) {
   var t = tareaDe(id); if (!t || !quien) return;
-  var p = taPuntos(t, forma), a = { tipo: 'hecha', id: nuevoId(), tarea: id, quien: quien, forma: forma || null, dia: diaISO(new Date()) };
+  var p = taPuntos(t, forma, quien), a = { tipo: 'hecha', id: nuevoId(), tarea: id, quien: quien, forma: forma || null, dia: diaISO(new Date()) };
   // Se tacha donde está y, un momento después, pasa a «Al día»
   var l = document.querySelectorAll('[data-ta="tarea"][data-id="' + id + '"]');
   for (var k = 0; k < l.length; k++) { l[k].className += ' hecha'; animar(l[k].querySelector('.ta-ck'), 'a-pop'); }
   taAccion(a, true);
   setTimeout(pintarTareas, ANIM ? 650 : 0);
-  taAviso(esc(t.nombre) + ' · ' + NOMBRES[quien] + '<b>+' + p.puntos + ' pts</b>', a.id);
+  taAviso(esc(t.nombre) + ' · ' + taNombre(quien) + '<b>+' + p.puntos + ' pts' + (quien === 'LM' ? ' a medias' : '') + '</b>', a.id);
 }
 function taTocar(id, largo) {
   var t = tareaDe(id); if (!t) return;
@@ -2825,6 +2844,11 @@ function taTocar(id, largo) {
   // En la cocina (o sin saber quién es) se pregunta; con formas, se elige cuál. Si no, se marca al momento como tuya.
   if (largo || COCINA || !YO || taFormas(t).length) { abrirMarcar(id); return; }
   taMarcar(id, YO, null);
+}
+function taQuienBotones(actual) {
+  var h = '<div class="ta-quien">', l = ['L', 'M', 'LM', 'A'], n = { L: 'Lidia', M: 'Miguel', LM: 'Los dos', A: 'Ana' };
+  for (var k = 0; k < l.length; k++) h += '<a data-tah="quien" data-v="' + l[k] + '"' + (l[k] === actual ? ' class="on"' : '') + '>' + taBur(l[k]) + n[l[k]] + '</a>';
+  return h + '</div>';
 }
 function abrirMarcar(id) {
   var t = tareaDe(id); if (!t) return;
@@ -2837,8 +2861,8 @@ function abrirMarcar(id) {
     for (k = 0; k < f.length; k++) h += '<span class="cf-pill' + (k === 0 ? ' on' : '') + '" data-tah="forma" data-v="' + esc(f[k].n) + '">' + esc(f[k].n) + ' · ' + f[k].p + '</span>';
     h += '</div>';
   }
-  if (YO && !COCINA) h += '<a class="ta-ok" data-tah="yo">Hecha por mí</a>';
-  else h += '<span class="rot ta-pre">¿quién lo ha hecho?</span><div class="ta-quien"><a data-tah="quien" data-v="L"><span class="bur L">L</span>Lidia</a><a data-tah="quien" data-v="M"><span class="bur M">M</span>Miguel</a></div>';
+  if (YO && !COCINA) h += '<a class="ta-ok" data-tah="yo">Hecha por mí</a><div class="ta-bt ta-otros"><a data-tah="quien" data-v="LM">A medias</a><a data-tah="quien" data-v="A">La hizo Ana</a></div>';
+  else h += '<span class="rot ta-pre">¿quién lo ha hecho?</span>' + taQuienBotones(null);
   h += '<div class="ta-bt">' + (i.e === 'atr' || i.e === 'pend' ? '<a data-tah="posponer">Posponer 1 día</a>' : '') + '<a data-tah="editar">Editar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   $('cpHojaIn').innerHTML = h; mostrarHoja();
 }
@@ -2846,9 +2870,10 @@ function abrirMarcar(id) {
 function abrirHoy(id) {
   var t = tareaDe(id); if (!t) return;
   var l = taHoy(id), u = l[l.length - 1]; if (!u) return;
-  TAH = { id: id, hecha: u.id };
+  TAH = { id: id, hecha: u.id, quien: u.quien, forma: u.forma };
   HOJA = { tipo: 'ta-hoy' }; $('cpHojaIn').className = 'h';
   $('cpHojaIn').innerHTML = '<span class="rot">hecha hoy · ' + taInfo(t).sub + ' · +' + u.puntos + ' pts</span><h2>' + esc(t.nombre) + '</h2>' +
+    '<span class="rot ta-pre">¿quién la hizo?</span>' + taQuienBotones(u.quien) +
     '<a class="ta-ok" data-tah="otra">Hecha otra vez</a>' +
     '<div class="ta-bt"><a class="peligro" data-tah="desmarcar">Desmarcar</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   mostrarHoja();
@@ -2858,7 +2883,7 @@ function abrirRegistro(id) {
   var d = deISO(x.dia);
   TAH = { id: id, borrar: false };
   HOJA = { tipo: 'ta-registro' }; $('cpHojaIn').className = 'h';
-  $('cpHojaIn').innerHTML = '<span class="rot">' + DIAS[d.getDay()] + ' ' + d.getDate() + ' · ' + NOMBRES[x.quien] + ' · +' + x.puntos + ' pts</span><h2>' + esc(x.nombre) + '</h2>' +
+  $('cpHojaIn').innerHTML = '<span class="rot">' + DIAS[d.getDay()] + ' ' + d.getDate() + ' · ' + taNombre(x.quien) + ' · +' + x.puntos + ' pts</span><h2>' + esc(x.nombre) + '</h2>' +
     '<div class="ta-bt"><a class="peligro" data-tah="quitar" id="taQuitar">Quitar este registro</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   mostrarHoja();
 }
@@ -2926,6 +2951,8 @@ function tocarHojaTareas(e) {
   if (HOJA.tipo === 'ta-hoy') {
     var hid = TAH.hecha, oid = TAH.id, ot = tareaDe(oid);
     if (a === 'desmarcar') { cerrarHoja(); taAccion({ tipo: 'deshacer', id: hid }); return; }
+    // Cambiar quién la hizo: se quita el registro y se vuelve a apuntar igual (mismos puntos y forma) con la persona nueva
+    if (a === 'quien') { if (v === TAH.quien) return; var fq = TAH.forma; cerrarHoja(); taAccion({ tipo: 'deshacer', id: hid }, true); taMarcar(oid, v, fq); return; }
     if (a === 'otra') { if (!ot) return; if (COCINA || !YO || taFormas(ot).length) { abrirMarcar(oid); return; } cerrarHoja(); taMarcar(oid, YO, null); }
     return;
   }

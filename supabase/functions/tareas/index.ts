@@ -9,7 +9,8 @@
 // Acciones (si no hay conexión la app las guarda y las envía después; repetir una no duplica nada):
 //   {tipo:"tarea", id, nombre, puntos, veces, periodo:"s"|"m"|"a", formas:[{n,p}], pausada}  → crea o corrige
 //   {tipo:"borrar_tarea", id}
-//   {tipo:"hecha", id, tarea, quien:"L"|"M", forma?, dia:"2026-11-12"}  → los puntos (y el rescate) los calcula la función
+//   {tipo:"hecha", id, tarea, quien:"L"|"M"|"LM"|"A", forma?, dia:"2026-11-12"}  → los puntos (y el rescate) los calcula la función
+//      LM = a medias (la app da la mitad a cada uno) · A = Ana, de fuera (cuenta para la casa, no para la cuerda)
 //   {tipo:"deshacer", id}                     → quita un registro
 //   {tipo:"posponer", id, hasta:"2026-11-13"} → la tarea no sale como pendiente hasta ese día
 
@@ -92,7 +93,7 @@ async function aplicar(a: Record<string, unknown>) {
       const ya = await rest("GET", `tareas_hechas?select=id&id=eq.${encodeURIComponent(id)}`);
       if (ya.length) return;
       const tid = limpio(a.tarea, 40), dia = String(a.dia || ""), quien = String(a.quien || "");
-      if (!esDia(dia) || ["L", "M"].indexOf(quien) < 0) throw new Error("registro incompleto");
+      if (!esDia(dia) || ["L", "M", "LM", "A"].indexOf(quien) < 0) throw new Error("registro incompleto");
       const t = (await rest("GET", `tareas?select=id,nombre,puntos,veces,periodo,formas,pospuesta&id=eq.${encodeURIComponent(tid)}`))[0];
       if (!t) throw new Error("tarea desconocida");
       const formas = Array.isArray(t.formas) ? t.formas : [];
@@ -102,7 +103,7 @@ async function aplicar(a: Record<string, unknown>) {
       // Rescate: la última vez fue hace más de 1,3 intervalos (y no estaba pospuesta)
       const ult = await rest("GET", `tareas_hechas?select=dia&tarea_id=eq.${encodeURIComponent(tid)}&dia=lte.${dia}&order=dia.desc&limit=1`);
       const intervalo = DIAS_PERIODO[t.periodo] / Math.max(1, t.veces);
-      const rescate = ult.length > 0 && diasEntre(ult[0].dia, dia) / intervalo > 1.3 && !(t.pospuesta && t.pospuesta > dia);
+      const rescate = quien !== "A" && ult.length > 0 && diasEntre(ult[0].dia, dia) / intervalo > 1.3 && !(t.pospuesta && t.pospuesta > dia);
       await rest("POST", "tareas_hechas?on_conflict=id", [{
         id, tarea_id: tid, nombre: t.nombre, dia, quien, forma: forma ? forma.n : null, rescate,
         puntos: Math.round(base * (rescate ? 1.5 : 1)),

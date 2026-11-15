@@ -22,7 +22,7 @@ create table if not exists tareas_hechas (
   tarea_id text not null,
   nombre text not null,                         -- nombre de la tarea en ese momento
   dia date not null,
-  quien text not null check (quien in ('L', 'M')),
+  quien text not null check (quien in ('L', 'M', 'LM', 'A')),   -- LM = a medias · A = Ana (de fuera)
   puntos int not null,
   forma text,
   rescate boolean not null default false,       -- estaba atrasada: +50 %
