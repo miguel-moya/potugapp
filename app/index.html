@@ -850,6 +850,7 @@ body.p-tareas #pagTareas { display: flex; }
 .ta-nom { flex-grow: 1; min-width: 0; margin-left: 12px; padding: 8px 0; }
 .ta-nom b { display: block; font-weight: 400; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ta-nom i { display: block; font-style: normal; font-size: 12px; color: var(--sec); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ta-it .ta-nom i .pto { margin-right: 6px; vertical-align: 1px; }
 .ta-nom i em { font-style: normal; color: var(--aviso); font-weight: 600; }
 .ta-it.e-pausa .ta-nom b { color: var(--ter); }
 .ta-it.e-pausa .ta-ck { opacity: 0.4; }
@@ -2589,9 +2590,9 @@ function taInfo(t) {
   var hoyL = taHoy(t.id);
   if (hoyL.length) {
     var qs = [], pts = 0;
-    for (var q = 0; q < hoyL.length; q++) { pts += +hoyL[q].puntos; if (qs.indexOf(taNombre(hoyL[q].quien)) < 0) qs.push(taNombre(hoyL[q].quien)); }
+    for (var q = 0; q < hoyL.length; q++) { pts += +hoyL[q].puntos; var qn = taPtos(hoyL[q].quien) + taNombre(hoyL[q].quien); if (qs.indexOf(qn) < 0) qs.push(qn); }
     r.e = 'hoy'; r.n = hoyL.length; r.pts = pts; r.orden = 0;
-    r.sub = (hoyL.length > 1 ? hoyL.length + ' veces · ' : '') + qs.join(' y ') + (hoyL[hoyL.length - 1].forma ? ' · ' + hoyL[hoyL.length - 1].forma.toLowerCase() : '');
+    r.sub = qs.join(' y ') + (hoyL.length > 1 ? ' · ' + hoyL.length + ' veces' : '') + (hoyL[hoyL.length - 1].forma ? ' · ' + hoyL[hoyL.length - 1].forma.toLowerCase() : '');
     r.corta = r.sub; return r;
   }
   if (!u) { r.e = 'pend'; r.p = 0.99; r.sub = 'sin registro · ' + taFrec(t); r.corta = 'sin registro'; return r; }
