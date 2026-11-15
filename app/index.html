@@ -2842,7 +2842,9 @@ function taTocar(id, largo) {
   if (TAV.editar && !largo) { abrirTarea(id); return; }
   if (t.pausada && !largo) { abrirTarea(id); return; }
   // Hecha hoy: siempre su hoja (quién la hizo, otra vez, desmarcar), también con pulsación larga
-  if (taInfo(t).e === 'hoy') { abrirHoy(id); return; }
+  // Hecha hoy o al día: se abre su última vez (cambiar quién, desmarcar o volver a hacerla), nunca se apunta sin querer
+  var ei = taInfo(t).e;
+  if (ei === 'hoy' || (ei === 'ok' && taUltima(id))) { abrirHoy(id); return; }
   // En la cocina (o sin saber quién es) se pregunta; con formas, se elige cuál. Si no, se marca al momento como tuya.
   if (largo || COCINA || !YO || taFormas(t).length) { abrirMarcar(id); return; }
   taMarcar(id, YO, null);
@@ -2852,9 +2854,11 @@ function taQuienBotones(actual) {
   for (var k = 0; k < l.length; k++) h += '<a data-tah="quien" data-v="' + l[k] + '"' + (l[k] === actual ? ' class="on"' : '') + '>' + taBur(l[k]) + n[l[k]] + '</a>';
   return h + '</div>';
 }
-function abrirMarcar(id) {
+function abrirMarcar(id, nueva) {
   var t = tareaDe(id); if (!t) return;
   var i = taInfo(t), f = taFormas(t), h, k;
+  // Al día y ya hecha otras veces: se abre la de su última vez (si no, tocar una burbuja la apuntaría hoy sin querer)
+  if (!nueva && (i.e === 'ok' || i.e === 'hoy') && taUltima(id)) { abrirHoy(id); return; }
   TAH = { id: id, forma: f.length ? f[0].n : null };
   HOJA = { tipo: 'ta-marcar' }; $('cpHojaIn').className = 'h';
   h = '<span class="rot">' + taFrec(t) + (i.e === 'atr' ? ' · rescate +50 %' : '') + '</span><h2>' + esc(t.nombre) + '</h2>';
@@ -2869,15 +2873,25 @@ function abrirMarcar(id) {
   $('cpHojaIn').innerHTML = h; mostrarHoja();
 }
 // Hecha hoy: desmarcar (quita el último registro de hoy) o hacerla otra vez (dos lavadoras el mismo día)
+// Hoja de la última vez que se hizo (hoy o, si está al día, la de otro día): las burbujas cambian quién
+// hizo ESE registro (mismo día, puntos y forma); «Otra vez» / «Hecha hoy» apunta una nueva
 function abrirHoy(id) {
   var t = tareaDe(id); if (!t) return;
-  var l = taHoy(id), u = l[l.length - 1]; if (!u) return;
-  TAH = { id: id, hecha: u.id, quien: u.quien, forma: u.forma };
+  var l = taHoy(id), u = l.length ? l[l.length - 1] : taUltima(id); if (!u) return;
+  var esHoy = !!l.length, d = deISO(u.dia);
+  TAH = { id: id, hecha: u.id };
   HOJA = { tipo: 'ta-hoy' }; $('cpHojaIn').className = 'h';
-  $('cpHojaIn').innerHTML = '<span class="rot">hecha hoy · ' + taInfo(t).sub + ' · +' + u.puntos + ' pts</span><h2>' + esc(t.nombre) + '</h2>' +
+  $('cpHojaIn').innerHTML = '<span class="rot">' + (esHoy ? 'hecha hoy' : 'última vez · ' + DIAS3[d.getDay()] + ' ' + d.getDate() + ' ' + MESES3[d.getMonth()]) + ' · ' + taNombre(u.quien) + (u.forma ? ' · ' + esc(u.forma.toLowerCase()) : '') + ' · +' + u.puntos + ' pts</span><h2>' + esc(t.nombre) + '</h2>' +
     '<span class="rot ta-pre">¿quién lo ha hecho?</span>' + taQuienBotones(u.quien) +
-    '<div class="ta-bt"><a class="peligro" data-tah="desmarcar">Desmarcar</a><a data-tah="otra">Otra vez</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
+    '<div class="ta-bt"><a class="peligro" data-tah="desmarcar">Desmarcar</a><a data-tah="otra">' + (esHoy ? 'Otra vez' : 'Hecha hoy') + '</a><a class="der" data-tah="cerrar">Cancelar</a></div>';
   mostrarHoja();
+}
+// Cambiar quién hizo un registro: se quita y se vuelve a apuntar el mismo día, con los mismos puntos y forma
+function taCambiarQuien(hid, v) {
+  var x = hechaDe(hid); if (!x || v === x.quien || !tareaDe(x.tarea_id)) return;
+  var base = x.rescate ? Math.round(x.puntos / 1.5) : +x.puntos, resc = x.rescate && v !== 'A';
+  taAccion({ tipo: 'deshacer', id: x.id }, true);
+  taAccion({ tipo: 'hecha', id: nuevoId(), tarea: x.tarea_id, quien: v, forma: x.forma, dia: x.dia, loc: { puntos: resc ? Math.round(base * 1.5) : base, rescate: resc } });
 }
 function abrirRegistro(id) {
   var x = hechaDe(id); if (!x) return;
@@ -2955,20 +2969,12 @@ function tocarHojaTareas(e) {
     if (a === 'desmarcar') { cerrarHoja(); taAccion({ tipo: 'deshacer', id: hid }); return; }
     if (a === 'editar') { abrirTarea(oid); return; }
     // Cambiar quién la hizo: se quita el registro y se vuelve a apuntar igual (mismos puntos y forma) con la persona nueva
-    if (a === 'quien') { if (v === TAH.quien) return; var fq = TAH.forma; cerrarHoja(); taAccion({ tipo: 'deshacer', id: hid }, true); taMarcar(oid, v, fq); return; }
-    if (a === 'otra') { if (!ot) return; if (COCINA || !YO || taFormas(ot).length) { abrirMarcar(oid); return; } cerrarHoja(); taMarcar(oid, YO, null); }
+    if (a === 'quien') { cerrarHoja(); taCambiarQuien(hid, v); return; }
+    if (a === 'otra') { if (!ot) return; if (COCINA || !YO || taFormas(ot).length) { abrirMarcar(oid, true); return; } cerrarHoja(); taMarcar(oid, YO, null); }
     return;
   }
   if (HOJA.tipo === 'ta-registro') {
-    if (a === 'quien') {
-      // Cambiar quién hizo un registro (de cualquier día de la semana): se quita y se vuelve a apuntar ese mismo día
-      var x = hechaDe(TAH.id); if (!x || v === x.quien || !tareaDe(x.tarea_id)) return;
-      var base = x.rescate ? Math.round(x.puntos / 1.5) : +x.puntos, resc = x.rescate && v !== 'A';
-      cerrarHoja();
-      taAccion({ tipo: 'deshacer', id: x.id }, true);
-      taAccion({ tipo: 'hecha', id: nuevoId(), tarea: x.tarea_id, quien: v, forma: x.forma, dia: x.dia, loc: { puntos: resc ? Math.round(base * 1.5) : base, rescate: resc } });
-      return;
-    }
+    if (a === 'quien') { var rh = TAH.id; cerrarHoja(); taCambiarQuien(rh, v); return; }
     if (a === 'quitar') {
       if (!TAH.borrar) { TAH.borrar = true; t.className = 'seguro'; t.innerHTML = 'Toca otra vez para quitarlo'; return; }
       var rid = TAH.id; cerrarHoja(); taAccion({ tipo: 'deshacer', id: rid });
